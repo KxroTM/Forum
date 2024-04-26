@@ -4,6 +4,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	forum "forum/go"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -12,7 +13,7 @@ import (
 var Db *sql.DB
 
 func main() {
-	forum.CreateUser(Db, "test", "", "test")
+
 }
 
 func init() {
@@ -22,4 +23,5 @@ func init() {
 		fmt.Println("Erreur lors de l'ouverture de la base de données:", err)
 		return
 	}
+	forum.UpdateDb(Db)
 }
