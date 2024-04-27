@@ -13,6 +13,13 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+// TYPE OF USER :
+// - guests
+// - users
+// - prenium users
+// - moderators
+// - administrators
+
 type User struct {
 	User_id       string
 	Role          string
