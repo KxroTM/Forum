@@ -23,5 +23,11 @@ func init() {
 		fmt.Println("Erreur lors de l'ouverture de la base de données:", err)
 		return
 	}
-	forum.UpdateDb(Db)
+	UpdateDb(Db)
+}
+
+func UpdateDb(Db *sql.DB) {
+	forum.UpdateUserDb(Db)
+	forum.UpdatePostDb(Db)
+	forum.UpdateCommentDb(Db)
 }

@@ -31,7 +31,7 @@ type User struct {
 	FollowingList string
 }
 
-var userSession User
+var UserSession User
 var AllUsers []User
 
 var banWords = []string{
@@ -47,6 +47,31 @@ var banWords = []string{
 	"Trump", "Hitler", "Staline", "Mao", "Ben Laden", "Saddam Hussein", "Kim Jong-un", "Poutine", "Assad",
 }
 
+func UpdateUserDb(db *sql.DB) {
+	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+	}
+	defer rows.Close()
+
+	var users []User
+
+	for rows.Next() {
+		var user User
+		err := rows.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Follower, &user.Following, &user.Bio, &user.Links, &user.CategorieSub, &user.FollowerList, &user.FollowingList)
+		if err != nil {
+			fmt.Printf("erreur lors de la lecture des données utilisateur depuis la base de données: %v", err)
+		}
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+	}
+
+	AllUsers = users
+}
+
 func SignUp(db *sql.DB, username, email, password string) {
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
@@ -57,7 +82,7 @@ func SignUp(db *sql.DB, username, email, password string) {
 		return
 	}
 
-	userSession = User{
+	UserSession = User{
 		User_id:       u.String(),
 		Role:          "user",
 		Username:      username,
@@ -75,17 +100,17 @@ func SignUp(db *sql.DB, username, email, password string) {
 		FollowingList: "",
 	}
 
-	db.Exec(`INSERT INTO users (UUID, role, username, email, password, created_at, updated_at, profilePicture, followers, followersList, following, followingList, bio, links, categoriesSub) 
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, userSession.User_id, userSession.Role, userSession.Username, userSession.Email, userSession.Password, userSession.CreationDate, userSession.UpdateDate, userSession.Pfp, userSession.Follower, userSession.FollowerList, userSession.Following, userSession.FollowingList, userSession.Bio, userSession.Links, userSession.CategorieSub)
+	db.Exec(`INSERT INTO users (UUID, role, username, email, password, created_at, updated_at, profilePicture, followers, following, bio, links, categoriesSub, followersList, followingList) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, UserSession.User_id, UserSession.Role, UserSession.Username, UserSession.Email, UserSession.Password, UserSession.CreationDate, UserSession.UpdateDate, UserSession.Pfp, UserSession.Follower, UserSession.Following, UserSession.Bio, UserSession.Links, UserSession.CategorieSub, UserSession.FollowerList, UserSession.FollowingList)
 
-	AllUsers = append(AllUsers, userSession)
-	UpdateDb(db)
+	AllUsers = append(AllUsers, UserSession)
+	UpdateUserDb(db)
 }
 
 func Login(db *sql.DB, email, password string) bool {
 	for _, user := range AllUsers {
 		if user.Email == email && user.Password == hashPasswordSHA256(password) {
-			userSession = user
+			UserSession = user
 			return true
 		}
 	}
@@ -94,7 +119,7 @@ func Login(db *sql.DB, email, password string) bool {
 
 func DeleteUser(db *sql.DB, user_id string) {
 	db.Exec(`DELETE FROM users WHERE UUID = ?`, user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func hashPasswordSHA256(password string) string {
@@ -122,37 +147,14 @@ func GetAccount(username string) User {
 	return User{}
 }
 
-func UpdateDb(db *sql.DB) {
-	rows, err := db.Query("SELECT * FROM users")
-	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
-	}
-	defer rows.Close()
-
-	var users []User
-
-	for rows.Next() {
-		var user User
-		if err := rows.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.Following); err != nil {
-			fmt.Printf("erreur lors de la lecture des données utilisateur depuis la base de données: %v", err)
-		}
-		users = append(users, user)
-	}
-	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
-	}
-
-	AllUsers = users
-}
-
 func DeleteAllUsers(db *sql.DB) {
 	db.Exec("DELETE FROM users")
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func ChangePassword(db *sql.DB, user_id string, newPassword string) {
 	db.Exec(`UPDATE users SET password = ? WHERE UUID = ?`, hashPasswordSHA256(newPassword), user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func IsPasswordValid(password string) bool {
@@ -188,7 +190,7 @@ func IsPasswordValid(password string) bool {
 
 func ChangeUsername(db *sql.DB, user_id string, newUsername string) {
 	db.Exec(`UPDATE users SET username = ? WHERE UUID = ?`, newUsername, user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func isUsernameAvailable(username string) bool {
@@ -226,7 +228,7 @@ func IsEmailValid(email string) bool {
 
 func SetModerator(db *sql.DB, user_id string) {
 	db.Exec(`UPDATE users SET role = ? WHERE UUID = ?`, "moderator", user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func containsBanWord(word string) bool {
@@ -252,17 +254,17 @@ func UpdateDate(db *sql.DB, user_id string) {
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
 	db.Exec(`UPDATE users SET updated_at = ? WHERE UUID = ?`, time, user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func UpdateProfilePicture(db *sql.DB, user_id string, pfp string) bool {
-	if userSession.Role == "user" && isProfilePictureNotAGif(pfp) {
+	if UserSession.Role == "user" && isProfilePictureNotAGif(pfp) {
 		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		UpdateDb(db)
+		UpdateUserDb(db)
 		return true
-	} else if userSession.Role != "user" {
+	} else if UserSession.Role != "user" {
 		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		UpdateDb(db)
+		UpdateUserDb(db)
 		return true
 	}
 	return false
@@ -274,18 +276,18 @@ func isProfilePictureNotAGif(pfp string) bool {
 
 func UpdateBio(db *sql.DB, user_id string, bio string) {
 	db.Exec(`UPDATE users SET bio = ? WHERE UUID = ?`, bio, user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func UpdateLinks(db *sql.DB, user_id string, links string) {
 	db.Exec(`UPDATE users SET links = ? WHERE UUID = ?`, links, user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func UpdateCategoriesSub(db *sql.DB, user_id string, categorie string) {
-	categoriesSub := userSession.CategorieSub + "," + categorie
+	categoriesSub := UserSession.CategorieSub + "," + categorie
 	db.Exec(`UPDATE users SET categoriesSub = ? WHERE UUID = ?`, categoriesSub, user_id)
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
 
 func UpdateFollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va follow
@@ -293,16 +295,16 @@ func UpdateFollowing(db *sql.DB, user_id string, username string) { // username 
 	userToFollow := GetAccount(username)
 
 	// Mise a jour de notre nombre de following
-	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, userSession.Following+1, user_id)
+	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, UserSession.Following+1, user_id)
 
 	// Mise a jour de la liste des personnes que l'on follow
-	db.Exec(`UPDATE users SET followingList = ? WHERE UUID = ?`, userSession.FollowingList+","+username, user_id)
+	db.Exec(`UPDATE users SET followingList = ? WHERE UUID = ?`, UserSession.FollowingList+","+username, user_id)
 
 	// Mise a jour du nombre de followers de la personne que l'on follow
 	db.Exec(`UPDATE users SET followers = ? WHERE UUID = ?`, userToFollow.Follower+1, userToFollow.User_id)
 
 	// Mise a jour de la liste des followers de la personne que l'on follow
-	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, userToFollow.FollowerList+","+userSession.Username, userToFollow.User_id)
+	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, userToFollow.FollowerList+","+UserSession.Username, userToFollow.User_id)
 
-	UpdateDb(db)
+	UpdateUserDb(db)
 }
