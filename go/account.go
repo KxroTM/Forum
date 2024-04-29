@@ -13,6 +13,8 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+var Db *sql.DB
+
 // TYPE OF USER :
 // - guests
 // - users
@@ -79,7 +81,7 @@ func UpdateUserDb(db *sql.DB) {
 	AllUsers = users
 }
 
-func SignUp(db *sql.DB, username, email, password string) {
+func SignUpUser(db *sql.DB, username, email, password string) {
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
 
@@ -114,7 +116,7 @@ func SignUp(db *sql.DB, username, email, password string) {
 	UpdateUserDb(db)
 }
 
-func Login(db *sql.DB, email, password string) bool {
+func LoginUser(db *sql.DB, email, password string) bool {
 	for _, user := range AllUsers {
 		if user.Email == email && user.Password == hashPasswordSHA256(password) {
 			UserSession = user
@@ -136,18 +138,18 @@ func hashPasswordSHA256(password string) string {
 	return hex.EncodeToString(hash)
 }
 
-func FindAccount(user_id string) bool {
+func FindAccount(email string) bool {
 	for _, user := range AllUsers {
-		if user.User_id == user_id {
+		if user.Email == email {
 			return true
 		}
 	}
 	return false
 }
 
-func GetAccount(username string) User {
+func GetAccount(email string) User {
 	for _, user := range AllUsers {
-		if user.Username == username {
+		if user.Email == email {
 			return user
 		}
 	}
