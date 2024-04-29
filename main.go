@@ -19,8 +19,8 @@ func main() {
 	http.HandleFunc("/google-login", forum.GoogleLoginPage)
 	http.HandleFunc("/google-callback", forum.GoogleCallback)
 
-	http.ListenAndServe(":8080", nil)
 	openLink()
+	http.ListenAndServe(":8080", nil)
 }
 
 func init() {
