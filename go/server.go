@@ -2,6 +2,14 @@ package forum
 
 import "net/http"
 
+var ResetPasswordMap = make(map[string]string)
+var URL string
+
+func CreateRoute(w http.ResponseWriter, r *http.Request, url string) {
+	URL = url + "/"
+	ResetPasswordMap[URL] = "valid"
+}
+
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	IPsLog(clientIP + "  ==>  " + r.URL.Path)

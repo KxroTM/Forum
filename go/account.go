@@ -317,3 +317,30 @@ func UpdateFollowing(db *sql.DB, user_id string, username string) { // username 
 
 	UpdateUserDb(db)
 }
+
+func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va unfollow
+
+	userToUnfollow := GetAccount(username)
+
+	// Mise a jour de notre nombre de following
+	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, UserSession.Following-1, user_id)
+
+	// Mise a jour de la liste des personnes que l'on unfollow
+	db.Exec(`UPDATE users SET followingList = ? WHERE UUID = ?`, strings.Replace(UserSession.FollowingList, ","+username, "", -1), user_id)
+
+	// Mise a jour du nombre de followers de la personne que l'on unfollow
+	db.Exec(`UPDATE users SET followers = ? WHERE UUID = ?`, userToUnfollow.Follower-1, userToUnfollow.User_id)
+
+	// Mise a jour de la liste des followers de la personne que l'on unfollow
+	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, strings.Replace(userToUnfollow.FollowerList, ","+UserSession.Username, "", -1), userToUnfollow.User_id)
+
+	UpdateUserDb(db)
+}
+
+func GetAllMail() []string {
+	var mails []string
+	for _, user := range AllUsers {
+		mails = append(mails, user.Email)
+	}
+	return mails
+}
