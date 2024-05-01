@@ -4,9 +4,9 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -21,15 +21,26 @@ var googleOauthConfig = &oauth2.Config{
 }
 
 func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
+	data, _ := getSessionData(r)
+	if data.User.Role != hashPasswordSHA256("guest") {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
 	url := googleOauthConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 // Fonction permettant d'avoir accès aux informations de l'utilisateur connecté via Google
 func GoogleCallback(w http.ResponseWriter, r *http.Request) {
-
 	clientIP := r.RemoteAddr
 	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+
+	data, _ := getSessionData(r)
+	if data.User.Role != hashPasswordSHA256("guest") {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
 	code := r.FormValue("code")
 
 	token, err := googleOauthConfig.Exchange(r.Context(), code)
@@ -60,12 +71,28 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	if FindAccount(usertemp.Email) {
 		UserSession = GetAccount(usertemp.Email)
+		createSessionCookie(w, SessionData{
+			User: Session{
+				UUID:     UserSession.User_id,
+				Email:    UserSession.Email,
+				Username: UserSession.Username,
+				Role:     UserSession.Role,
+			},
+		}, 24*time.Hour)
 	} else {
 
 		password := hashPasswordSHA256(generateStrongPassword())
 		SignUpUser(Db, usertemp.Email, usertemp.Email, password)
 
 		UserSession = GetAccount(usertemp.Email)
+		createSessionCookie(w, SessionData{
+			User: Session{
+				UUID:     UserSession.User_id,
+				Email:    UserSession.Email,
+				Username: UserSession.Username,
+				Role:     UserSession.Role,
+			},
+		}, 24*time.Hour)
 	}
 
 	AccountLog(clientIP + "  ==>  " + UserSession.Email)
@@ -80,6 +107,5 @@ func generateStrongPassword() string {
 	rand.Read(randomBytes)
 	password := base64.URLEncoding.EncodeToString(randomBytes)
 	password = password[:length]
-	fmt.Println(password)
 	return password
 }

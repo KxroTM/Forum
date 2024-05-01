@@ -13,9 +13,10 @@ import (
 )
 
 func main() {
-	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./src/styles"))))
-
+	http.HandleFunc("/style/", forum.StyleHandler)
 	http.HandleFunc("/", forum.NotFoundHandler)
+	http.HandleFunc("/connexion", forum.LoginPage)
+	http.HandleFunc("/deconnexion", forum.LogoutPage)
 	http.HandleFunc("/google-login", forum.GoogleLoginPage)
 	http.HandleFunc("/google-callback", forum.GoogleCallback)
 
