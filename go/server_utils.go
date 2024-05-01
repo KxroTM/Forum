@@ -59,7 +59,7 @@ func deleteSessionCookie(w http.ResponseWriter) {
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
-		Expires:  time.Now().Add(-1 * time.Hour),
+		Expires:  time.Unix(0, 0),
 		Path:     "/",
 	}
 

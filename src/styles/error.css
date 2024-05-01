@@ -5,7 +5,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #022B28;
+    background-color: #ffffff;
 }
 
 
@@ -16,11 +16,9 @@ body {
 h1 {
     font-size: 8em;
     margin: 0;
-    color: #F1B530;
-}
-
-h2 {
-    color: #F1B530;
+    color: #0a2a70;
+    -webkit-text-stroke-width: 1.5px;
+    -webkit-text-stroke-color: black;
 }
 
 p {

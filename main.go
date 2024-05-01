@@ -13,12 +13,15 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/style/", forum.StyleHandler)
+
+	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./src/styles"))))
 	http.HandleFunc("/", forum.NotFoundHandler)
 	http.HandleFunc("/connexion", forum.LoginPage)
 	http.HandleFunc("/deconnexion", forum.LogoutPage)
 	http.HandleFunc("/google-login", forum.GoogleLoginPage)
 	http.HandleFunc("/google-callback", forum.GoogleCallback)
+	http.HandleFunc("/github-login", forum.GitHubLoginPage)
+	http.HandleFunc("/github-callback", forum.GitHubCallback)
 
 	openLink()
 	http.ListenAndServe(":8080", nil)

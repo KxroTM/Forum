@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -78,6 +77,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 func LogoutPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	LogoutUser()
 	deleteSessionCookie(w)
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }
@@ -91,15 +91,4 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func StyleHandler(w http.ResponseWriter, r *http.Request) {
-	data, _ := getSessionData(r)
-	fmt.Println(data.User.Role)
-	if data.User.Role != hashPasswordSHA256("admin") {
-		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
-		return
-	}
-
-	http.StripPrefix("/style/", http.FileServer(http.Dir("./src/styles"))).ServeHTTP(w, r)
 }

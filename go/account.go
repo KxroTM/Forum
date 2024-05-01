@@ -126,6 +126,12 @@ func LoginUser(db *sql.DB, email, password string) bool {
 	return false
 }
 
+func LogoutUser() {
+	UserSession = User{
+		Role: "guest",
+	}
+}
+
 func DeleteUser(db *sql.DB, user_id string) {
 	db.Exec(`DELETE FROM users WHERE UUID = ?`, user_id)
 	UpdateUserDb(db)
