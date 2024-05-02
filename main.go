@@ -29,7 +29,7 @@ func main() {
 
 func init() {
 	var err error
-	forum.Db, err = sql.Open("sqlite3", "./database/db.db")
+	forum.Db, err = sql.Open("sqlite3", "./database/db.sql")
 	if err != nil {
 		fmt.Println("Erreur lors de l'ouverture de la base de données:", err)
 		return
