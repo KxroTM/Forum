@@ -64,7 +64,9 @@ hr {
   left: 37vw;
 }
 
-.profile {
-  position: relative;
-  left: 39vw;
+.profile-picture {
+    border-radius: 50%;
+    position: relative;
+    left: 41vw;
+    bottom: 0.5vh;
 }
