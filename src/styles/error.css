@@ -1,24 +1,31 @@
 body {
     font-family: 'Arial', sans-serif;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    flex-direction: column;
     margin: 0;
+    padding: 0;
     background-color: #ffffff;
 }
 
 
 .container {
+    position: relative;
+    top: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    flex-direction: column;
+}
+
+.logo{
+    margin: 3vh;
 }
 
 h1 {
     font-size: 8em;
     margin: 0;
-    color: #0a2a70;
-    -webkit-text-stroke-width: 1.5px;
-    -webkit-text-stroke-color: black;
+    color: #0698BF;
 }
 
 p {
@@ -27,7 +34,7 @@ p {
 }
 
 a {
-    color: #0F6AA3;
+    color: #026fb3;
     text-decoration: none;
     font-weight: bold;
 }

@@ -13,6 +13,7 @@ import (
 type Post struct {
 	Posts_id  string
 	User_id   string
+	User_pfp  string
 	Categorie string
 	Title     string
 	Text      string
@@ -40,7 +41,7 @@ func UpdatePostDb(db *sql.DB) {
 
 	for rows.Next() {
 		var post Post
-		err := rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		if err != nil {
 			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
 			continue
@@ -65,9 +66,12 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 		return
 	}
 
+	user := GetAccountById(user_id)
+
 	PostSession = Post{
 		Posts_id:  uuid.String(),
 		User_id:   user_id,
+		User_pfp:  user.Pfp,
 		Categorie: categorie,
 		Title:     title,
 		Text:      text,
@@ -81,9 +85,9 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 		Disliker:  "",
 	}
 
-	db.Exec(`INSERT INTO posts (posts_id, UUID, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-					`, PostSession.Posts_id, PostSession.User_id, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker)
+	db.Exec(`INSERT INTO posts (posts_id, UUID, user_pfp, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker)
 
 	AllPosts = append(AllPosts, PostSession)
 	UpdatePostDb(db)
@@ -109,7 +113,7 @@ func GetPost(db *sql.DB, post_id string) Post {
 	var post Post
 
 	for rows.Next() {
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
+		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
 			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
 		}
 	}
@@ -136,7 +140,7 @@ func GetAllPostsByUser(db *sql.DB, user_id string) []Post {
 
 	for rows.Next() {
 		var post Post
-		err := rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		if err != nil {
 			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
 			continue // Passer à l'itération suivante si une erreur se produit
@@ -176,7 +180,7 @@ func GetAllPostsByCategorie(db *sql.DB, categorie string) []Post {
 
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
+		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
 			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
 		}
 		posts = append(posts, post)
@@ -199,7 +203,7 @@ func GetAllPostsByLikeCount(db *sql.DB) []Post {
 
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
+		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
 			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
 		}
 		posts = append(posts, post)
@@ -233,6 +237,10 @@ func GetAllPostsByLike(username string) []Post {
 	}
 
 	return posts
+}
+
+func GetAllPosts() []Post {
+	return AllPosts
 }
 
 func LikePost(db *sql.DB, post_id string, username string) {
@@ -297,7 +305,7 @@ func GetPostByReport(db *sql.DB) []Post {
 
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
+		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
 			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
 		}
 		posts = append(posts, post)

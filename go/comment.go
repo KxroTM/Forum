@@ -9,6 +9,7 @@ type Comment struct {
 	Comment_id string
 	Posts_id   string
 	User_id    string
+	User_pfp   string
 	Text       string
 	Date       string
 	Like       int

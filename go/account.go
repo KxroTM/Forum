@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
+	"math/rand"
 	"regexp"
 	"strings"
 	"time"
@@ -109,6 +110,18 @@ func SignUpUser(db *sql.DB, username, email, password string) {
 		FollowingList: "",
 	}
 
+	pfp := rand.Intn(4) + 1
+	switch pfp {
+	case 1:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_01.png"
+	case 2:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_02.png"
+	case 3:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_03.png"
+	case 4:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_04.png"
+	}
+
 	db.Exec(`INSERT INTO users (UUID, role, username, email, password, created_at, updated_at, profilePicture, followers, following, bio, links, categoriesSub, followersList, followingList) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, UserSession.User_id, UserSession.Role, UserSession.Username, UserSession.Email, UserSession.Password, UserSession.CreationDate, UserSession.UpdateDate, UserSession.Pfp, UserSession.Follower, UserSession.Following, UserSession.Bio, UserSession.Links, UserSession.CategorieSub, UserSession.FollowerList, UserSession.FollowingList)
 
@@ -156,6 +169,24 @@ func FindAccount(email string) bool {
 func GetAccount(email string) User {
 	for _, user := range AllUsers {
 		if user.Email == email {
+			return user
+		}
+	}
+	return User{}
+}
+
+func GetAccountById(user_id string) User {
+	for _, user := range AllUsers {
+		if user.User_id == user_id {
+			return user
+		}
+	}
+	return User{}
+}
+
+func GetAccountByUsername(username string) User {
+	for _, user := range AllUsers {
+		if user.Username == username {
 			return user
 		}
 	}
@@ -349,4 +380,22 @@ func GetAllMail() []string {
 		mails = append(mails, user.Email)
 	}
 	return mails
+}
+
+func GetAllUser() []User {
+	return AllUsers
+}
+
+func GetAllDatas() DataStruct {
+	return DataStruct{
+		User:       UserSession,
+		UserTarget: User{},
+		AllUsers:   GetAllUser(),
+		Post:       Post{},
+		AllPosts:   GetAllPosts(),
+		Comment:    Comment{},
+		// AllComments:      GetAllComments(),
+		Notification: Notification{},
+		// AllNotifications: GetAllNotifications(),
+	}
 }

@@ -2,11 +2,26 @@ package forum
 
 import (
 	"net/http"
+	"strings"
 	"time"
 )
 
 var ResetPasswordMap = make(map[string]string)
 var URL string
+
+type DataStruct struct {
+	User             User
+	UserTarget       User
+	AllUsers         []User
+	Post             Post
+	AllPosts         []Post
+	Comment          Comment
+	AllComments      []Comment
+	Notification     Notification
+	AllNotifications []Notification
+}
+
+var AllData DataStruct
 
 func CreateRoute(w http.ResponseWriter, r *http.Request, url string) {
 	URL = url + "/"
@@ -80,6 +95,50 @@ func LogoutPage(w http.ResponseWriter, r *http.Request) {
 	LogoutUser()
 	deleteSessionCookie(w)
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+}
+
+func HomePage(w http.ResponseWriter, r *http.Request) {
+	// clientIP := r.RemoteAddr
+	// IPsLog(clientIP + "  ==>  " + r.URL.Path)
+
+	AllData = GetAllDatas()
+
+	err := Home.ExecuteTemplate(w, "home.html", AllData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func ProfilePage(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+
+	parts := strings.Split(path, "/")
+	if len(parts) < 3 || !strings.HasPrefix(parts[2], "@") {
+		err := Error.ExecuteTemplate(w, "error.html", "Invalid URL")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	username := strings.TrimPrefix(parts[2], "@")
+
+	AllData := GetAllDatas()
+	AllData.UserTarget = GetAccountByUsername(username)
+
+	if AllData.UserTarget == (User{}) {
+		err := ErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	err := Profile.ExecuteTemplate(w, "profile.html", AllData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {

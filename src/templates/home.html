@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        .Avatar {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des utilisateurs</h1>
+    <ul>
+        {{ range .AllUsers }}
+        <li>
+            <strong>ID:</strong> {{ .User_id }}<br>
+            <strong>Rôle:</strong> {{ .Role }}<br>
+            <strong>Nom d'utilisateur:</strong> {{ .Username }}<br>
+            <strong>Email:</strong> {{ .Email }}<br>
+            <img src="{{ .Pfp }}" alt="Avatar" class="Avatar" width="50" height="50"><br>
+        </li>
+        {{ end }}
+
+        {{ range .AllPosts }}
+        <li>
+            <strong>ID:</strong> {{ .Post_id }}<br>
+            <strong>Titre:</strong> {{ .Title }}<br>
+            <strong>Contenu:</strong> {{ .Text }}<br>
+            <strong>Date de création:</strong> {{ .Date }}<br>
+            <strong>Utilisateur:</strong> {{ .User_id }}<br>
+        </li>
+        {{ end }}
+
+    </ul>
+</body>
+</html>

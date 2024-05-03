@@ -22,6 +22,8 @@ func main() {
 	http.HandleFunc("/google-callback", forum.GoogleCallback)
 	http.HandleFunc("/github-login", forum.GitHubLoginPage)
 	http.HandleFunc("/github-callback", forum.GitHubCallback)
+	http.HandleFunc("/accueil", forum.HomePage)
+	http.HandleFunc("/profile/", forum.ProfilePage)
 
 	openLink()
 	http.ListenAndServe(":8080", nil)
