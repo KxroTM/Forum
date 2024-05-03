@@ -1,6 +1,8 @@
 package forum
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"net/http"
 	"time"
 )
@@ -16,13 +18,17 @@ type SessionData struct {
 	User Session
 }
 
-func createSessionCookie(w http.ResponseWriter, data SessionData, hours time.Duration) {
+func createSessionCookie(w http.ResponseWriter, data SessionData, hours time.Duration) error {
+	encodedData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
 
-	hashedUserRole := hashPasswordSHA256(data.User.Role)
+	encodedString := base64.StdEncoding.EncodeToString(encodedData)
 
 	cookie := http.Cookie{
 		Name:     "session",               // Nom du cookie
-		Value:    hashedUserRole,          // Données du cookie
+		Value:    encodedString,           // Données du cookie (JSON encodé en base64)
 		HttpOnly: true,                    // Empêcher le JavaScript de lire le cookie
 		Secure:   true,                    // Marquer le cookie comme sécurisé si vous utilisez HTTPS
 		SameSite: http.SameSiteStrictMode, // Empêcher le navigateur d'envoyer le cookie avec les requêtes de site tiers
@@ -31,22 +37,37 @@ func createSessionCookie(w http.ResponseWriter, data SessionData, hours time.Dur
 	}
 
 	http.SetCookie(w, &cookie)
+	return nil
 }
 
 func getSessionData(r *http.Request) (SessionData, error) {
+	var data SessionData
+
 	cookie, err := r.Cookie("session")
 	if err != nil {
 		return SessionData{
 			User: Session{
-				Role: hashPasswordSHA256("guest"),
+				Role: "guest",
 			},
 		}, err
 	}
 
-	data := SessionData{
-		User: Session{
-			Role: cookie.Value,
-		},
+	decodedData, err := base64.StdEncoding.DecodeString(cookie.Value)
+	if err != nil {
+		return SessionData{
+			User: Session{
+				Role: "guest",
+			},
+		}, err
+	}
+
+	err = json.Unmarshal(decodedData, &data)
+	if err != nil {
+		return SessionData{
+			User: Session{
+				Role: "guest",
+			},
+		}, err
 	}
 
 	return data, nil
@@ -59,9 +80,19 @@ func deleteSessionCookie(w http.ResponseWriter) {
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
-		Expires:  time.Unix(0, 0),
+		Expires:  time.Now().Add(24 * time.Hour),
 		Path:     "/",
 	}
 
 	http.SetCookie(w, &cookie)
+}
+
+func updateUserSession(r *http.Request) {
+	data, _ := getSessionData(r)
+	if data.User.Email == "" {
+		return
+	}
+	if UserSession.Email == "" {
+		UserSession = GetAccountById(data.User.UUID)
+	}
 }

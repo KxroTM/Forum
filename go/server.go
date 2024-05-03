@@ -31,6 +31,7 @@ func CreateRoute(w http.ResponseWriter, r *http.Request, url string) {
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	updateUserSession(r)
 
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
 	data, err := getSessionData(r)
@@ -92,14 +93,16 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 func LogoutPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	AccountLog(clientIP + "  <==  " + UserSession.Email)
 	LogoutUser()
 	deleteSessionCookie(w)
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	// clientIP := r.RemoteAddr
-	// IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	clientIP := r.RemoteAddr
+	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	updateUserSession(r)
 
 	AllData = GetAllDatas()
 
@@ -110,6 +113,9 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProfilePage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	updateUserSession(r)
 	path := r.URL.Path
 
 	parts := strings.Split(path, "/")

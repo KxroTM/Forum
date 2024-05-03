@@ -3,8 +3,8 @@ package forum
 import (
 	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"encoding/hex"
-	"fmt"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -57,11 +57,12 @@ var banWords = []string{
 	"Trump", "Hitler", "Staline", "Mao", "Ben Laden", "Saddam Hussein", "Kim Jong-un", "Poutine", "Assad",
 }
 
-func UpdateUserDb(db *sql.DB) {
+func UpdateUserDb(db *sql.DB) error {
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return err
 	}
+
 	defer rows.Close()
 
 	var users []User
@@ -70,26 +71,26 @@ func UpdateUserDb(db *sql.DB) {
 		var user User
 		err := rows.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Follower, &user.Following, &user.Bio, &user.Links, &user.CategorieSub, &user.FollowerList, &user.FollowingList)
 		if err != nil {
-			fmt.Printf("erreur lors de la lecture des données utilisateur depuis la base de données: %v", err)
+			return err
 		}
 		users = append(users, user)
 	}
 
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return err
 	}
 
 	AllUsers = users
+	return nil
 }
 
-func SignUpUser(db *sql.DB, username, email, password string) {
+func SignUpUser(db *sql.DB, username, email, password string) error {
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
 
 	u, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("Erreur lors de la génération de l'UUID :", err)
-		return
+		return err
 	}
 
 	UserSession = User{
@@ -127,6 +128,7 @@ func SignUpUser(db *sql.DB, username, email, password string) {
 
 	AllUsers = append(AllUsers, UserSession)
 	UpdateUserDb(db)
+	return nil
 }
 
 func LoginUser(db *sql.DB, email, password string) bool {
@@ -398,4 +400,14 @@ func GetAllDatas() DataStruct {
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),
 	}
+}
+
+func generateStrongPassword() string {
+	length := 12
+	numBytes := length * 3 / 4
+	randomBytes := make([]byte, numBytes)
+	rand.Read(randomBytes)
+	password := base64.URLEncoding.EncodeToString(randomBytes)
+	password = password[:length]
+	return password
 }

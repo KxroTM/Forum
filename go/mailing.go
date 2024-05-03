@@ -3,14 +3,12 @@ package forum
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"html/template"
 	"net/smtp"
 )
 
-func SendEmail(email, token string) {
-
-	route := "http://localhost:8070/reset-password?token=" + token + "/" // A CHANGER
+func SendEmail(email, token string) error {
+	route := "http://localhost:8080/reset-password?token=" + token + "/" // A CHANGER
 
 	var body bytes.Buffer
 	t, _ := template.ParseFiles("./app/template.html")
@@ -25,8 +23,9 @@ func SendEmail(email, token string) {
 	err := smtp.SendMail("smtp.gmail.com:587", auth, "forumprojetynov@no-reply.com", []string{email}, []byte(msg))
 
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+	return nil
 }
 
 func EncodeToken(email string) string {
@@ -34,13 +33,13 @@ func EncodeToken(email string) string {
 	return token
 }
 
-func DecodeToken(token string) string {
+func DecodeToken(token string) (string, error) {
 	emailBytes, err := base64.URLEncoding.DecodeString(token)
 	if err != nil {
-		return ""
+		return "", err
 	}
 	email := string(emailBytes)
-	return email
+	return email, nil
 }
 
 func InvalidAllMail() {

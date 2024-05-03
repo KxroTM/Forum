@@ -42,7 +42,7 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, _ := getSessionData(r)
-	if data.User.Role != hashPasswordSHA256("guest") {
+	if data.User.Role != "guest" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
 	}
@@ -62,7 +62,6 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	defer response.Body.Close()
 
-	// Décodage des données JSON
 	var userEmails []struct {
 		Email string `json:"email"`
 	}
@@ -77,8 +76,6 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(userEmails)
-
 	userEmail := userEmails[0].Email
 
 	if FindAccount(userEmail) {
@@ -92,9 +89,13 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 			},
 		}, 24*time.Hour)
 	} else {
-
 		password := hashPasswordSHA256(generateStrongPassword())
-		SignUpUser(Db, userEmail, userEmail, password)
+		err := SignUpUser(Db, userEmail, userEmail, password)
+
+		if err != nil {
+			http.Error(w, "Erreur lors de l'inscription de l'utilisateur: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		UserSession = GetAccount(userEmail)
 		createSessionCookie(w, SessionData{

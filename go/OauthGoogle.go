@@ -1,8 +1,6 @@
 package forum
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -21,11 +19,6 @@ var googleOauthConfig = &oauth2.Config{
 }
 
 func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
-	data, _ := getSessionData(r)
-	if data.User.Role != hashPasswordSHA256("guest") {
-		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
-		return
-	}
 	url := googleOauthConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -36,7 +29,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	IPsLog(clientIP + "  ==>  " + r.URL.Path)
 
 	data, _ := getSessionData(r)
-	if data.User.Role != hashPasswordSHA256("guest") {
+	if data.User.Role != "guest" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
 	}
@@ -80,9 +73,13 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 			},
 		}, 24*time.Hour)
 	} else {
-
 		password := hashPasswordSHA256(generateStrongPassword())
-		SignUpUser(Db, usertemp.Email, usertemp.Email, password)
+		err := SignUpUser(Db, usertemp.Email, usertemp.Email, password)
+
+		if err != nil {
+			http.Error(w, "Erreur lors de l'inscription de l'utilisateur: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		UserSession = GetAccount(usertemp.Email)
 		createSessionCookie(w, SessionData{
@@ -98,14 +95,4 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	AccountLog(clientIP + "  ==>  " + UserSession.Email)
 
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
-}
-
-func generateStrongPassword() string {
-	length := 12
-	numBytes := length * 3 / 4
-	randomBytes := make([]byte, numBytes)
-	rand.Read(randomBytes)
-	password := base64.URLEncoding.EncodeToString(randomBytes)
-	password = password[:length]
-	return password
 }

@@ -2,7 +2,6 @@ package forum
 
 import (
 	"database/sql"
-	"fmt"
 	"sort"
 	"strings"
 	"time"
@@ -30,10 +29,10 @@ type Post struct {
 var PostSession Post
 var AllPosts []Post
 
-func UpdatePostDb(db *sql.DB) {
+func UpdatePostDb(db *sql.DB) error {
 	rows, err := db.Query("SELECT * FROM posts")
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return err
 	}
 	defer rows.Close()
 
@@ -41,29 +40,25 @@ func UpdatePostDb(db *sql.DB) {
 
 	for rows.Next() {
 		var post Post
-		err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
-		if err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-			continue
-		}
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		posts = append(posts, post)
 	}
 
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return err
 	}
 
 	AllPosts = posts
+	return nil
 }
 
-func CreatePost(db *sql.DB, user_id string, categorie string, title string, text string) {
+func CreatePost(db *sql.DB, user_id string, categorie string, title string, text string) error {
 	currentTime := time.Now()
 	date := currentTime.Format("02-01-2006 15:04")
 
 	uuid, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("Erreur lors de la génération de l'UUID :", err)
-		return
+		return err
 	}
 
 	user := GetAccountById(user_id)
@@ -91,37 +86,39 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 
 	AllPosts = append(AllPosts, PostSession)
 	UpdatePostDb(db)
-	fmt.Println(AllPosts)
+	return nil
 }
 
-func UpdatePost(db *sql.DB, post_id string, categorie string, title string, text string) {
-	PostSession = GetPost(db, post_id)
+func UpdatePost(db *sql.DB, post_id string, categorie string, title string, text string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
 	PostSession.Categorie = categorie
 	PostSession.Title = title
 	PostSession.Text = text
 	db.Exec(`UPDATE posts SET categorie = ?, title = ?, text = ? WHERE posts_id = ?`, categorie, title, text, post_id)
 	UpdatePostDb(db)
+	return nil
 }
 
-func GetPost(db *sql.DB, post_id string) Post {
+func GetPost(db *sql.DB, post_id string) (Post, error) {
 	rows, err := db.Query("SELECT * FROM posts WHERE posts_id = ?", post_id)
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return Post{}, err
 	}
 	defer rows.Close()
 
 	var post Post
 
 	for rows.Next() {
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-		}
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 	}
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return Post{}, err
 	}
 
-	return post
+	return post, nil
 }
 
 func DeletePost(db *sql.DB, post_id string) {
@@ -129,10 +126,10 @@ func DeletePost(db *sql.DB, post_id string) {
 	UpdatePostDb(db)
 }
 
-func GetAllPostsByUser(db *sql.DB, user_id string) []Post {
+func GetAllPostsByUser(db *sql.DB, user_id string) ([]Post, error) {
 	rows, err := db.Query("SELECT * FROM posts WHERE UUID = ?", user_id)
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des posts depuis la base de données: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -140,19 +137,15 @@ func GetAllPostsByUser(db *sql.DB, user_id string) []Post {
 
 	for rows.Next() {
 		var post Post
-		err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
-		if err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-			continue // Passer à l'itération suivante si une erreur se produit
-		}
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		posts = append(posts, post)
 	}
 
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des posts depuis la base de données: %v", err)
+		return nil, err
 	}
 
-	return posts
+	return posts, nil
 }
 
 func GetAllPostsByDate() []Post {
@@ -169,10 +162,10 @@ func GetAllPostsByDate() []Post {
 	return allPostsTemp
 }
 
-func GetAllPostsByCategorie(db *sql.DB, categorie string) []Post {
+func GetAllPostsByCategorie(db *sql.DB, categorie string) ([]Post, error) {
 	rows, err := db.Query("SELECT * FROM posts WHERE categorie = ?", categorie)
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -180,22 +173,20 @@ func GetAllPostsByCategorie(db *sql.DB, categorie string) []Post {
 
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-		}
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return nil, err
 	}
 
-	return posts
+	return posts, nil
 }
 
-func GetAllPostsByLikeCount(db *sql.DB) []Post {
+func GetAllPostsByLikeCount(db *sql.DB) ([]Post, error) {
 	rows, err := db.Query("SELECT * FROM posts ORDER BY like DESC")
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -203,16 +194,14 @@ func GetAllPostsByLikeCount(db *sql.DB) []Post {
 
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-		}
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return nil, err
 	}
 
-	return posts
+	return posts, nil
 }
 
 func GetAllPostsByRetweet(username string) []Post {
@@ -243,8 +232,11 @@ func GetAllPosts() []Post {
 	return AllPosts
 }
 
-func LikePost(db *sql.DB, post_id string, username string) {
-	PostSession = GetPost(db, post_id)
+func LikePost(db *sql.DB, post_id string, username string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
 	PostSession.Liker = PostSession.Liker + "," + username
 
 	if strings.Contains(PostSession.Disliker, username) {
@@ -257,10 +249,14 @@ func LikePost(db *sql.DB, post_id string, username string) {
 		db.Exec(`UPDATE posts SET like = ?, liker = ? WHERE posts_id = ?`, PostSession.Like+1, post_id, PostSession.Liker)
 		UpdatePostDb(db)
 	}
+	return nil
 }
 
-func DislikePost(db *sql.DB, post_id string, username string) {
-	PostSession = GetPost(db, post_id)
+func DislikePost(db *sql.DB, post_id string, username string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
 	PostSession.Disliker = PostSession.Disliker + "," + username
 	if strings.Contains(PostSession.Liker, username) {
 		PostSession.Liker = strings.Replace(PostSession.Liker, ","+username, "", -1)
@@ -272,32 +268,45 @@ func DislikePost(db *sql.DB, post_id string, username string) {
 		db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike+1, post_id, PostSession.Disliker)
 		UpdatePostDb(db)
 	}
+	return nil
 }
 
-func RetweetPost(db *sql.DB, post_id string, username string) {
-	PostSession = GetPost(db, post_id)
+func RetweetPost(db *sql.DB, post_id string, username string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
 	PostSession.Retweeter = PostSession.Retweeter + "," + username
 	db.Exec(`UPDATE posts SET retweet = ?, retweeter = ? WHERE posts_id = ?`, PostSession.Retweet+1, PostSession.Retweeter, post_id)
 	UpdatePostDb(db)
+	return nil
 }
 
-func UnRetweetPost(db *sql.DB, post_id string, username string) {
-	PostSession = GetPost(db, post_id)
+func UnRetweetPost(db *sql.DB, post_id string, username string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
 	PostSession.Retweeter = strings.Replace(PostSession.Retweeter, ","+username, "", -1)
 	db.Exec(`UPDATE posts SET retweet = ?, retweeter = ? WHERE posts_id = ?`, PostSession.Retweet-1, PostSession.Retweeter, post_id)
 	UpdatePostDb(db)
+	return nil
 }
 
-func ReportPost(db *sql.DB, post_id string) {
-	PostSession = GetPost(db, post_id)
+func ReportPost(db *sql.DB, post_id string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
 	db.Exec(`UPDATE posts SET report = ? WHERE posts_id = ?`, PostSession.Report+1, post_id)
 	UpdatePostDb(db)
+	return nil
 }
 
-func GetPostByReport(db *sql.DB) []Post {
+func GetPostByReport(db *sql.DB) ([]Post, error) {
 	rows, err := db.Query("SELECT * FROM posts WHERE report > 10")
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -305,14 +314,12 @@ func GetPostByReport(db *sql.DB) []Post {
 
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker); err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-		}
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return nil, err
 	}
 
-	return posts
+	return posts, nil
 }

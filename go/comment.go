@@ -2,7 +2,6 @@ package forum
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 type Comment struct {
@@ -22,10 +21,10 @@ type Comment struct {
 var CommentSession Comment
 var AllComments []Comment
 
-func UpdateCommentDb(db *sql.DB) {
+func UpdateCommentDb(db *sql.DB) error {
 	rows, err := db.Query("SELECT * FROM comments")
 	if err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return err
 	}
 	defer rows.Close()
 
@@ -33,17 +32,14 @@ func UpdateCommentDb(db *sql.DB) {
 
 	for rows.Next() {
 		var comment Comment
-		err := rows.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker)
-		if err != nil {
-			fmt.Printf("erreur lors de la lecture des données post depuis la base de données: %v", err)
-			continue
-		}
+		rows.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker)
 		comments = append(comments, comment)
 	}
 
 	if err := rows.Err(); err != nil {
-		fmt.Printf("erreur lors de la récupération des utilisateurs depuis la base de données: %v", err)
+		return err
 	}
 
 	AllComments = comments
+	return nil
 }
