@@ -3,6 +3,7 @@ package forum
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -26,7 +27,10 @@ func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
 // Fonction permettant d'avoir accès aux informations de l'utilisateur connecté via Google
 func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
 
 	data, _ := getSessionData(r)
 	if data.User.Role != "guest" {
@@ -64,14 +68,19 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	if FindAccount(usertemp.Email) {
 		UserSession = GetAccount(usertemp.Email)
-		createSessionCookie(w, SessionData{
+		err := createSessionCookie(w, SessionData{
 			User: Session{
-				UUID:     UserSession.User_id,
-				Email:    UserSession.Email,
-				Username: UserSession.Username,
-				Role:     UserSession.Role,
+				UUID:      UserSession.User_id,
+				Email:     UserSession.Email,
+				Username:  UserSession.Username,
+				Role:      UserSession.Role,
+				ColorMode: "light",
 			},
 		}, 24*time.Hour)
+		if err != nil {
+			http.Error(w, "Erreur lors de la création du cookie de session: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
 	} else {
 		password := hashPasswordSHA256(generateStrongPassword())
 		err := SignUpUser(Db, usertemp.Email, usertemp.Email, password)
@@ -82,17 +91,24 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		}
 
 		UserSession = GetAccount(usertemp.Email)
-		createSessionCookie(w, SessionData{
+		err = createSessionCookie(w, SessionData{
 			User: Session{
-				UUID:     UserSession.User_id,
-				Email:    UserSession.Email,
-				Username: UserSession.Username,
-				Role:     UserSession.Role,
+				UUID:      UserSession.User_id,
+				Email:     UserSession.Email,
+				Username:  UserSession.Username,
+				Role:      UserSession.Role,
+				ColorMode: "light",
 			},
 		}, 24*time.Hour)
+		if err != nil {
+			http.Error(w, "Erreur lors de la création du cookie de session: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
-	AccountLog(clientIP + "  ==>  " + UserSession.Email)
-
+	err = AccountLog(clientIP + "  ==>  " + UserSession.Email)
+	if err != nil {
+		log.Println(err)
+	}
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }

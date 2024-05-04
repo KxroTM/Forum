@@ -147,9 +147,13 @@ func LogoutUser() {
 	}
 }
 
-func DeleteUser(db *sql.DB, user_id string) {
+func DeleteUser(db *sql.DB, user_id string) error {
 	db.Exec(`DELETE FROM users WHERE UUID = ?`, user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func hashPasswordSHA256(password string) string {
@@ -195,14 +199,22 @@ func GetAccountByUsername(username string) User {
 	return User{}
 }
 
-func DeleteAllUsers(db *sql.DB) {
+func DeleteAllUsers(db *sql.DB) error {
 	db.Exec("DELETE FROM users")
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func ChangePassword(db *sql.DB, user_id string, newPassword string) {
+func ChangePassword(db *sql.DB, user_id string, newPassword string) error {
 	db.Exec(`UPDATE users SET password = ? WHERE UUID = ?`, hashPasswordSHA256(newPassword), user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func IsPasswordValid(password string) bool {
@@ -236,9 +248,13 @@ func IsPasswordValid(password string) bool {
 	return lowerCheck && upperCheck && digitCheck && specialCharCheck
 }
 
-func ChangeUsername(db *sql.DB, user_id string, newUsername string) {
+func ChangeUsername(db *sql.DB, user_id string, newUsername string) error {
 	db.Exec(`UPDATE users SET username = ? WHERE UUID = ?`, newUsername, user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func isUsernameAvailable(username string) bool {
@@ -274,9 +290,13 @@ func IsEmailValid(email string) bool {
 	return regex.MatchString(email) && isEmailAvailable(email)
 }
 
-func SetModerator(db *sql.DB, user_id string) {
+func SetModerator(db *sql.DB, user_id string) error {
 	db.Exec(`UPDATE users SET role = ? WHERE UUID = ?`, "moderator", user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func containsBanWord(word string) bool {
@@ -298,47 +318,69 @@ func removeAccents(s string) string {
 	return string(t)
 }
 
-func UpdateDate(db *sql.DB, user_id string) {
+func UpdateDate(db *sql.DB, user_id string) error {
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
 	db.Exec(`UPDATE users SET updated_at = ? WHERE UUID = ?`, time, user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateProfilePicture(db *sql.DB, user_id string, pfp string) bool {
+func UpdateProfilePicture(db *sql.DB, user_id string, pfp string) (bool, error) {
 	if UserSession.Role == "user" && isProfilePictureNotAGif(pfp) {
 		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		UpdateUserDb(db)
-		return true
+		err := UpdateUserDb(db)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
 	} else if UserSession.Role != "user" {
 		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		UpdateUserDb(db)
-		return true
+		err := UpdateUserDb(db)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
 	}
-	return false
+	return false, nil
 }
 
 func isProfilePictureNotAGif(pfp string) bool {
 	return !strings.HasSuffix(strings.ToLower(pfp), ".gif") && !strings.HasSuffix(strings.ToLower(pfp), ".apng")
 }
 
-func UpdateBio(db *sql.DB, user_id string, bio string) {
+func UpdateBio(db *sql.DB, user_id string, bio string) error {
 	db.Exec(`UPDATE users SET bio = ? WHERE UUID = ?`, bio, user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateLinks(db *sql.DB, user_id string, links string) {
+func UpdateLinks(db *sql.DB, user_id string, links string) error {
 	db.Exec(`UPDATE users SET links = ? WHERE UUID = ?`, links, user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateCategoriesSub(db *sql.DB, user_id string, categorie string) {
+func UpdateCategoriesSub(db *sql.DB, user_id string, categorie string) error {
 	categoriesSub := UserSession.CategorieSub + "," + categorie
 	db.Exec(`UPDATE users SET categoriesSub = ? WHERE UUID = ?`, categoriesSub, user_id)
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateFollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va follow
+func UpdateFollowing(db *sql.DB, user_id string, username string) error { // username etant la personne que l'on va follow
 
 	userToFollow := GetAccount(username)
 
@@ -354,10 +396,14 @@ func UpdateFollowing(db *sql.DB, user_id string, username string) { // username 
 	// Mise a jour de la liste des followers de la personne que l'on follow
 	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, userToFollow.FollowerList+","+UserSession.Username, userToFollow.User_id)
 
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va unfollow
+func UpdateUnfollowing(db *sql.DB, user_id string, username string) error { // username etant la personne que l'on va unfollow
 
 	userToUnfollow := GetAccount(username)
 
@@ -373,7 +419,11 @@ func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // usernam
 	// Mise a jour de la liste des followers de la personne que l'on unfollow
 	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, strings.Replace(userToUnfollow.FollowerList, ","+UserSession.Username, "", -1), userToUnfollow.User_id)
 
-	UpdateUserDb(db)
+	err := UpdateUserDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetAllMail() []string {

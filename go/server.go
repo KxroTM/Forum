@@ -1,6 +1,7 @@
 package forum
 
 import (
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -30,12 +31,15 @@ func CreateRoute(w http.ResponseWriter, r *http.Request, url string) {
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
 	updateUserSession(r)
 
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
-	data, err := getSessionData(r)
-	if err == nil || data.User.Email != "" {
+	data, _ := getSessionData(r)
+	if data.User.Email != "" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
 	}
@@ -49,27 +53,39 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			user := GetAccount(email)
 
 			if check == "" {
-				createSessionCookie(w, SessionData{
+				err := createSessionCookie(w, SessionData{
 					User: Session{
-						UUID:     user.User_id,
-						Email:    user.Email,
-						Username: user.Username,
-						Role:     user.Role,
+						UUID:      user.User_id,
+						Email:     user.Email,
+						Username:  user.Username,
+						Role:      user.Role,
+						ColorMode: "light",
 					},
 				}, 24*time.Hour)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
 			} else {
-				createSessionCookie(w, SessionData{
+				err := createSessionCookie(w, SessionData{
 					User: Session{
-						UUID:     user.User_id,
-						Email:    user.Email,
-						Username: user.Username,
-						Role:     user.Role,
+						UUID:      user.User_id,
+						Email:     user.Email,
+						Username:  user.Username,
+						Role:      user.Role,
+						ColorMode: "light",
 					},
 				}, 730*time.Hour)
+
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
 			}
 
 			clientIP := r.RemoteAddr
-			AccountLog(clientIP + "  ==>  " + email)
+			err = AccountLog(clientIP + "  ==>  " + email)
+			if err != nil {
+				log.Println(err)
+			}
 			http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 			return
 
@@ -92,8 +108,14 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 
 func LogoutPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
-	AccountLog(clientIP + "  <==  " + UserSession.Email)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	err = AccountLog(clientIP + "  <==  " + UserSession.Email)
+	if err != nil {
+		log.Println(err)
+	}
 	LogoutUser()
 	deleteSessionCookie(w)
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
@@ -101,12 +123,24 @@ func LogoutPage(w http.ResponseWriter, r *http.Request) {
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
 	updateUserSession(r)
 
 	AllData = GetAllDatas()
 
-	err := Home.ExecuteTemplate(w, "home.html", AllData)
+	data, _ := getSessionData(r)
+	if data.User.ColorMode == "dark" {
+		err := DarkHome.ExecuteTemplate(w, "home.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	err = Home.ExecuteTemplate(w, "home.html", AllData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -114,7 +148,10 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
 	updateUserSession(r)
 	path := r.URL.Path
 
@@ -140,7 +177,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := Profile.ExecuteTemplate(w, "profile.html", AllData)
+	err = Profile.ExecuteTemplate(w, "profile.html", AllData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -149,10 +186,13 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
 	w.WriteHeader(http.StatusNotFound)
 	p := "Page not found"
-	err := Error.ExecuteTemplate(w, "error.html", p)
+	err = Error.ExecuteTemplate(w, "error.html", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

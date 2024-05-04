@@ -85,7 +85,10 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker)
 
 	AllPosts = append(AllPosts, PostSession)
-	UpdatePostDb(db)
+	err = UpdatePostDb(db)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -98,7 +101,10 @@ func UpdatePost(db *sql.DB, post_id string, categorie string, title string, text
 	PostSession.Title = title
 	PostSession.Text = text
 	db.Exec(`UPDATE posts SET categorie = ?, title = ?, text = ? WHERE posts_id = ?`, categorie, title, text, post_id)
-	UpdatePostDb(db)
+	err = UpdatePostDb(db)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -121,9 +127,13 @@ func GetPost(db *sql.DB, post_id string) (Post, error) {
 	return post, nil
 }
 
-func DeletePost(db *sql.DB, post_id string) {
+func DeletePost(db *sql.DB, post_id string) error {
 	db.Exec(`DELETE FROM posts WHERE posts_id = ?`, post_id)
-	UpdatePostDb(db)
+	err := UpdatePostDb(db)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetAllPostsByUser(db *sql.DB, user_id string) ([]Post, error) {
@@ -244,10 +254,16 @@ func LikePost(db *sql.DB, post_id string, username string) error {
 
 		db.Exec(`UPDATE posts SET like = ?, liker = ?, dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Like+1, PostSession.Liker, PostSession.Dislike-1, post_id, PostSession.Disliker)
 
-		UpdatePostDb(db)
+		err := UpdatePostDb(db)
+		if err != nil {
+			return err
+		}
 	} else {
 		db.Exec(`UPDATE posts SET like = ?, liker = ? WHERE posts_id = ?`, PostSession.Like+1, post_id, PostSession.Liker)
-		UpdatePostDb(db)
+		err := UpdatePostDb(db)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -263,10 +279,16 @@ func DislikePost(db *sql.DB, post_id string, username string) error {
 
 		db.Exec(`UPDATE posts SET like = ?, liker = ?, dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Like-1, PostSession.Liker, PostSession.Dislike+1, post_id, PostSession.Disliker)
 
-		UpdatePostDb(db)
+		err := UpdatePostDb(db)
+		if err != nil {
+			return err
+		}
 	} else {
 		db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike+1, post_id, PostSession.Disliker)
-		UpdatePostDb(db)
+		err := UpdatePostDb(db)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -278,7 +300,10 @@ func RetweetPost(db *sql.DB, post_id string, username string) error {
 	}
 	PostSession.Retweeter = PostSession.Retweeter + "," + username
 	db.Exec(`UPDATE posts SET retweet = ?, retweeter = ? WHERE posts_id = ?`, PostSession.Retweet+1, PostSession.Retweeter, post_id)
-	UpdatePostDb(db)
+	err = UpdatePostDb(db)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -289,7 +314,10 @@ func UnRetweetPost(db *sql.DB, post_id string, username string) error {
 	}
 	PostSession.Retweeter = strings.Replace(PostSession.Retweeter, ","+username, "", -1)
 	db.Exec(`UPDATE posts SET retweet = ?, retweeter = ? WHERE posts_id = ?`, PostSession.Retweet-1, PostSession.Retweeter, post_id)
-	UpdatePostDb(db)
+	err = UpdatePostDb(db)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -299,7 +327,10 @@ func ReportPost(db *sql.DB, post_id string) error {
 		return err
 	}
 	db.Exec(`UPDATE posts SET report = ? WHERE posts_id = ?`, PostSession.Report+1, post_id)
-	UpdatePostDb(db)
+	err = UpdatePostDb(db)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

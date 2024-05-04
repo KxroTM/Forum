@@ -8,10 +8,11 @@ import (
 )
 
 type Session struct {
-	UUID     string
-	Email    string
-	Username string
-	Role     string
+	UUID      string
+	Email     string
+	Username  string
+	Role      string
+	ColorMode string
 }
 
 type SessionData struct {
@@ -47,7 +48,8 @@ func getSessionData(r *http.Request) (SessionData, error) {
 	if err != nil {
 		return SessionData{
 			User: Session{
-				Role: "guest",
+				Role:      "guest",
+				ColorMode: "light",
 			},
 		}, err
 	}
@@ -56,7 +58,8 @@ func getSessionData(r *http.Request) (SessionData, error) {
 	if err != nil {
 		return SessionData{
 			User: Session{
-				Role: "guest",
+				Role:      "guest",
+				ColorMode: "light",
 			},
 		}, err
 	}
@@ -65,7 +68,8 @@ func getSessionData(r *http.Request) (SessionData, error) {
 	if err != nil {
 		return SessionData{
 			User: Session{
-				Role: "guest",
+				Role:      "guest",
+				ColorMode: "light",
 			},
 		}, err
 	}

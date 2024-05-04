@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -32,7 +33,10 @@ func GitHubLoginPage(w http.ResponseWriter, r *http.Request) {
 // Fonction permettant d'avoir accès aux informations de l'utilisateur connecté via GitHub
 func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
-	IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
 
 	state := r.FormValue("state")
 	if state != oauthStateString {
@@ -80,14 +84,18 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 
 	if FindAccount(userEmail) {
 		UserSession = GetAccount(userEmail)
-		createSessionCookie(w, SessionData{
+		err := createSessionCookie(w, SessionData{
 			User: Session{
-				UUID:     UserSession.User_id,
-				Email:    UserSession.Email,
-				Username: UserSession.Username,
-				Role:     UserSession.Role,
+				UUID:      UserSession.User_id,
+				Email:     UserSession.Email,
+				Username:  UserSession.Username,
+				Role:      UserSession.Role,
+				ColorMode: "light",
 			},
 		}, 24*time.Hour)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	} else {
 		password := hashPasswordSHA256(generateStrongPassword())
 		err := SignUpUser(Db, userEmail, userEmail, password)
@@ -98,17 +106,23 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 		}
 
 		UserSession = GetAccount(userEmail)
-		createSessionCookie(w, SessionData{
+		err = createSessionCookie(w, SessionData{
 			User: Session{
-				UUID:     UserSession.User_id,
-				Email:    UserSession.Email,
-				Username: UserSession.Username,
-				Role:     UserSession.Role,
+				UUID:      UserSession.User_id,
+				Email:     UserSession.Email,
+				Username:  UserSession.Username,
+				Role:      UserSession.Role,
+				ColorMode: "light",
 			},
 		}, 24*time.Hour)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 
-	AccountLog(clientIP + "  ==>  " + UserSession.Email)
-
+	err = AccountLog(clientIP + "  ==>  " + UserSession.Email)
+	if err != nil {
+		log.Println(err)
+	}
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }

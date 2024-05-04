@@ -3,7 +3,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"net/http"
 	"os/exec"
 
@@ -25,7 +25,11 @@ func main() {
 	http.HandleFunc("/accueil", forum.HomePage)
 	http.HandleFunc("/profile/", forum.ProfilePage)
 
-	openLink()
+	err := openLink()
+	if err != nil {
+		log.Fatal("Erreur lors de l'ouverture du lien:", err)
+		return
+	}
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -33,19 +37,40 @@ func init() {
 	var err error
 	forum.Db, err = sql.Open("sqlite3", "./database/db.sql")
 	if err != nil {
-		fmt.Println("Erreur lors de l'ouverture de la base de données:", err)
+		log.Fatal("Erreur lors de l'ouverture de la base de données:", err)
 		return
 	}
-	UpdateDb(forum.Db)
+	err = UpdateDb(forum.Db)
+	if err != nil {
+		log.Fatal("Erreur lors de la mise à jour de la base de données:", err)
+		return
+	}
 }
 
-func UpdateDb(Db *sql.DB) {
-	forum.UpdateUserDb(Db)
-	forum.UpdatePostDb(Db)
-	forum.UpdateCommentDb(Db)
+func UpdateDb(Db *sql.DB) error {
+	err := forum.UpdateUserDb(Db)
+	if err != nil {
+		log.Println("Erreur lors de la mise à jour de la base de données des utilisateurs:", err)
+		return err
+	}
+	err = forum.UpdatePostDb(Db)
+	if err != nil {
+		log.Println("Erreur lors de la mise à jour de la base de données des posts:", err)
+		return err
+	}
+	err = forum.UpdateCommentDb(Db)
+	if err != nil {
+		log.Println("Erreur lors de la mise à jour de la base de données des commentaires:", err)
+		return err
+	}
+	return nil
 }
 
-func openLink() {
+func openLink() error {
 	cmd := exec.Command("cmd", "/c", "start", "http://localhost:8080/accueil")
-	cmd.Run()
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+	return nil
 }
