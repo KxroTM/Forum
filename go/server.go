@@ -20,6 +20,7 @@ type DataStruct struct {
 	AllComments      []Comment
 	Notification     Notification
 	AllNotifications []Notification
+	Error            error
 }
 
 var AllData DataStruct
@@ -37,6 +38,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 	updateUserSession(r)
 
+	AllData = GetAllDatas()
+
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
 	data, _ := getSessionData(r)
 	if data.User.Email != "" {
@@ -49,7 +52,9 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 		check := r.FormValue("save")
 
-		if LoginUser(Db, email, password) {
+		connected, err := LoginUser(Db, email, password)
+
+		if err == nil && connected {
 			user := GetAccount(email)
 
 			if check == "" {
@@ -90,8 +95,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 
 		} else {
-			p := "Login page"
-			err := LoginError.ExecuteTemplate(w, "loginerror.html", p)
+			AllData.Error = err
+			err := LoginError.ExecuteTemplate(w, "loginerror.html", AllData)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
@@ -119,6 +124,50 @@ func LogoutPage(w http.ResponseWriter, r *http.Request) {
 	LogoutUser()
 	deleteSessionCookie(w)
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+}
+
+func RegisterPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	AllData = GetAllDatas()
+
+	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
+	data, _ := getSessionData(r)
+	if data.User.Email != "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		username := r.FormValue("username")
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+		passwordcheck := r.FormValue("passwordcheck")
+		err := SignUpUser(Db, username, email, password, passwordcheck)
+
+		if err == nil {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+			return
+		} else {
+			AllData.Error = err
+			err := RegisterError.ExecuteTemplate(w, "registererror.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+	}
+
+	p := "Register page"
+	err = Register.ExecuteTemplate(w, "register.html", p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -157,7 +206,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 
 	parts := strings.Split(path, "/")
 	if len(parts) < 3 || !strings.HasPrefix(parts[2], "@") {
-		err := Error.ExecuteTemplate(w, "error.html", "Invalid URL")
+		err := Error404.ExecuteTemplate(w, "error.html", "Invalid URL")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -192,7 +241,7 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusNotFound)
 	p := "Page not found"
-	err = Error.ExecuteTemplate(w, "error.html", p)
+	err = Error404.ExecuteTemplate(w, "error.html", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -97,8 +98,11 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		password := hashPasswordSHA256(generateStrongPassword())
-		err := SignUpUser(Db, userEmail, userEmail, password)
+		password := generateStrongPassword() + "@1L"
+
+		username := strings.Split(userEmail, "@")
+
+		err := SignUpUser(Db, username[0], userEmail, password, password)
 
 		if err != nil {
 			http.Error(w, "Erreur lors de l'inscription de l'utilisateur: "+err.Error(), http.StatusInternalServerError)

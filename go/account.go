@@ -45,16 +45,16 @@ var UserSession User
 var AllUsers []User
 
 var banWords = []string{
-	"idiot", "imbécile", "crétin", "con", "abruti", "connard", "enfoiré", "salopard",
-	"sexe", "porno", "XXX", "nue", "seins", "cul", "bite", "vagin", "pénis", "orgasme", "éjaculation",
-	"raciste", "homophobe", "sexiste", "islamophobe", "antisémite", "xénophobe", "suprémaciste", "haineux",
-	"drogue", "vol", "fraude", "escroc", "trafic", "prostitué", "pédophile", "viol", "meurtre", "terroriste",
-	"Dieu", "Allah", "Jésus", "Satan", "Lucifer", "messie", "prophète", "pape", "imam", "rabbin",
-	"merde", "baise", "putain", "foutre", "enculé", "niquer", "chier", "salaud", "cul", "bite",
-	"tuer", "battre", "torture", "maltraitance", "séquestration", "cruauté", "violence", "massacre",
-	"haine", "violence", "assassinat", "extermination", "guerre", "destruction", "attaquer", "détruire", "anéantir",
-	"nazisme", "communisme", "fascisme", "dictature", "totalitarisme", "extrémisme", "nationalisme", "anarchie",
-	"Trump", "Hitler", "Staline", "Mao", "Ben Laden", "Saddam Hussein", "Kim Jong-un", "Poutine", "Assad",
+	"idiot", "imbecile", "cretin", "con", "abruti", "connard", "enfoire", "salopard",
+	"sexe", "porno", "XXX", "nue", "seins", "cul", "bite", "vagin", "penis", "orgasme", "ejaculation",
+	"raciste", "homophobe", "sexiste", "islamophobe", "antisemite", "xenophobe", "supremaciste", "haineux",
+	"drogue", "vol", "fraude", "escroc", "trafic", "prostitue", "pedophile", "viol", "meurtre", "terroriste",
+	"dieu", "jesus", "satan", "lucifer", "messie", "prophete", "pape", "imam", "rabbin",
+	"merde", "baise", "putain", "foutre", "encule", "niquer", "chier", "salaud", "cul", "bite",
+	"tuer", "battre", "torture", "maltraitance", "sequestration", "cruaute", "violence", "massacre",
+	"haine", "violence", "assassinat", "extermination", "guerre", "destruction", "attaquer", "detruire", "aneantir",
+	"nazisme", "communisme", "fascisme", "dictature", "totalitarisme", "extremisme", "nationalisme", "anarchie",
+	"trump", "hitler", "staline", "mao", "benladen", "saddamhussein", "laden", "hussein", "kimjong-un", "poutine", "assad",
 }
 
 func UpdateUserDb(db *sql.DB) error {
@@ -84,7 +84,56 @@ func UpdateUserDb(db *sql.DB) error {
 	return nil
 }
 
-func SignUpUser(db *sql.DB, username, email, password string) error {
+func checkAllConditionsSignUp(username, email, password, passwordcheck string) error {
+	if username == "" {
+		return ErrEmptyFieldPseudo
+	}
+
+	if email == "" {
+		return ErrEmptyFieldEmail
+	}
+
+	if password == "" {
+		return ErrEmptyFieldPassword
+	}
+
+	if passwordcheck == "" {
+		return ErrEmptyFieldPasswordCheck
+	}
+
+	if password != passwordcheck {
+		return ErrInvalidPasswordCheck
+	}
+
+	if !IsUsernameValid(username) {
+		return ErrInvalidPseudo
+	}
+
+	if !IsEmailValid(email) {
+		return ErrInvalidEmail
+	}
+
+	if !IsPasswordValid(password) {
+		return ErrInvalidPassword
+	}
+
+	if !isEmailAvailable(email) {
+		return ErrMailAlreadyUsed
+	}
+
+	if !isUsernameAvailable(username) {
+		return ErrPseudoAlreadyUsed
+	}
+	return nil
+}
+
+func SignUpUser(db *sql.DB, username, email, password, passwordcheck string) error {
+
+	err := checkAllConditionsSignUp(username, email, password, passwordcheck)
+	if err != nil {
+		return err
+	}
+
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
 
@@ -128,17 +177,31 @@ func SignUpUser(db *sql.DB, username, email, password string) error {
 
 	AllUsers = append(AllUsers, UserSession)
 	UpdateUserDb(db)
+	SendCreatedAccountEmail(email, username)
 	return nil
 }
 
-func LoginUser(db *sql.DB, email, password string) bool {
+func LoginUser(db *sql.DB, email, password string) (bool, error) {
+
+	if email == "" {
+		return false, ErrEmptyFieldEmail
+	}
+
+	if password == "" {
+		return false, ErrEmptyFieldPassword
+	}
+
+	if !FindAccount(email) {
+		return false, ErrBadEmail
+	}
+
 	for _, user := range AllUsers {
 		if user.Email == email && user.Password == hashPasswordSHA256(password) {
 			UserSession = user
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, ErrBadPassword
 }
 
 func LogoutUser() {
@@ -287,7 +350,7 @@ func IsEmailValid(email string) bool {
 
 	regex := regexp.MustCompile(emailPatern)
 
-	return regex.MatchString(email) && isEmailAvailable(email)
+	return regex.MatchString(email)
 }
 
 func SetModerator(db *sql.DB, user_id string) error {
@@ -300,8 +363,9 @@ func SetModerator(db *sql.DB, user_id string) error {
 }
 
 func containsBanWord(word string) bool {
-	for _, words := range banWords {
-		if strings.EqualFold(strings.ToLower(removeAccents(words)), removeAccents(word)) {
+	word = strings.ToLower(removeAccents(word))
+	for _, banWord := range banWords {
+		if strings.Contains(word, banWord) {
 			return true
 		}
 	}
@@ -309,10 +373,43 @@ func containsBanWord(word string) bool {
 }
 
 func removeAccents(s string) string {
-	t := make([]rune, 0, len(s))
-	for _, r := range s {
-		if !unicode.Is(unicode.Mn, r) {
-			t = append(t, r)
+	t := make([]rune, len(s))
+	for i, r := range s {
+		switch r {
+		case 'À', 'Á', 'Â', 'Ã', 'Ä', 'Å':
+			t[i] = 'A'
+		case 'à', 'á', 'â', 'ã', 'ä', 'å':
+			t[i] = 'a'
+		case 'Ç':
+			t[i] = 'C'
+		case 'ç':
+			t[i] = 'c'
+		case 'È', 'É', 'Ê', 'Ë':
+			t[i] = 'E'
+		case 'è', 'é', 'ê', 'ë':
+			t[i] = 'e'
+		case 'Î', 'Ï', 'Í', 'Ì':
+			t[i] = 'I'
+		case 'î', 'ï', 'í', 'ì':
+			t[i] = 'i'
+		case 'Ñ':
+			t[i] = 'N'
+		case 'ñ':
+			t[i] = 'n'
+		case 'Ò', 'Ó', 'Ô', 'Õ', 'Ö':
+			t[i] = 'O'
+		case 'ò', 'ó', 'ô', 'õ', 'ö':
+			t[i] = 'o'
+		case 'Ù', 'Ú', 'Û', 'Ü':
+			t[i] = 'U'
+		case 'ù', 'ú', 'û', 'ü':
+			t[i] = 'u'
+		case 'Ý', 'Ỳ', 'Ỹ', 'Ỷ', 'Ỵ':
+			t[i] = 'Y'
+		case 'ý', 'ỳ', 'ỹ', 'ỷ', 'ỵ':
+			t[i] = 'y'
+		default:
+			t[i] = r
 		}
 	}
 	return string(t)

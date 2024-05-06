@@ -3,10 +3,12 @@ package forum
 import "html/template"
 
 // LIGHT MODE
-var Error = template.Must(template.ParseFiles("./src/templates/light/error.html"))
+var Error404 = template.Must(template.ParseFiles("./src/templates/light/error.html"))
 var ErrorUser = template.Must(template.ParseFiles("./src/templates/light/errorUser.html"))
 var Login = template.Must(template.ParseFiles("./src/templates/light/login.html"))
 var LoginError = template.Must(template.ParseFiles("./src/templates/light/loginerror.html"))
+var Register = template.Must(template.ParseFiles("./src/templates/light/register.html"))
+var RegisterError = template.Must(template.ParseFiles("./src/templates/light/registererror.html"))
 var Home = template.Must(template.ParseFiles("./src/templates/light/home.html"))
 var Profile = template.Must(template.ParseFiles("./src/templates/light/profile.html"))
 

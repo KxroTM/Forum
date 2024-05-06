@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -82,8 +83,11 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		password := hashPasswordSHA256(generateStrongPassword())
-		err := SignUpUser(Db, usertemp.Email, usertemp.Email, password)
+		password := generateStrongPassword() + "@1L"
+
+		username := strings.Split(usertemp.Email, "@")
+
+		err := SignUpUser(Db, username[0], usertemp.Email, password, password)
 
 		if err != nil {
 			http.Error(w, "Erreur lors de l'inscription de l'utilisateur: "+err.Error(), http.StatusInternalServerError)
