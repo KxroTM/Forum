@@ -21,6 +21,11 @@ var googleOauthConfig = &oauth2.Config{
 }
 
 func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
+	data, _ := getSessionData(r)
+	if data.User.Role != "guest" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
 	url := googleOauthConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }

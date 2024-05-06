@@ -27,6 +27,11 @@ var (
 )
 
 func GitHubLoginPage(w http.ResponseWriter, r *http.Request) {
+	data, _ := getSessionData(r)
+	if data.User.Role != "guest" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
 	url := oauthConf.AuthCodeURL(oauthStateString)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -43,12 +48,6 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 	if state != oauthStateString {
 		fmt.Printf("L'état OAuth n'est pas valide: %s\n", state)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
-
-	data, _ := getSessionData(r)
-	if data.User.Role != "guest" {
-		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
 	}
 

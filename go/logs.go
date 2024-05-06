@@ -13,8 +13,8 @@ func AccountLog(connection string) error {
 
 	}
 
-	currentDate := time.Now().In(time.FixedZone("CET", 1*60*60)).Format("02/01/2006")
-	currentHour := time.Now().In(time.FixedZone("CET", 1*60*60)).Format("15:04:05")
+	currentDate := time.Now().Format("02/01/2006")
+	currentHour := time.Now().Format("15:04:05")
 	_, err = file.WriteString("[" + currentDate + "] " + "[" + currentHour + "]" + " : " + connection + "\n")
 	if err != nil {
 		return err
@@ -31,8 +31,8 @@ func IPsLog(connection string) error {
 		return err
 	}
 
-	currentDate := time.Now().In(time.FixedZone("CET", 1*60*60)).Format("02/01/2006")
-	currentHour := time.Now().In(time.FixedZone("CET", 1*60*60)).Format("15:04:05")
+	currentDate := time.Now().Format("02/01/2006")
+	currentHour := time.Now().Format("15:04:05")
 	_, err = file.WriteString("[" + currentDate + "] " + "[" + currentHour + "]" + " : " + connection + "\n")
 	if err != nil {
 		return err

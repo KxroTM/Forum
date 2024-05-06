@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -134,8 +135,9 @@ func SignUpUser(db *sql.DB, username, email, password, passwordcheck string) err
 		return err
 	}
 
-	currentTime := time.Now()
-	time := currentTime.Format("02-01-2006")
+	fmt.Println(err)
+
+	time := time.Now().Format("02-01-2006")
 
 	u, err := uuid.NewV4()
 	if err != nil {
@@ -330,7 +332,7 @@ func isUsernameAvailable(username string) bool {
 }
 
 func IsUsernameValid(username string) bool {
-	if (len(username) > 4 || len(username) < 15) && !containsBanWord(strings.ToLower(username)) {
+	if (len(username) > 4 && len(username) < 15) && !containsBanWord(username) {
 		return isUsernameAvailable(username)
 	}
 	return false

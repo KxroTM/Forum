@@ -1,6 +1,7 @@
 package forum
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -149,6 +150,8 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 		passwordcheck := r.FormValue("passwordcheck")
 		err := SignUpUser(Db, username, email, password, passwordcheck)
+
+		fmt.Println(err)
 
 		if err == nil {
 			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
