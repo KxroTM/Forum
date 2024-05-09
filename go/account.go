@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
-	"fmt"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -134,8 +133,6 @@ func SignUpUser(db *sql.DB, username, email, password, passwordcheck string) err
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(err)
 
 	time := time.Now().Format("02-01-2006")
 
@@ -539,12 +536,13 @@ func GetAllUser() []User {
 
 func GetAllDatas() DataStruct {
 	return DataStruct{
-		User:       UserSession,
-		UserTarget: User{},
-		AllUsers:   GetAllUser(),
-		Post:       Post{},
-		AllPosts:   GetAllPosts(),
-		Comment:    Comment{},
+		User:            UserSession,
+		UserTarget:      User{},
+		RecommendedUser: RecommendedUser{},
+		AllUsers:        GetAllUser(),
+		Post:            Post{},
+		AllPosts:        GetAllPosts(),
+		Comment:         Comment{},
 		// AllComments:      GetAllComments(),
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),

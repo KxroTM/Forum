@@ -45,5 +45,11 @@
         {{ end }}
 
     </ul>
+
+        <h1>Liste des utilisateurs recommandés</h1> 
+            {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                <img src="{{ $user.Pfp }}" alt="Avatar" class="Avatar" width="50" height="50"><p>{{ $user.Username }}</p><br>
+                <p>{{ index $.RecommendedUser.Reason $i }}</p>
+            {{ end }}
 </body>
 </html>

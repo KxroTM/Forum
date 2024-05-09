@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -14,6 +13,7 @@ var URL string
 type DataStruct struct {
 	User             User
 	UserTarget       User
+	RecommendedUser  RecommendedUser
 	AllUsers         []User
 	Post             Post
 	AllPosts         []Post
@@ -22,6 +22,11 @@ type DataStruct struct {
 	Notification     Notification
 	AllNotifications []Notification
 	Error            error
+}
+
+type RecommendedUser struct {
+	RecommendedUsers []User
+	Reason           []string
 }
 
 var AllData DataStruct
@@ -151,8 +156,6 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 		passwordcheck := r.FormValue("passwordcheck")
 		err := SignUpUser(Db, username, email, password, passwordcheck)
 
-		fmt.Println(err)
-
 		if err == nil {
 			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
@@ -182,6 +185,8 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 
 	AllData = GetAllDatas()
+
+	AllData.RecommendedUser = RecommendedUsers(UserSession.User_id)
 
 	data, _ := getSessionData(r)
 	if data.User.ColorMode == "dark" {
