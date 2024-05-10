@@ -54,7 +54,8 @@ var banWords = []string{
 	"tuer", "battre", "torture", "maltraitance", "sequestration", "cruaute", "violence", "massacre",
 	"haine", "violence", "assassinat", "extermination", "guerre", "destruction", "attaquer", "detruire", "aneantir",
 	"nazisme", "communisme", "fascisme", "dictature", "totalitarisme", "extremisme", "nationalisme", "anarchie",
-	"trump", "hitler", "staline", "mao", "benladen", "saddamhussein", "laden", "hussein", "kimjong-un", "poutine", "assad",
+	"trump", "hitler", "staline", "mao", "benladen", "saddamhussein", "laden", "hussein", "kimjong-un", "poutine", "assad", "fdp", "arabe",
+	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine",
 }
 
 func UpdateUserDb(db *sql.DB) error {
@@ -85,6 +86,12 @@ func UpdateUserDb(db *sql.DB) error {
 }
 
 func checkAllConditionsSignUp(username, email, password, passwordcheck string) error {
+	if strings.Contains(username, " ") || strings.Contains(username, "-") {
+		return ErrSpaceInUsername
+	}
+	if strings.Contains(password, " ") {
+		return ErrSpaceInPassword
+	}
 	if username == "" {
 		return ErrEmptyFieldPseudo
 	}
