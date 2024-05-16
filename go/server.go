@@ -61,7 +61,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		connected, err := LoginUser(Db, email, password)
 
 		if err == nil && connected {
-			user := GetAccount(email)
+			user := GetAccount(Db, email)
 
 			if check == "" {
 				err := createSessionCookie(w, SessionData{
@@ -186,7 +186,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	AllData = GetAllDatas()
 
-	AllData.RecommendedUser = RecommendedUsers(UserSession.User_id)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	data, _ := getSessionData(r)
 	if data.User.ColorMode == "dark" {
@@ -224,7 +224,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	username := strings.TrimPrefix(parts[2], "@")
 
 	AllData := GetAllDatas()
-	AllData.UserTarget = GetAccountByUsername(username)
+	AllData.UserTarget = GetAccountByUsername(Db, username)
 
 	if AllData.UserTarget == (User{}) {
 		err := ErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")

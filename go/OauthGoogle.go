@@ -72,8 +72,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if FindAccount(usertemp.Email) {
-		UserSession = GetAccount(usertemp.Email)
+	if FindAccount(Db, usertemp.Email) {
+		UserSession = GetAccount(Db, usertemp.Email)
 		err := createSessionCookie(w, SessionData{
 			User: Session{
 				UUID:      UserSession.User_id,
@@ -99,7 +99,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		UserSession = GetAccount(usertemp.Email)
+		UserSession = GetAccount(Db, usertemp.Email)
 		err = createSessionCookie(w, SessionData{
 			User: Session{
 				UUID:      UserSession.User_id,

@@ -1,14 +1,16 @@
 package forum
 
 import (
+	"database/sql"
 	"math/rand"
 	"strings"
 )
 
-func ForYouPageAlgorithm(user_id string) []Post {
-	user := GetAccountById(user_id)
+func ForYouPageAlgorithm(db *sql.DB, user_id string) []Post {
+	user := GetAccountById(db, user_id)
 
 	var posts []Post
+	var AllPosts = GetAllPosts(db)
 
 	for _, post := range AllPosts {
 		if strings.Contains(user.CategorieSub, post.Categorie) {
@@ -29,9 +31,9 @@ func ForYouPageAlgorithm(user_id string) []Post {
 	return posts
 }
 
-func RecommendedUsers(user_id string) RecommendedUser {
-	accounts := RecommendUsersAlgoByCommonFollowings(user_id)
-	algo := RecommendUserAlgorithmByCategorie(user_id)
+func RecommendedUsers(db *sql.DB, user_id string) RecommendedUser {
+	accounts := RecommendUsersAlgoByCommonFollowings(db, user_id)
+	algo := RecommendUserAlgorithmByCategorie(db, user_id)
 
 	for i := 0; i < len(algo.RecommendedUsers); i++ {
 		if !containsUser(accounts.RecommendedUsers, algo.RecommendedUsers[i]) {
@@ -43,22 +45,23 @@ func RecommendedUsers(user_id string) RecommendedUser {
 	return accounts
 }
 
-func RecommendUsersAlgoByCommonFollowings(user_id string) RecommendedUser {
-	user := GetAccountById(user_id)
+func RecommendUsersAlgoByCommonFollowings(db *sql.DB, user_id string) RecommendedUser {
+	user := GetAccountById(db, user_id)
 
 	var accounts RecommendedUser
+	var AllUsers = GetAllUsers(db)
 
 	if len(user.FollowingList) != 0 {
 		followings := strings.Split(user.FollowingList, ",")
 		for i := 0; i < len(followings)-1; i++ {
-			user2 := GetAccountByUsername(followings[i])
-			user3 := GetAccountByUsername(followings[i+1])
+			user2 := GetAccountByUsername(db, followings[i])
+			user3 := GetAccountByUsername(db, followings[i+1])
 			followings2 := strings.Split(user2.FollowingList, ",")
 			followings3 := strings.Split(user3.FollowingList, ",")
 			for j := 0; j < len(followings2); j++ {
 				for k := 0; k < len(followings3); k++ {
 					if followings2[j] == followings3[k] {
-						usertemp := GetAccountByUsername(followings2[j])
+						usertemp := GetAccountByUsername(db, followings2[j])
 						if !containsUser(accounts.RecommendedUsers, usertemp) && usertemp != user && !strings.Contains(user.FollowingList, usertemp.Username) {
 							accounts.RecommendedUsers = append(accounts.RecommendedUsers, usertemp)
 							accounts.Reason = append(accounts.Reason, "Amis en commun")
@@ -96,10 +99,11 @@ func RecommendUsersAlgoByCommonFollowings(user_id string) RecommendedUser {
 	return accounts
 }
 
-func RecommendUserAlgorithmByCategorie(user_id string) RecommendedUser {
-	user := GetAccountById(user_id)
+func RecommendUserAlgorithmByCategorie(db *sql.DB, user_id string) RecommendedUser {
+	user := GetAccountById(db, user_id)
 
 	var accounts RecommendedUser
+	var AllUsers = GetAllUsers(db)
 
 	if len(user.CategorieSub) != 0 {
 		for len(accounts.RecommendedUsers) < 3 {
@@ -114,8 +118,9 @@ func RecommendUserAlgorithmByCategorie(user_id string) RecommendedUser {
 	return accounts
 }
 
-func SearchPageAlgorithm(search string) []Post {
+func SearchPageAlgorithm(db *sql.DB, search string) []Post {
 	var posts []Post
+	AllPosts := GetAllPosts(db)
 
 	for _, post := range AllPosts {
 		if strings.Contains(post.Title, search) || strings.Contains(post.Text, search) || strings.Contains(post.Categorie, search) {

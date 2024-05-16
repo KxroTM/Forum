@@ -41,30 +41,6 @@ func init() {
 		log.Fatal("Erreur lors de l'ouverture de la base de données:", err)
 		return
 	}
-	err = UpdateDb(forum.Db)
-	if err != nil {
-		log.Fatal("Erreur lors de la mise à jour de la base de données:", err)
-		return
-	}
-}
-
-func UpdateDb(Db *sql.DB) error {
-	err := forum.UpdateUserDb(Db)
-	if err != nil {
-		log.Println("Erreur lors de la mise à jour de la base de données des utilisateurs:", err)
-		return err
-	}
-	err = forum.UpdatePostDb(Db)
-	if err != nil {
-		log.Println("Erreur lors de la mise à jour de la base de données des posts:", err)
-		return err
-	}
-	err = forum.UpdateCommentDb(Db)
-	if err != nil {
-		log.Println("Erreur lors de la mise à jour de la base de données des commentaires:", err)
-		return err
-	}
-	return nil
 }
 
 func openLink() error {

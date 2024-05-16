@@ -21,25 +21,21 @@ type Comment struct {
 var CommentSession Comment
 var AllComments []Comment
 
-func UpdateCommentDb(db *sql.DB) error {
+func GetAllComment(db *sql.DB) []Comment {
 	rows, err := db.Query("SELECT * FROM comments")
 	if err != nil {
-		return err
+		panic(err)
 	}
 	defer rows.Close()
 
 	var comments []Comment
-
 	for rows.Next() {
 		var comment Comment
-		rows.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker)
+		err := rows.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.User_pfp, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker)
+		if err != nil {
+			panic(err)
+		}
 		comments = append(comments, comment)
 	}
-
-	if err := rows.Err(); err != nil {
-		return err
-	}
-
-	AllComments = comments
-	return nil
+	return comments
 }

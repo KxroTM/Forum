@@ -97,6 +97,6 @@ func updateUserSession(r *http.Request) {
 		return
 	}
 	if UserSession.Email == "" {
-		UserSession = GetAccountById(data.User.UUID)
+		UserSession = GetAccountById(Db, data.User.UUID)
 	}
 }

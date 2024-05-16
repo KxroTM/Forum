@@ -82,8 +82,8 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 
 	userEmail := userEmails[0].Email
 
-	if FindAccount(userEmail) {
-		UserSession = GetAccount(userEmail)
+	if FindAccount(Db, userEmail) {
+		UserSession = GetAccount(Db, userEmail)
 		err := createSessionCookie(w, SessionData{
 			User: Session{
 				UUID:      UserSession.User_id,
@@ -108,7 +108,7 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		UserSession = GetAccount(userEmail)
+		UserSession = GetAccount(Db, userEmail)
 		err = createSessionCookie(w, SessionData{
 			User: Session{
 				UUID:      UserSession.User_id,

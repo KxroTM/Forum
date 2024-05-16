@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -42,7 +43,6 @@ type User struct {
 }
 
 var UserSession User
-var AllUsers []User
 
 var banWords = []string{
 	"idiot", "imbecile", "cretin", "con", "abruti", "connard", "enfoire", "salopard",
@@ -55,37 +55,10 @@ var banWords = []string{
 	"haine", "violence", "assassinat", "extermination", "guerre", "destruction", "attaquer", "detruire", "aneantir",
 	"nazisme", "communisme", "fascisme", "dictature", "totalitarisme", "extremisme", "nationalisme", "anarchie",
 	"trump", "hitler", "staline", "mao", "benladen", "saddamhussein", "laden", "hussein", "kimjong-un", "poutine", "assad", "fdp", "arabe",
-	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine",
+	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine", "israel",
 }
 
-func UpdateUserDb(db *sql.DB) error {
-	rows, err := db.Query("SELECT * FROM users")
-	if err != nil {
-		return err
-	}
-
-	defer rows.Close()
-
-	var users []User
-
-	for rows.Next() {
-		var user User
-		err := rows.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Follower, &user.Following, &user.Bio, &user.Links, &user.CategorieSub, &user.FollowerList, &user.FollowingList)
-		if err != nil {
-			return err
-		}
-		users = append(users, user)
-	}
-
-	if err := rows.Err(); err != nil {
-		return err
-	}
-
-	AllUsers = users
-	return nil
-}
-
-func checkAllConditionsSignUp(username, email, password, passwordcheck string) error {
+func checkAllConditionsSignUp(db *sql.DB, username, email, password, passwordcheck string) error {
 	if strings.Contains(username, " ") || strings.Contains(username, "-") {
 		return ErrSpaceInUsername
 	}
@@ -124,11 +97,11 @@ func checkAllConditionsSignUp(username, email, password, passwordcheck string) e
 		return ErrInvalidPassword
 	}
 
-	if !isEmailAvailable(email) {
+	if !isEmailAvailable(db, email) {
 		return ErrMailAlreadyUsed
 	}
 
-	if !isUsernameAvailable(username) {
+	if !isUsernameAvailable(db, username) {
 		return ErrPseudoAlreadyUsed
 	}
 	return nil
@@ -136,7 +109,7 @@ func checkAllConditionsSignUp(username, email, password, passwordcheck string) e
 
 func SignUpUser(db *sql.DB, username, email, password, passwordcheck string) error {
 
-	err := checkAllConditionsSignUp(username, email, password, passwordcheck)
+	err := checkAllConditionsSignUp(db, username, email, password, passwordcheck)
 	if err != nil {
 		return err
 	}
@@ -181,14 +154,11 @@ func SignUpUser(db *sql.DB, username, email, password, passwordcheck string) err
 	db.Exec(`INSERT INTO users (UUID, role, username, email, password, created_at, updated_at, profilePicture, followers, following, bio, links, categoriesSub, followersList, followingList) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, UserSession.User_id, UserSession.Role, UserSession.Username, UserSession.Email, UserSession.Password, UserSession.CreationDate, UserSession.UpdateDate, UserSession.Pfp, UserSession.Follower, UserSession.Following, UserSession.Bio, UserSession.Links, UserSession.CategorieSub, UserSession.FollowerList, UserSession.FollowingList)
 
-	AllUsers = append(AllUsers, UserSession)
-	UpdateUserDb(db)
 	SendCreatedAccountEmail(email, username)
 	return nil
 }
 
 func LoginUser(db *sql.DB, email, password string) (bool, error) {
-
 	if email == "" {
 		return false, ErrEmptyFieldEmail
 	}
@@ -197,17 +167,25 @@ func LoginUser(db *sql.DB, email, password string) (bool, error) {
 		return false, ErrEmptyFieldPassword
 	}
 
-	if !FindAccount(email) {
-		return false, ErrBadEmail
+	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE email = ?"
+	row := db.QueryRow(query, email)
+
+	var user User
+	err := row.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, ErrBadEmail
+		}
+		return false, err
 	}
 
-	for _, user := range AllUsers {
-		if user.Email == email && user.Password == hashPasswordSHA256(password) {
-			UserSession = user
-			return true, nil
-		}
+	if user.Password != hashPasswordSHA256(password) {
+		return false, ErrBadPassword
 	}
-	return false, ErrBadPassword
+
+	UserSession = user
+
+	return true, nil
 }
 
 func LogoutUser() {
@@ -216,13 +194,8 @@ func LogoutUser() {
 	}
 }
 
-func DeleteUser(db *sql.DB, user_id string) error {
+func DeleteUser(db *sql.DB, user_id string) {
 	db.Exec(`DELETE FROM users WHERE UUID = ?`, user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func hashPasswordSHA256(password string) string {
@@ -232,58 +205,61 @@ func hashPasswordSHA256(password string) string {
 	return hex.EncodeToString(hash)
 }
 
-func FindAccount(email string) bool {
-	for _, user := range AllUsers {
-		if user.Email == email {
-			return true
-		}
+func FindAccount(db *sql.DB, email string) bool {
+	query := "SELECT COUNT(*) FROM users WHERE email = ?"
+	var count int
+	err := db.QueryRow(query, email).Scan(&count)
+	if err != nil {
+		return false
 	}
-	return false
+	return count > 0
 }
 
-func GetAccount(email string) User {
-	for _, user := range AllUsers {
-		if user.Email == email {
-			return user
+func GetAccount(db *sql.DB, email string) User {
+	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE email = ?"
+	var user User
+	err := db.QueryRow(query, email).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return User{}
 		}
+		return User{}
 	}
-	return User{}
+	return user
 }
 
-func GetAccountById(user_id string) User {
-	for _, user := range AllUsers {
-		if user.User_id == user_id {
-			return user
+func GetAccountById(db *sql.DB, user_id string) User {
+	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE UUID = ?"
+	var user User
+	err := db.QueryRow(query, user_id).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return User{}
 		}
+		return User{}
 	}
-	return User{}
+	return user
 }
 
-func GetAccountByUsername(username string) User {
-	for _, user := range AllUsers {
-		if user.Username == username {
-			return user
+func GetAccountByUsername(db *sql.DB, username string) User {
+	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE username = ?"
+	var user User
+	err := db.QueryRow(query, username).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return User{}
 		}
+		return User{}
 	}
-	return User{}
+	return user
 }
 
-func DeleteAllUsers(db *sql.DB) error {
+func DeleteAllUsers(db *sql.DB) {
 	db.Exec("DELETE FROM users")
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func ChangePassword(db *sql.DB, user_id string, newPassword string) error {
+func ChangePassword(db *sql.DB, user_id string, newPassword string) {
 	db.Exec(`UPDATE users SET password = ? WHERE UUID = ?`, hashPasswordSHA256(newPassword), user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func IsPasswordValid(password string) bool {
@@ -317,38 +293,35 @@ func IsPasswordValid(password string) bool {
 	return lowerCheck && upperCheck && digitCheck && specialCharCheck
 }
 
-func ChangeUsername(db *sql.DB, user_id string, newUsername string) error {
+func ChangeUsername(db *sql.DB, user_id string, newUsername string) {
 	db.Exec(`UPDATE users SET username = ? WHERE UUID = ?`, newUsername, user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func isUsernameAvailable(username string) bool {
-	for _, user := range AllUsers {
-		if user.Username == username {
-			return false
-		}
+func isUsernameAvailable(db *sql.DB, username string) bool {
+	query := "SELECT COUNT(*) FROM users WHERE username = ?"
+	var count int
+	err := db.QueryRow(query, username).Scan(&count)
+	if err != nil {
+		return false
 	}
-	return true
+	return count == 0
 }
 
 func IsUsernameValid(username string) bool {
 	if (len(username) > 4 && len(username) < 15) && !containsBanWord(username) {
-		return isUsernameAvailable(username)
+		return isUsernameAvailable(Db, username)
 	}
 	return false
 }
 
-func isEmailAvailable(email string) bool {
-	for _, user := range AllUsers {
-		if user.Email == email {
-			return false
-		}
+func isEmailAvailable(db *sql.DB, email string) bool {
+	query := "SELECT COUNT(*) FROM users WHERE email = ?"
+	var count int
+	err := db.QueryRow(query, email).Scan(&count)
+	if err != nil {
+		return false
 	}
-	return true
+	return count == 0
 }
 
 func IsEmailValid(email string) bool {
@@ -359,13 +332,8 @@ func IsEmailValid(email string) bool {
 	return regex.MatchString(email)
 }
 
-func SetModerator(db *sql.DB, user_id string) error {
+func SetModerator(db *sql.DB, user_id string) {
 	db.Exec(`UPDATE users SET role = ? WHERE UUID = ?`, "moderator", user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func containsBanWord(word string) bool {
@@ -421,71 +389,43 @@ func removeAccents(s string) string {
 	return string(t)
 }
 
-func UpdateDate(db *sql.DB, user_id string) error {
+func UpdateDate(db *sql.DB, user_id string) {
 	currentTime := time.Now()
 	time := currentTime.Format("02-01-2006")
 	db.Exec(`UPDATE users SET updated_at = ? WHERE UUID = ?`, time, user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func UpdateProfilePicture(db *sql.DB, user_id string, pfp string) (bool, error) {
+func UpdateProfilePicture(db *sql.DB, user_id string, pfp string) bool {
 	if UserSession.Role == "user" && isProfilePictureNotAGif(pfp) {
 		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		err := UpdateUserDb(db)
-		if err != nil {
-			return false, err
-		}
-		return true, nil
+		return true
 	} else if UserSession.Role != "user" {
 		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		err := UpdateUserDb(db)
-		if err != nil {
-			return false, err
-		}
-		return true, nil
+		return true
 	}
-	return false, nil
+	return false
 }
 
 func isProfilePictureNotAGif(pfp string) bool {
 	return !strings.HasSuffix(strings.ToLower(pfp), ".gif") && !strings.HasSuffix(strings.ToLower(pfp), ".apng")
 }
 
-func UpdateBio(db *sql.DB, user_id string, bio string) error {
+func UpdateBio(db *sql.DB, user_id string, bio string) {
 	db.Exec(`UPDATE users SET bio = ? WHERE UUID = ?`, bio, user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func UpdateLinks(db *sql.DB, user_id string, links string) error {
+func UpdateLinks(db *sql.DB, user_id string, links string) {
 	db.Exec(`UPDATE users SET links = ? WHERE UUID = ?`, links, user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func UpdateCategoriesSub(db *sql.DB, user_id string, categorie string) error {
+func AddCategoriesSub(db *sql.DB, user_id string, categorie string) {
 	categoriesSub := UserSession.CategorieSub + "," + categorie
 	db.Exec(`UPDATE users SET categoriesSub = ? WHERE UUID = ?`, categoriesSub, user_id)
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func UpdateFollowing(db *sql.DB, user_id string, username string) error { // username etant la personne que l'on va follow
+func UpdateFollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va follow
 
-	userToFollow := GetAccount(username)
+	userToFollow := GetAccount(db, username)
 
 	// Mise a jour de notre nombre de following
 	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, UserSession.Following+1, user_id)
@@ -498,17 +438,11 @@ func UpdateFollowing(db *sql.DB, user_id string, username string) error { // use
 
 	// Mise a jour de la liste des followers de la personne que l'on follow
 	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, userToFollow.FollowerList+","+UserSession.Username, userToFollow.User_id)
-
-	err := UpdateUserDb(db)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func UpdateUnfollowing(db *sql.DB, user_id string, username string) error { // username etant la personne que l'on va unfollow
+func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va unfollow
 
-	userToUnfollow := GetAccount(username)
+	userToUnfollow := GetAccount(db, username)
 
 	// Mise a jour de notre nombre de following
 	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, UserSession.Following-1, user_id)
@@ -521,34 +455,65 @@ func UpdateUnfollowing(db *sql.DB, user_id string, username string) error { // u
 
 	// Mise a jour de la liste des followers de la personne que l'on unfollow
 	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, strings.Replace(userToUnfollow.FollowerList, ","+UserSession.Username, "", -1), userToUnfollow.User_id)
+}
 
-	err := UpdateUserDb(db)
+func GetAllMail(db *sql.DB) ([]string, error) {
+	query := "SELECT email FROM users"
+	rows, err := db.Query(query)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
-}
+	defer rows.Close()
 
-func GetAllMail() []string {
 	var mails []string
-	for _, user := range AllUsers {
-		mails = append(mails, user.Email)
+	for rows.Next() {
+		var email string
+		if err := rows.Scan(&email); err != nil {
+			return nil, err
+		}
+		mails = append(mails, email)
 	}
-	return mails
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return mails, nil
 }
 
-func GetAllUser() []User {
-	return AllUsers
+func GetAllUsers(db *sql.DB) []User {
+	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users"
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList); err != nil {
+			return nil
+		}
+		users = append(users, user)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil
+	}
+	fmt.Println(users)
+	fmt.Println("ici")
+	return users
 }
 
 func GetAllDatas() DataStruct {
 	return DataStruct{
 		User:            UserSession,
 		UserTarget:      User{},
+		AllUsers:        GetAllUsers(Db),
 		RecommendedUser: RecommendedUser{},
-		AllUsers:        GetAllUser(),
 		Post:            Post{},
-		AllPosts:        GetAllPosts(),
+		AllPosts:        GetAllPosts(Db),
 		Comment:         Comment{},
 		// AllComments:      GetAllComments(),
 		Notification: Notification{},

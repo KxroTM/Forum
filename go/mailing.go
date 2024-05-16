@@ -2,8 +2,10 @@ package forum
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/base64"
 	"html/template"
+	"log"
 	"net/smtp"
 )
 
@@ -61,8 +63,11 @@ func DecodeToken(token string) (string, error) {
 	return email, nil
 }
 
-func InvalidAllMail() {
-	mails := GetAllMail()
+func InvalidAllMail(db *sql.DB) {
+	mails, err := GetAllMail(db)
+	if err != nil {
+		log.Println(err)
+	}
 	for _, mail := range mails {
 		ResetPasswordMap[EncodeToken(mail)+"/"] = "invalid"
 	}
