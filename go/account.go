@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
-	"fmt"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -167,7 +166,7 @@ func LoginUser(db *sql.DB, email, password string) (bool, error) {
 		return false, ErrEmptyFieldPassword
 	}
 
-	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE email = ?"
+	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE email = ?"
 	row := db.QueryRow(query, email)
 
 	var user User
@@ -216,7 +215,7 @@ func FindAccount(db *sql.DB, email string) bool {
 }
 
 func GetAccount(db *sql.DB, email string) User {
-	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE email = ?"
+	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE email = ?"
 	var user User
 	err := db.QueryRow(query, email).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
 	if err != nil {
@@ -229,7 +228,7 @@ func GetAccount(db *sql.DB, email string) User {
 }
 
 func GetAccountById(db *sql.DB, user_id string) User {
-	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE UUID = ?"
+	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE UUID = ?"
 	var user User
 	err := db.QueryRow(query, user_id).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
 	if err != nil {
@@ -242,7 +241,7 @@ func GetAccountById(db *sql.DB, user_id string) User {
 }
 
 func GetAccountByUsername(db *sql.DB, username string) User {
-	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE username = ?"
+	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE username = ?"
 	var user User
 	err := db.QueryRow(query, username).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
 	if err != nil {
@@ -482,7 +481,7 @@ func GetAllMail(db *sql.DB) ([]string, error) {
 }
 
 func GetAllUsers(db *sql.DB) []User {
-	query := "SELECT UUID, role, username, email, password, creation_at, update_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users"
+	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil
@@ -501,8 +500,7 @@ func GetAllUsers(db *sql.DB) []User {
 	if err = rows.Err(); err != nil {
 		return nil
 	}
-	fmt.Println(users)
-	fmt.Println("ici")
+
 	return users
 }
 
