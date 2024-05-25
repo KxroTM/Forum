@@ -24,7 +24,7 @@ body {
     background: #28974B;
     position: fixed;
     top: 15vh; 
-    left: 15vw; 
+    left: 10vw; 
 }
 
 .line3 {
@@ -99,28 +99,472 @@ button {
     position: fixed;
    }
 
+   .buttonConnecter {
+    top : 4vh;
+    right: 4vw;
+    position: fixed;
+   }
+
    .photoProfil {
     position: fixed;
     width: 52px;
     height: 53px;
-    top: 3vh;
-    right: 5vw;
+    top: 30vh;
+    right: 70vw;
     flex-shrink: 0;
     cursor: pointer;
     border-radius: 63px;
     border: 1px solid #000;
    }
 
+   h5 {
+    position: fixed;
+    top: 29.5vh;
+    right: 66vw;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    font-family: Inter, sans-serif;
+}
+
+h6 {
+    position: fixed;
+    top: 29vh;
+    right: 60vw;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    font-family: Inter, sans-serif;
+}
+
+
    .buttonPourToi {
     top : 19vh;
-    right: 55vw;
+    right: 60vw;
     position: fixed;
+    text-align: center;
    }
+
+   .buttonPourToi button {
+    width: auto;
+    padding: 0.8em 2em; 
+    text-align: center;
+    }
 
    .buttonSuivi {
     top : 19vh;
-    right: 35vw;
+    right: 37vw;
     position: fixed;
    }
-
    
+   .buttonSuivi button {
+    width: auto;
+    padding: 0.8em 2em; 
+    text-align: center;
+    }
+
+
+   .buttonAccueil {
+    top : 19vh;
+    left: 1vw;
+    position: fixed;
+    text-align: center;
+   }
+
+   .buttonAccueil span {
+    display: flex;
+    align-items: center;
+    margin-left: 8px; /* Espacement à gauche du texte */
+}
+
+.buttonAccueil img {
+    margin-right: 8px; /* Espacement à droite de l'icône */
+}
+
+.buttonAccueil button {
+    width: auto;
+    padding: 0.8em 1.5em; 
+}
+   
+.buttonPopulaire {
+    top : 27vh;
+    left: 1vw;
+    position: fixed;
+}
+.buttonPopulaire span {
+    display: flex;
+    align-items: center;
+    margin-left: 8px; /* Espacement à gauche du texte */
+}
+
+.buttonPopulaire img {
+    margin-right: 8px; /* Espacement à droite de l'icône */
+}
+
+
+.buttonPosts {
+    top : 35vh;
+    left: 1vw;
+    position: fixed;
+}
+.buttonPosts span {
+    display: flex;
+    align-items: center;
+    margin-left: 8px; /* Espacement à gauche du texte */
+}
+
+.buttonPosts img {
+    margin-right: 8px; /* Espacement à droite de l'icône */
+}
+
+.buttonPosts button {
+    width: auto;
+    padding: 0.8em 2em; 
+}
+
+
+   .line4 {
+    width: 8%;
+    height: 1px;
+    background: #28974B;
+    position: fixed;
+    top: 43vh;
+    left: 1vw;
+    transform: translateY(-50%);
+}
+
+    .catégorie1 {
+    position: fixed;
+    top: 4vh;
+    left: 0vw;
+    }
+
+    .catégorie1 button {
+        width: auto;
+        padding: 0.8em 2em; 
+    }
+
+    .catégorie2 {
+    position: fixed;
+    top: 11vh;
+    left: 0vw;
+    }
+
+    .catégorie2 button {
+        width: auto;
+        padding: 0.8em 2em; 
+    }
+
+    .catégorie3 {
+    position: fixed;
+    top: 18vh;
+    left: 0vw;
+    }
+
+    .catégorie3 button {
+        width: auto;
+        padding: 0.8em 2em; 
+    }
+
+    .catégorie4 {
+    position: fixed;
+    top: 25vh;
+    left: 0vw;
+    }
+
+    .catégorie4 button {
+        width: auto;
+        padding: 0.8em 2em; 
+    }
+
+    .catégorie5 {
+    position: fixed;
+    top: 32vh;
+    left: 0vw;
+    }
+
+    .catégorie5 button {
+        width: auto;
+        padding: 0.8em 2em; 
+    }
+
+    .catégorie6 {
+    position: fixed;
+    top: 39vh;
+    left: 0vw;
+    }
+
+    .catégorie6 button {
+        width: auto;
+        padding: 0.8em 2em; 
+    }
+
+    .line5 {
+    width: 8%;
+    height: 1px;
+    background: #28974B;
+    position: fixed;
+    top: 90vh;
+    left: 1vw;
+    transform: translateY(-50%);
+    }
+
+    .buttonReglage {
+    top : 4vh;
+    right: 1vw;
+    position: fixed;
+    }
+
+    .buttonVoirTout{
+    top : 19vh;
+    left: 89vw;
+    position: fixed;
+    }
+    
+    .buttonVoirTout button {
+        width: auto;
+        padding: 0.8em 3em; 
+    }
+
+    .buttonLike {
+    top : 50vh;
+    left: 28vw;
+    position: fixed;
+    }
+
+    .container1 input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+        
+      }
+      
+      .container1 {
+        display: block;
+        position: absolute;
+        cursor: pointer;
+        font-size: 20px;
+        user-select: none;
+        transition: 100ms;
+        
+      }
+      
+      .checkmark {
+        top: 10em;
+        left: 0;
+        height: 0em;
+        width: 0em;
+        transition: 100ms;
+        animation: dislike_effect 400ms ease;
+        
+      }
+
+      .checkmark path {
+        fill: none; /* Aucun remplissage */
+        stroke: #000; /* Couleur du contour en noir */
+        stroke-width: 15px; /* Largeur du contour */
+    }
+    
+    
+      
+      .container1 input:checked ~ .checkmark path {
+        fill: #28974B;
+        stroke-width: 0;
+        
+      }
+      
+      .container1 input:checked ~ .checkmark {
+        animation: like_effect 400ms ease;
+
+        
+      }
+      
+      .container1:hover {
+        transform: scale(1.1);
+      }
+      
+      @keyframes like_effect {
+        0% {
+          transform: scale(0);
+        }
+      
+        50% {
+          transform: scale(1.2);
+        }
+      
+        100% {
+          transform: scale(1);
+        }
+      }
+      
+      @keyframes dislike_effect {
+        0% {
+          transform: scale(0);
+        }
+      
+        50% {
+          transform: scale(1.2);
+        }
+      
+        100% {
+          transform: scale(1);
+          
+        }
+      }
+
+    .buttonDislike {
+        top : 50vh;
+        left: 32vw;
+        position: fixed;
+    }
+
+    .container2 input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+      }
+      
+      .container2 {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .container2 svg {
+        position: relative;
+        top: 0;
+        left: 0;
+        height: 30px; /* Nouvelle hauteur */
+        width: 30px; /* Nouvelle largeur */
+        transition: all 0.3s;
+        fill: #666;
+    }
+    
+      
+      svg {
+        position: relative;
+        top: 0;
+        left: 0;
+        height: 50px;
+        width: 50px;
+        transition: all 0.3s;
+        fill: #666;
+      }
+      
+      svg:hover {
+        transform: scale(1.1) rotate(-10deg);
+      }
+      
+      .container2 input:checked ~ svg {
+        fill: rgb(185, 51, 51);
+      }
+
+ .container3 {
+    position: fixed;
+    top: 50vh; 
+    right: 62vw; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+  
+  .repost-checkbox {
+      display: none;
+  }
+  
+  .repost-button {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      border: none;
+      background-color: transparent;
+      color: #000000;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.3s;
+  }
+  
+  .repost-button:hover {
+      color: #28974B;
+  }
+  
+  .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 24px;
+      height: 16px;
+      margin-right: 5px;
+      transition: transform 0.3s;
+  }
+  
+  .arrow {
+      position: absolute;
+      width: 0; 
+      height: 0; 
+      border-style: solid;
+  }
+  
+  .up {
+      border-width: 0 6px 6px 6px;
+      border-color: transparent transparent currentColor transparent;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg);
+  }
+  
+  .down {
+      border-width: 6px 6px 0 6px;
+      border-color: currentColor transparent transparent transparent;
+      bottom: 0;
+      right: 0;
+      transform: rotate(-90deg);
+  }
+  
+  .line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: currentColor;
+      top: 50%;
+      transform: translateY(-50%);
+  }
+  
+  .repost-checkbox:checked + .repost-button .icon {
+      color: #1da1f2;;
+      transform: rotate(360deg);
+  }
+  
+  .repost-checkbox:checked + .repost-button {
+      color: #1da1f2;;
+  }
+  
+  .buttonOnglet {
+    top : 32.5vh;
+    left: 69vw;
+    position: fixed;
+  }
+
+  .buttonOnglet button {
+    background-color: rgba(40, 151, 75, 0.21);
+    color: white;
+    padding: 0.5em 1em;
+}
+
+.line6 {
+    width: 60%;
+    height: 1px;
+    background: #28974B;
+    position: fixed;
+    top: 60vh;
+    left: 20vw;
+    transform: translateY(-50%);
+}
+
