@@ -22,6 +22,7 @@ type DataStruct struct {
 	Notification     Notification
 	AllNotifications []Notification
 	Error            error
+	ColorMode        string
 }
 
 type RecommendedUser struct {
@@ -44,7 +45,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 	updateUserSession(r)
 
-	AllData = GetAllDatas()
+	AllData = GetAllDatas(r)
 
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
 	data, _ := getSessionData(r)
@@ -101,19 +102,36 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 
 		} else {
-			AllData.Error = err
-			err := LoginError.ExecuteTemplate(w, "loginerror.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if AllData.ColorMode == "light" {
+				AllData.Error = err
+				err := LoginError.ExecuteTemplate(w, "loginerror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				AllData.Error = err
+				err := DarkLoginError.ExecuteTemplate(w, "loginerror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
 			}
-			return
 		}
 	}
 
-	p := "Login page"
-	err = Login.ExecuteTemplate(w, "login.html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if AllData.ColorMode == "light" {
+		p := "Login page"
+		err = Login.ExecuteTemplate(w, "login.html", p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		p := "Login page"
+		err = DarkLogin.ExecuteTemplate(w, "login.html", p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
 
@@ -140,7 +158,7 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	}
 	updateUserSession(r)
 
-	AllData = GetAllDatas()
+	AllData = GetAllDatas(r)
 
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
 	data, _ := getSessionData(r)
@@ -160,19 +178,36 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
 		} else {
-			AllData.Error = err
-			err := RegisterError.ExecuteTemplate(w, "registererror.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if AllData.ColorMode == "light" {
+				AllData.Error = err
+				err := RegisterError.ExecuteTemplate(w, "registererror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				AllData.Error = err
+				err := DarkRegisterError.ExecuteTemplate(w, "registererror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
 			}
-			return
 		}
 	}
 
-	p := "Register page"
-	err = Register.ExecuteTemplate(w, "register.html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if AllData.ColorMode == "light" {
+		p := "Register page"
+		err = Register.ExecuteTemplate(w, "register.html", p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		p := "Register page"
+		err = DarkRegister.ExecuteTemplate(w, "register.html", p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
 
@@ -184,22 +219,20 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	}
 	updateUserSession(r)
 
-	AllData = GetAllDatas()
+	AllData = GetAllDatas(r)
 
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
-	data, _ := getSessionData(r)
-	if data.User.ColorMode == "dark" {
-		err := DarkHome.ExecuteTemplate(w, "home.html", AllData)
+	if AllData.ColorMode == "light" {
+		err = Home.ExecuteTemplate(w, "accueil.html", AllData)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		return
-	}
-
-	err = Home.ExecuteTemplate(w, "home.html", AllData)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	} else {
+		err := DarkHome.ExecuteTemplate(w, "accueil.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
 
@@ -223,7 +256,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 
 	username := strings.TrimPrefix(parts[2], "@")
 
-	AllData := GetAllDatas()
+	AllData := GetAllDatas(r)
 	AllData.UserTarget = GetAccountByUsername(Db, username)
 
 	if AllData.UserTarget == (User{}) {
@@ -234,10 +267,18 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = Profile.ExecuteTemplate(w, "profile.html", AllData)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if AllData.ColorMode == "light" {
+		err = Profile.ExecuteTemplate(w, "profile.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else {
+		err = DarkProfile.ExecuteTemplate(w, "profile.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
@@ -247,10 +288,22 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+
+	AllData = GetAllDatas(r)
+
 	w.WriteHeader(http.StatusNotFound)
-	p := "Page not found"
-	err = Error404.ExecuteTemplate(w, "error.html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+	if AllData.ColorMode == "light" {
+		p := "Page not found"
+		err = Error404.ExecuteTemplate(w, "error.html", p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		p := "Page not found"
+		err = DarkError.ExecuteTemplate(w, "error.html", p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }

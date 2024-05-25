@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"math/rand"
+	"net/http"
 	"regexp"
 	"strings"
 	"time"
@@ -504,7 +505,11 @@ func GetAllUsers(db *sql.DB) []User {
 	return users
 }
 
-func GetAllDatas() DataStruct {
+func GetAllDatas(r *http.Request) DataStruct {
+
+	data, _ := getSessionData(r)
+	Color := data.User.ColorMode
+
 	return DataStruct{
 		User:            UserSession,
 		UserTarget:      User{},
@@ -516,6 +521,7 @@ func GetAllDatas() DataStruct {
 		// AllComments:      GetAllComments(),
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),
+		ColorMode: Color,
 	}
 }
 
