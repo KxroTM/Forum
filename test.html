@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltip Example</title>
+    <style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+
+}
+
+.tooltip-container .tooltip-text {
+    visibility: hidden;
+    width: 140px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Place the tooltip above the text */
+    left: 50%;
+    margin-left: -70px; /* Use half of the width (140px/2 = 70px) to center the tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-container .tooltip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+    </style>
+</head>
+<body>
+    <div class="tooltip-container">
+        Passez votre souris ici
+        <span class="tooltip-text">Voici la popup informative!</span>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -20,7 +20,7 @@ var Db *sql.DB
 // TYPE OF USER :
 // - guests
 // - users
-// - prenium users
+// - premium users
 // - moderators
 // - administrators
 
