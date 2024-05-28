@@ -1,6 +1,5 @@
 .rightbar {
     position: fixed;
-    box-shadow: #000000 0px 0px 7px;
     right: 0;
     bottom: 0;
     width: 15vw;
@@ -40,5 +39,4 @@
     margin-top: 5vh;
     width: 13vw;
     height: 65vh;
-    box-shadow: #000000 0px 0px 7px;
 }

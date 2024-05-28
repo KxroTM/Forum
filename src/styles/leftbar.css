@@ -3,11 +3,10 @@
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    box-shadow: #000000 0px 0px 7px;
     left: 0;
     bottom: 0;
     width: 9.5vw;
-    height: 80vh;
+    height: 85vh;
     padding-top: 5vh;
     padding-left: 0.5vw;
     overflow: hidden;
@@ -23,9 +22,9 @@
 
 
 .buttonAccueil {
-
     position: relative;
     text-align: center;
+    margin-top: 3vh;
    }
 
    .buttonAccueil span {
@@ -91,7 +90,6 @@
     margin-top: 3vh;
     width: 8vw;
     height: 7vh;
-    box-shadow: #000000 0px 0px 7px;
 }
 
 .buttonVoirToutCategorie button {
