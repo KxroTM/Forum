@@ -12,6 +12,7 @@
     overflow: hidden;
     box-shadow: #28974B 0px 0px 7px;
     overflow: hidden;
+    z-index: 1000;
 }
 
 

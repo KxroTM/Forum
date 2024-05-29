@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/github-callback", forum.GitHubCallback)
 	http.HandleFunc("/accueil", forum.HomePage)
 	http.HandleFunc("/profile/", forum.ProfilePage)
+	http.HandleFunc("/creer-un-post", forum.CreatePostPage)
 
 	err := openLink()
 	if err != nil {

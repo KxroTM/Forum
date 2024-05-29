@@ -1,6 +1,7 @@
 package forum
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -21,6 +22,8 @@ type DataStruct struct {
 	AllComments      []Comment
 	Notification     Notification
 	AllNotifications []Notification
+	AllCategories    []Category
+	Categorie        Category
 	Error            error
 	ColorMode        string
 }
@@ -278,6 +281,56 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
+		}
+	}
+}
+
+func CreatePostPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	AllData = GetAllDatas(r)
+
+	if r.Method == http.MethodPost {
+		title := r.FormValue("title")
+		content := r.FormValue("content")
+		fmt.Println(title, content)
+
+		if err == nil {
+			http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+			return
+		} else {
+			if AllData.ColorMode == "light" {
+				AllData.Error = err
+				err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				AllData.Error = err
+				err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+		}
+	}
+
+	if AllData.ColorMode == "light" {
+		err = CreatePosts.ExecuteTemplate(w, "createpost.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err = DarkCreatePosts.ExecuteTemplate(w, "createpost.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 }

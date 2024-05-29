@@ -11,6 +11,8 @@ var Register = template.Must(template.ParseFiles("./src/templates/light/register
 var RegisterError = template.Must(template.ParseFiles("./src/templates/light/registererror.html"))
 var Home = template.Must(template.ParseFiles("./src/templates/light/accueil.html"))
 var Profile = template.Must(template.ParseFiles("./src/templates/light/profile.html"))
+var CreatePosts = template.Must(template.ParseFiles("./src/templates/light/createpost.html"))
+var CreatePostsError = template.Must(template.ParseFiles("./src/templates/light/createposterror.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -21,3 +23,5 @@ var DarkHome = template.Must(template.ParseFiles("./src/templates/dark/accueil.h
 var DarkProfile = template.Must(template.ParseFiles("./src/templates/dark/profile.html"))
 var DarkRegister = template.Must(template.ParseFiles("./src/templates/dark/register.html"))
 var DarkRegisterError = template.Must(template.ParseFiles("./src/templates/dark/registererror.html"))
+var DarkCreatePosts = template.Must(template.ParseFiles("./src/templates/dark/createpost.html"))
+var DarkCreatePostsError = template.Must(template.ParseFiles("./src/templates/dark/createposterror.html"))

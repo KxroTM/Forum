@@ -521,7 +521,9 @@ func GetAllDatas(r *http.Request) DataStruct {
 		// AllComments:      GetAllComments(),
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),
-		ColorMode: Color,
+		AllCategories: []Category{},
+		Categorie:     Category{},
+		ColorMode:     Color,
 	}
 }
 
