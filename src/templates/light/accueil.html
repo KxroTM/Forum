@@ -101,6 +101,15 @@
         </div>
         <div class="line4">
             <div class="catégories">
+            {{ range .AllCategories }}
+                <a href="/categorie?id={{.Category_id}}">
+                <button>
+                    <span>
+                        {{.Name}}
+                    </span>
+                </button>
+                </a>
+            {{ end }}
             </div>
             <div class ="buttonVoirToutCategorie">
                 <a href="/categories">
@@ -126,9 +135,19 @@
 
     <div class="rightbar">
         <div class="line3">
-
             <div class="users">
-
+            <h3>Utilisateurs recommandés :</h3>
+            {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                <a href="/profile/@{{$user.Username}}">
+                <button>
+                    <span>
+                        <img src="{{$user.Pfp}}" width="60" height="60">
+                        @{{.Username}}
+                    </span>
+                </button>
+                </a>
+                <p>{{ index $.RecommendedUser.Reason $i }}</p>
+            {{ end }}
             </div>
             <div class ="buttonVoirTout">
                 <a href="/utilisateurs">
@@ -145,18 +164,33 @@
     <div class="bodycode">
         <div class="golangPost">
             {{ range .AllPosts }}
+            <a href ="/post?id={{.Posts_id}}">
+            <form class="gotoPost"></form>
+            </a>
             <div class="upperPost">
                 <div class="user">
-                    <a href="/profile/{{.User_id}}"><img src="{{.User_pfp}}" width="70" height="70"></a>
-                    <a href="/profile/{{.User_id}}"><h5>@{{.User}}</h5></a>
-                    <h6>{{.Created_At}}</h6>
+                    <a href="/profile/@{{.Author}}"><img src="{{.User_pfp}}" width="70" height="70"></a>
+                    <a href="/profile/@{{.Author}}"><h5>@{{.Author}}</h5></a>
+                    <h6>{{.Date}}</h6>
                 </div>   
                 <div class="buttonOnglet">
-                    <button>
+                    <button onclick='reportToggle({{.Posts_id}})'>
                         <span>
                             ...
                         </span>
                     </button>
+                </div>
+                <div class="reportToggle" id="{{.Posts_id}}">
+                    <div class="flechedroite"></div>
+                    <div class="report">
+                        <a href="/signaler?id={{.Posts_id}}">
+                        <button>
+                            <span>
+                                Signaler
+                            </span>
+                        </button>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="bodyPost">
@@ -203,8 +237,10 @@
             </div>
 
             <div class="line6"></div>
+
             {{ end }}
         </div>
     </div>
 </body>
+<script src="../../style/scripts/accueil.js"></script>
 </html>

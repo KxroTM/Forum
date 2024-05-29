@@ -421,6 +421,13 @@ func UpdateLinks(db *sql.DB, user_id string, links string) {
 func AddCategoriesSub(db *sql.DB, user_id string, categorie string) {
 	categoriesSub := UserSession.CategorieSub + "," + categorie
 	db.Exec(`UPDATE users SET categoriesSub = ? WHERE UUID = ?`, categoriesSub, user_id)
+	db.Exec(`UPDATE categories SET users = users + 1 WHERE name = ?`, categorie)
+}
+
+func RemoveCategoriesSub(db *sql.DB, user_id string, categorie string) {
+	categoriesSub := strings.Replace(UserSession.CategorieSub, ","+categorie, "", -1)
+	db.Exec(`UPDATE users SET categoriesSub = ? WHERE UUID = ?`, categoriesSub, user_id)
+	db.Exec(`UPDATE categories SET users = users - 1 WHERE name = ?`, categorie)
 }
 
 func UpdateFollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va follow
@@ -521,8 +528,8 @@ func GetAllDatas(r *http.Request) DataStruct {
 		// AllComments:      GetAllComments(),
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),
-		AllCategories: []Category{},
 		Categorie:     Category{},
+		AllCategories: GetAllCategories(Db),
 		ColorMode:     Color,
 	}
 }

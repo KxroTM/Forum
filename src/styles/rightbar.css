@@ -33,10 +33,22 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     margin-left: 1vw;
     margin-top: 5vh;
     width: 13vw;
     height: 65vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+.users img {
+    border-radius: 40px;
+}
+
+.users p {
+    position: relative;
+    font-size: 13px;
+    margin-top: -1vh;
+    left: 1.5vw;
+    color: #28974B;
+    max-width: 109px;
 }

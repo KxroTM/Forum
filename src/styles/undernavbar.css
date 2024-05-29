@@ -4,11 +4,14 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    width: 75vw;
+    width: 74.9vw;
     height: 10vh;
     overflow: hidden;
     top: 15vh;
-    left: 10vw;
+    left: 10.1vw;
+    background-color: white;
+    z-index: 2;
+    border-bottom: 2px solid #e5e5e5;
   }
   
   .buttonPourToi {

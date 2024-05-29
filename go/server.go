@@ -2,8 +2,11 @@ package forum
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -286,6 +289,12 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreatePostPage(w http.ResponseWriter, r *http.Request) {
+	data, _ := getSessionData(r)
+	if data.User.Email == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
 	if err != nil {
@@ -296,10 +305,221 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 
 	if r.Method == http.MethodPost {
-		title := r.FormValue("title")
-		content := r.FormValue("content")
-		fmt.Println(title, content)
+		postType := r.FormValue("post_type")
+		if postType == "text" {
+			title := r.FormValue("title")
+			content := r.FormValue("text")
+			err := r.ParseMultipartForm(20 << 20)
+			if err != nil {
+				AllData.Error = ErrBadSizeImg
+				if AllData.ColorMode == "light" {
+					err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+					}
+					return
+				} else {
+					err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+					}
+					return
+				}
+			}
+			var FileName string
+			files := r.MultipartForm.File["images[]"]
 
+			if len(files) != 0 {
+				for _, fileHeader := range files {
+					file, err := fileHeader.Open()
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+					defer file.Close()
+
+					if !strings.HasPrefix(fileHeader.Header.Get("Content-Type"), "image/") {
+						AllData.Error = ErrBadTypeImg
+						if AllData.ColorMode == "light" {
+							err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						} else {
+							err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						}
+					}
+
+					fileBytes, err := io.ReadAll(file)
+					if err != nil {
+						AllData.Error = err
+						if AllData.ColorMode == "light" {
+							AllData.Error = err
+							err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						} else {
+							AllData.Error = err
+							err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						}
+					}
+
+					fileName := filepath.Base(fileHeader.Filename)
+					destination := "./uploads/" + fileName
+
+					if _, err := os.Stat(destination); err == nil {
+						ext := filepath.Ext(fileName)
+						fileNameWithoutExt := fileName[:len(fileName)-len(ext)]
+						i := 1
+						for {
+							newFileName := fmt.Sprintf("%s_%d%s", fileNameWithoutExt, i, ext)
+							newDestination := filepath.Join("./uploads/", newFileName)
+							_, err := os.Stat(newDestination)
+							if os.IsNotExist(err) {
+								destination = newDestination
+								break
+							}
+							i++
+						}
+					}
+
+					err = os.WriteFile(destination, fileBytes, 0644)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+					FileName = FileName + " " + destination
+				}
+
+				errr := CreatePost(Db, AllData.User.User_id, "", title, content, FileName)
+				if errr != nil {
+					fmt.Println(errr)
+					http.Error(w, errr.Error(), http.StatusInternalServerError)
+					return
+				}
+			} else {
+				errr := CreatePost(Db, AllData.User.User_id, "", title, content, "")
+				if errr != nil {
+					fmt.Println(errr)
+					http.Error(w, errr.Error(), http.StatusInternalServerError)
+					return
+				}
+			}
+
+		} else if postType == "image" {
+			imageTitle := r.FormValue("image_title")
+			err := r.ParseMultipartForm(20 << 20)
+			if err != nil {
+				AllData.Error = ErrBadSizeImg
+				if AllData.ColorMode == "light" {
+					err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+					}
+					return
+				} else {
+					err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+					}
+					return
+				}
+			}
+			var FileName string
+			files := r.MultipartForm.File["images[]"]
+
+			if len(files) != 0 {
+				for _, fileHeader := range files {
+					file, err := fileHeader.Open()
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+					defer file.Close()
+
+					if !strings.HasPrefix(fileHeader.Header.Get("Content-Type"), "image/") {
+						AllData.Error = ErrBadTypeImg
+						if AllData.ColorMode == "light" {
+							err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						} else {
+							err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						}
+					}
+
+					fileBytes, err := io.ReadAll(file)
+					if err != nil {
+						AllData.Error = err
+						if AllData.ColorMode == "light" {
+							AllData.Error = err
+							err := CreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						} else {
+							AllData.Error = err
+							err := DarkCreatePostsError.ExecuteTemplate(w, "createposterror.html", AllData)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusInternalServerError)
+							}
+							return
+						}
+					}
+
+					fileName := filepath.Base(fileHeader.Filename)
+					destination := "./uploads/" + fileName
+
+					if _, err := os.Stat(destination); err == nil {
+						ext := filepath.Ext(fileName)
+						fileNameWithoutExt := fileName[:len(fileName)-len(ext)]
+						i := 1
+						for {
+							newFileName := fmt.Sprintf("%s_%d%s", fileNameWithoutExt, i, ext)
+							newDestination := filepath.Join("./uploads/", newFileName)
+							_, err := os.Stat(newDestination)
+							if os.IsNotExist(err) {
+								destination = newDestination
+								break
+							}
+							i++
+						}
+					}
+
+					err = os.WriteFile(destination, fileBytes, 0644)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+					FileName = FileName + " " + destination
+				}
+			}
+
+			errr := CreatePost(Db, AllData.User.User_id, "", imageTitle, "", FileName)
+			if errr != nil {
+				fmt.Println(errr)
+				http.Error(w, errr.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
 		if err == nil {
 			http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 			return

@@ -24,6 +24,8 @@ type Post struct {
 	Retweeter string
 	Date      string
 	Report    int
+	Author    string
+	Links     string
 }
 
 var PostSession Post
@@ -39,7 +41,7 @@ func GetAllPosts(db *sql.DB) []Post {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -48,7 +50,7 @@ func GetAllPosts(db *sql.DB) []Post {
 	return posts
 }
 
-func CreatePost(db *sql.DB, user_id string, categorie string, title string, text string) error {
+func CreatePost(db *sql.DB, user_id string, categorie string, title string, text string, link string) error {
 	currentTime := time.Now()
 	date := currentTime.Format("02-01-2006 15:04")
 
@@ -74,15 +76,17 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 		Date:      date,
 		Report:    0,
 		Disliker:  "",
+		Author:    user.Username,
+		Links:     link,
 	}
 
-	db.Exec(`INSERT INTO posts (posts_id, UUID, user_pfp, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker)
+	db.Exec(`INSERT INTO posts (posts_id, UUID, user_pfp, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker, author, links) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker, PostSession.Author, PostSession.Links)
 	return nil
 }
 
-func UpdatePost(db *sql.DB, post_id string, categorie string, title string, text string) error {
+func UpdatePost(db *sql.DB, post_id string, categorie string, title string, text string, links string) error {
 	PostSession, err := GetPost(db, post_id)
 	if err != nil {
 		return err
@@ -90,7 +94,8 @@ func UpdatePost(db *sql.DB, post_id string, categorie string, title string, text
 	PostSession.Categorie = categorie
 	PostSession.Title = title
 	PostSession.Text = text
-	db.Exec(`UPDATE posts SET categorie = ?, title = ?, text = ? WHERE posts_id = ?`, categorie, title, text, post_id)
+	PostSession.Links = links
+	db.Exec(`UPDATE posts SET categorie = ?, title = ?, text = ?, links = ? WHERE posts_id = ?`, categorie, title, text, links, post_id)
 	return nil
 }
 
@@ -104,7 +109,7 @@ func GetPost(db *sql.DB, post_id string) (Post, error) {
 	var post Post
 
 	for rows.Next() {
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
 	}
 	if err := rows.Err(); err != nil {
 		return Post{}, err
@@ -128,7 +133,7 @@ func GetAllPostsByUser(db *sql.DB, user_id string) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
 		posts = append(posts, post)
 	}
 
@@ -165,7 +170,7 @@ func GetAllPostsByCategorie(db *sql.DB, categorie string) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -186,7 +191,7 @@ func GetAllPostsByLikeCount(db *sql.DB) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -299,7 +304,7 @@ func GetPostByReport(db *sql.DB) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {

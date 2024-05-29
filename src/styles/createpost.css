@@ -182,3 +182,10 @@ button:hover {
         .createpost label {
           font-family: "Gill Sans", sans-serif;
         }
+
+
+.error {
+    color: red;
+    font-size: 14px;
+    /* margin-top: 5px; */
+}
