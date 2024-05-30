@@ -9,3 +9,29 @@ function reportToggle(id) {
         report.style.zIndex = -10;
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const postImages = document.querySelectorAll('#postimg');
+
+    postImages.forEach(img => {
+        img.addEventListener('click', () => {
+            console.log('click');
+            const overlay = document.getElementById('overlay');
+            const overlayimg = document.getElementById('imgoverlay');
+            if (overlay.style.display === 'none') {
+                overlay.style.display = 'flex';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlayimg.src = img.src;
+                overlayimg.style.width = '65%';
+                overlay.style.zIndex = '10000';
+            }
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
+            });
+        });
+    });
+});

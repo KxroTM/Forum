@@ -11,6 +11,10 @@
     <title>Accueil</title>
 </head>
 <body>
+    <div class="overlay" id="overlay" style="display: none;">
+        <img id="imgoverlay">
+    </div>
+
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <div class="searchBar">
@@ -200,6 +204,11 @@
                 <div class="content">
                     <p>{{.Text}}</p>
                 </div>
+                {{ if .Links }}
+                <div class="image">
+                    <img id="postimg" src="{{.Links}}" width="100%" height="100%">
+                </div>
+                {{ end }}
             </div>
             <div class="lowerPost">
                 <div class="buttonLike">

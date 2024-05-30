@@ -23,7 +23,7 @@
 
   .gotoPost{
     position: absolute;
-    min-height: 30vh;
+    min-height: 31vh;
     max-height: 50vh;
     width: 55vw;
     right: 10vw;
@@ -123,11 +123,35 @@ h6 {
 .content {
   display: flex;
   justify-content: start;
-  width: 50vw;
+  width: 30vw;
   max-height: 20vh;
-  min-height: 8vh;
+  min-height: 9vh;
   font-size: medium;
+  overflow: hidden;
+  position: relative;
+  right: 10vw;
 }
+
+.content p {
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.image {
+  display: flex;
+  justify-content: end;
+  max-width: 20vw;
+  max-height: 20vh;
+  position: relative;
+  bottom: 17vh;
+  left: 14vw;
+}
+
+.image img {
+  border-radius: 5px;
+}
+
 
 
 
@@ -427,4 +451,12 @@ h6 {
   line-height: 0;
   transform : rotate(-90deg);
 
+}
+
+
+.overlay{
+  background-color: #000000c6;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
 }

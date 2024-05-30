@@ -42,6 +42,7 @@ func GetAllPosts(db *sql.DB) []Post {
 	for rows.Next() {
 		var post Post
 		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links)
+		post.Links = strings.TrimSpace(post.Links)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -120,6 +121,14 @@ func GetPost(db *sql.DB, post_id string) (Post, error) {
 
 func DeletePost(db *sql.DB, post_id string) {
 	db.Exec(`DELETE FROM posts WHERE posts_id = ?`, post_id)
+}
+
+func DeleteAllPosts(db *sql.DB) {
+	db.Exec(`DELETE FROM posts`)
+}
+
+func DeleteAllPostsByUser(db *sql.DB, user_id string) {
+	db.Exec(`DELETE FROM posts WHERE UUID = ?`, user_id)
 }
 
 func GetAllPostsByUser(db *sql.DB, user_id string) ([]Post, error) {
