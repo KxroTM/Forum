@@ -288,6 +288,56 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func PostPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+	path := r.URL.Path
+
+	parts := strings.Split(path, "/")
+	if len(parts) < 3 || !strings.HasPrefix(parts[2], "id=") {
+		err := Error404.ExecuteTemplate(w, "error.html", "Invalid URL")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	id := strings.TrimPrefix(parts[2], "id=")
+
+	AllData := GetAllDatas(r)
+	AllData.Post, err = GetPost(Db, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if AllData.Post == (Post{}) {
+		err := ErrorPost.ExecuteTemplate(w, "errorPost.html", "Invalid URL")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if AllData.ColorMode == "light" {
+		err = LightPost.ExecuteTemplate(w, "post.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else {
+		err = DarkPost.ExecuteTemplate(w, "post.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+}
+
 func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 	data, _ := getSessionData(r)
 	if data.User.Email == "" {
