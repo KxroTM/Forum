@@ -1,22 +1,190 @@
+body {
+  background-color: #FFF;
+}
+
+button {
+  border: 0px solid;
+  background-color: #FFF;
+  border-radius: 0.9em;
+  padding: 0.8em 1.2em 0.8em 1em;
+  transition: all ease-in-out 0.2s;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: rgba(40, 151, 75, 0.21);
+}
+
 .bodycode {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    width: 75vw;
-    height: 75vh;
-    top: 25vh;
-    left: 10vw;
-    margin-top: 2vh;
-  }
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 75vw;
+  height: 75vh;
+  top: 50vh;
+  left: 10vw;
+  margin-top: 2vh;
+}
+
+.backFond {
+  width: 74.9vw;
+  height: 33vh;
+  flex-shrink: 0;
+  background: #28974B;
+  margin-top: -51vh;
+  position: relative;
+  right: 0.3vw;
+}
+
+.editProfil {
+  top: -17vh;
+  right: 1vw;
+  position: absolute;
+  width: 9vw;
+  height: 6vh;
+}
+
+.editProfil button {
+  background-color: rgba(40, 151, 75, 0.21);
+  height: 6vh;
+  width: 9vw;
+}
+
+.backFond img{
+  width: 144px;
+  height: 139px;
+  flex-shrink: 0;
+  border: 1px solid #00000085;
+  border-radius: 144px;
+  top: 24vh;
+  left: 1vw;
+  position: relative;
+}
+
+.Pseudo {
+  top: 25vh;
+  left: 2vw;
+  position: relative;
+  width: 10vw;
+}
+
+.backFond h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+  margin-top: 1vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.Biographie {
+  top: 15vh;
+  left: 2vw;
+  position: relative;
+  width: 70vw;
+  height: 15vh;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-wrap: wrap;
+
+}
+
+.Biographie h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  font-family: 'Inter', sans-serif;
+}
+
+.line12 {
+  width:74.9vw;
+  height: 2px;
+  background: #28974B;
+  position: absolute;
+  top: 15vh;
+  right: 0.4vw;
+}
+
+.middle {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  align-items: center;
+  width: 75vw;
+  height: 10vh;
+  top: 20vh;
+  right: 0.4vw;
+  position: relative;
+}
+
+.Posts {
+  position: relative;
+  width: 9vw;
+  height: 6vh;
+}
+
+.Posts button {
+  background-color: rgba(40, 151, 75, 0.21);
+  height: 6vh;
+  width: 9vw;
+}
+
+.Commentaires {
+  position: relative;
+  width: 9vw;
+  height: 6vh;
+}
+
+.Commentaires button {
+  background-color: rgba(40, 151, 75, 0.21);
+  height: 6vh;
+  width: 9vw;
+}
+
+.Aimer {
+  position: relative;
+  width: 9vw;
+  height: 6vh;
+}
+
+.Aimer button {
+  background-color: rgba(40, 151, 75, 0.21);
+  height: 6vh;
+  width: 9vw;
+}
+
+.Republier {
+  position: relative;
+  width: 9vw;
+  height: 6vh;
+}
+
+.Republier button {
+  background-color: rgba(40, 151, 75, 0.21);
+  height: 6vh;
+  width: 9vw;
+}
 
   .golangPost{
+    position: relative; 
+    top: 30vh;
     min-height: 30vh;
     width: 60vw;
+    left: 8vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: "Gill Sans", sans-serif;
-    margin-bottom: 50vh;
     z-index: 0;
   }
 
@@ -25,7 +193,7 @@
     min-height: 31vh;
     max-height: 50vh;
     width: 55vw;
-    right: 10vw;
+    right: 3vw;
     box-shadow: #28974b4b 0px 0px 5px;
     border-radius: 10px;
   }
@@ -102,7 +270,7 @@ h6 {
 
 .bodyPost {
   min-height: 15vh;
-  max-height: 30vh;
+  max-height: 15vh;
   width: 50vw;
   display: flex;
   flex-direction: column;
@@ -391,7 +559,7 @@ h6 {
   
 
 
-.line6 {
+.golangPost .line6 {
     width: 60%;
     min-height: 1px;
     background: #28974B;
@@ -458,4 +626,8 @@ h6 {
   z-index: 10000;
   align-items: center;
   justify-content: center;
+}
+
+.leftbar{
+  top: 10vh;
 }

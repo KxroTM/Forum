@@ -264,6 +264,8 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 
 	AllData := GetAllDatas(r)
 	AllData.UserTarget = GetAccountByUsername(Db, username)
+	AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.UserTarget == (User{}) {
 		err := ErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")
@@ -353,6 +355,7 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 
 	AllData = GetAllDatas(r)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if r.Method == http.MethodPost {
 		postType := r.FormValue("post_type")

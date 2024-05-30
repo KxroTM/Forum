@@ -1,35 +1,278 @@
-<!DOCTYPE html>
-<html>
+    <!DOCTYPE html>
+    <html lang="fr">
     <head>
-        <link rel="icon" href="../style/media/icon.png">
-        <title>@{{.UserTarget.Username}}</title>
-        <link rel="stylesheet" href="../../styles/profile.css">
-        <link rel="stylesheet" href="../styles/navbar.css">
-        <link rel="stylesheet" href="../../style/profile.css">
-        <link rel="stylesheet" href="../style/navbar.css"> 
+        <link rel="stylesheet" type="text/css" href="./accontUser.css"/>
+        <link rel="stylesheet" type="text/css" href="./src/styles/navbar.css"/>
+        <link rel="stylesheet" type="text/css" href="./src/styles/leftbar.css"/>
+        <link rel="stylesheet" type="text/css" href="./src/styles/rightbar.css"/>
+        <meta charset="UTF-8">
+        <title>Accueil</title>
     </head>
-
     <body>
         <div class="navbar">
-            <a href="/accueil" class="logo"><img src="../style/media/logo.png" width="100%"></a>
-            <form action="#" class="search">
-                <button class="search__button">
-                    <div class="search__icon">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-                        <title>magnifying-glass</title>
-                        <path d="M17.545 15.467l-3.779-3.779c0.57-0.935 0.898-2.035 0.898-3.21 0-3.417-2.961-6.377-6.378-6.377s-6.186 2.769-6.186 6.186c0 3.416 2.961 6.377 6.377 6.377 1.137 0 2.2-0.309 3.115-0.844l3.799 3.801c0.372 0.371 0.975 0.371 1.346 0l0.943-0.943c0.371-0.371 0.236-0.84-0.135-1.211zM4.004 8.287c0-2.366 1.917-4.283 4.282-4.283s4.474 2.107 4.474 4.474c0 2.365-1.918 4.283-4.283 4.283s-4.473-2.109-4.473-4.474z"></path>
-                    </svg>
-                    </div>
+            <img src="./src/styles/img/Logo.png"  class="logo" width="15%"> 
+            <div class="searchBar">
+                <img src="./src/styles/img/loupeDark.png" width="8%">
+                <input type="text" placeholder="Rechercher...">
+                <button type="submit">Rechercher</button>
+            </div>
+            <div class="buttonAddPost">
+                <a href="/creer-un-post">
+                <button>
+                    <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path></svg> Créer un post
+                    </span>
                 </button>
-                <input type="text" class="search__input" placeholder="Rechercher...">
-            </form>
-            <a href="/creer-un-post" class="create-post"><button>Créer un post</button></a>
-            <a href="/notification" class="notification"><button>Notifications</button></a>
-            <img src="{{.User.Pfp}}" alt="Avatar" class="profile-picture" width="80" height="80">
+                </a>
+            </div>
+            <div class="buttonNotification">
+                <button>
+                    <span> 
+                        <img src ="./src/styles/img/clocheDark.png" width="24" height="24" alt="Notification Icon">
+                    </span>
+                </button>
+            </div>
+            <div class ="buttonConnecter">
+                <a href="/connexion">
+                <button>
+                    <span>
+                        Se connecter
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="line1"></div>
         </div>
-        <hr />
-    
-    
-    
+
+        <div class="leftbar">
+            <div class="line2"></div>
+            <div class="buttonAccueil">
+                <a href="/accueil">
+                <button>
+                    <span>
+                        <img src ="../../styles/img/homeDark.png" width="24" height="24">
+                        Accueil
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="buttonPopulaire">
+                <a href="/populaire"> 
+                <button>
+                    <span>
+                        <img src="./src/styles/img/popularDark.png" width="24" height="24">
+                        Populaire
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="buttonPosts">
+                <a href="/posts">
+                <button>
+                    <span>
+                        <img src="./src/styles/img/postsDark.png" width="24" height="24">
+                        Posts
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="line4">
+                <div class="catégories">
+                {{ range .AllCategories }}
+                    <a href="/categorie?id={{.Category_id}}">
+                    <button>
+                        <span>
+                            {{.Name}}
+                        </span>
+                    </button>
+                    </a>
+                {{ end }}
+                </div>
+                <div class ="buttonVoirToutCategorie">
+                    <a href="/categories">
+                    <button>
+                        <span>
+                            Voir tout
+                        </span>
+                    </button>
+                    </a>
+                </div>
+            </div>
+            <div class="line5">
+                <div class="buttonReglage">
+                    <button>
+                        <span>
+                            <img src="./src/styles/img/engrenageDark.png" width="30" height="20">
+                            Réglages
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div> 
+
+        <div class="rightbar">
+            <div class="line3">
+                <div class="users">
+                <h3>Utilisateurs recommandés :</h3>
+                {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                    <a href="/profile/@{{$user.Username}}">
+                    <button>
+                        <span>
+                            <img src="{{$user.Pfp}}" width="60" height="60">
+                            @{{.Username}}
+                        </span>
+                    </button>
+                    </a>
+                    <p>{{ index $.RecommendedUser.Reason $i }}</p>
+                {{ end }}
+                </div>
+                <div class ="buttonVoirTout">
+                    <a href="/utilisateurs">
+                    <button>
+                        <span>
+                            Voir tout
+                        </span>
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bodycode">
+            <!-- ici -->
+            <div class="backFond">
+                <img src="{{.UserTarget.Pfp}}" width="60" height="60">
+                <div class="Pseudo">
+                    <h1>@{{.UserTarget.Username}}</h1>
+                </div>
+            </div>
+            <div class="Biographie">
+                <h5>Biographie</h5>
+            </div>
+            <div class="editProfil">     
+                <button>    
+                    <span>
+                        Edit Profile
+                    </span>
+                </button>
+            </div>
+            <div class="line6">
+            </div>
+            <div class="middle">
+                <div class="Posts">
+                    <button>
+                        <span>
+                            Posts
+                        </span>
+                    </button>
+                </div>
+                <div class="Commentaires">
+                    <button>
+                        <span>
+                            Commentaires
+                        </span>
+                    </button>
+                </div>
+                <div class="Aimer">
+                    <button>
+                        <span>
+                            Aimer
+                        </span>
+                    </button>
+                </div>
+                <div class="Republier">
+                    <button>
+                        <span>
+                            Republier
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="golangPost">
+                {{ range .AllPosts }}
+                <a href ="/post/id={{.Posts_id}}">
+                <form class="gotoPost"></form>
+                </a>
+                <div class="upperPost">
+                    <div class="user">
+                        <a href="/profile/@{{.Author}}"><img src="{{.User_pfp}}" width="70" height="70"></a>
+                        <a href="/profile/@{{.Author}}"><h5>@{{.Author}}</h5></a>
+                        <h6>{{.Date}}</h6>
+                    </div>   
+                    <div class="buttonOnglet">
+                        <button onclick='reportToggle({{.Posts_id}})'>
+                            <span>
+                                ...
+                            </span>
+                        </button>
+                    </div>
+                    <div class="reportToggle" id="{{.Posts_id}}">
+                        <div class="flechedroite"></div>
+                        <div class="report">
+                            <a href="/signaler?id={{.Posts_id}}">
+                            <button>
+                                <span>
+                                    Signaler
+                                </span>
+                            </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bodyPost">
+                    <div class="title">
+                        <h4>{{.Title}}</h4>
+                    </div>
+                    <div class="content">
+                        <p>{{.Text}}</p>
+                    </div>
+                    {{ if .Links }}
+                    <div class="image">
+                        <img id="postimg" src="{{.Links}}" width="100%" height="100%">
+                    </div>
+                    {{ end }}
+                </div>
+                <div class="lowerPost">
+                    <div class="buttonLike">
+                        <label class="container1">
+                            <input checked="checked" type="checkbox">
+                            <div class="checkmark">
+                            <svg viewBox="0 0 350 350">
+                            <rect fill="none" height="256" width="256"></rect>
+                            <path d="M224.6,51.9a59.5,59.5,0,0,0-43-19.9,60.5,60.5,0,0,0-44,17.6L128,59.1l-7.5-7.4C97.2,28.3,59.2,26.3,35.9,47.4a59.9,59.9,0,0,0-2.3,87l83.1,83.1a15.9,15.9,0,0,0,22.6,0l81-81C243.7,113.2,245.6,75.2,224.6,51.9Z" stroke-width="20px" stroke="#FFF" fill="none"></path></svg>
+                            </div>
+                        </label>
+                    </div>
+                    <p class ="nbLikes">{{.Like}}</p>
+
+                    <div class="buttonDislike">
+                        <label class="container2">
+                            <input type="checkbox">
+                            <svg id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M2.156,14.901l2.489-8.725C5.012,4.895,6.197,4,7.528,4h13.473C21.554,4,22,4.448,22,5v14  c0,0.215-0.068,0.425-0.197,0.597l-5.392,7.24C15.813,27.586,14.951,28,14.027,28c-1.669,0-3.026-1.357-3.026-3.026V20H5.999  c-1.265,0-2.427-0.579-3.188-1.589C2.047,17.399,1.809,16.12,2.156,14.901z" id="XMLID_259_"></path><path d="M25.001,20h4C29.554,20,30,19.552,30,19V5c0-0.552-0.446-1-0.999-1h-4c-0.553,0-1,0.448-1,1v14  C24.001,19.552,24.448,20,25.001,20z M27.001,6.5c0.828,0,1.5,0.672,1.5,1.5c0,0.828-0.672,1.5-1.5,1.5c-0.828,0-1.5-0.672-1.5-1.5  C25.501,7.172,26.173,6.5,27.001,6.5z" id="XMLID_260_"></path></svg>
+                        </label>
+                    </div>
+                    <p class ="nbDislike">{{.Dislike}}</p>
+
+                    <div class="container3" title="Republier">
+                        <input type="checkbox" id="repostCheckbox" class="repost-checkbox">
+                        <label for="repostCheckbox" class="repost-button">
+                            <span class="icon">
+                                <span class="arrow up"></span>
+                                <span class="arrow down"></span>
+                                <span class="line"></span>
+                            </span>
+                            <span class="text"></span>
+                        </label>
+                    </div>
+                    <p class ="nbRepu">{{.Retweet}}</p>
+                </div>
+
+                <div class="line6"></div>
+
+                {{ end }}
+            </div>
+        </div>
     </body>
-</html>
+    <script src="./src/styles/scripts/accueil.js"></script>
+    </html>

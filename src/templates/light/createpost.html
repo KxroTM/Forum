@@ -78,6 +78,15 @@
         </div>
         <div class="line4">
             <div class="catégories">
+            {{ range .AllCategories }}
+                <a href="/categorie?id={{.Category_id}}">
+                <button>
+                    <span>
+                        {{.Name}}
+                    </span>
+                </button>
+                </a>
+            {{ end }}
             </div>
             <div class ="buttonVoirToutCategorie">
                 <a href="/categories">
@@ -103,9 +112,19 @@
 
     <div class="rightbar">
         <div class="line3">
-
             <div class="users">
-
+            <h3>Utilisateurs recommandés :</h3>
+            {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                <a href="/profile/@{{$user.Username}}">
+                <button>
+                    <span>
+                        <img src="{{$user.Pfp}}" width="60" height="60">
+                        @{{.Username}}
+                    </span>
+                </button>
+                </a>
+                <p>{{ index $.RecommendedUser.Reason $i }}</p>
+            {{ end }}
             </div>
             <div class ="buttonVoirTout">
                 <a href="/utilisateurs">
