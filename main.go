@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/github-login", forum.GitHubLoginPage)
 	http.HandleFunc("/github-callback", forum.GitHubCallback)
 	http.HandleFunc("/accueil", forum.HomePage)
+	http.HandleFunc("/populaire", forum.PopulairePage)
 	http.HandleFunc("/profile/", forum.ProfilePage)
 	http.HandleFunc("/creer-un-post", forum.CreatePostPage)
 	http.HandleFunc("/post/", forum.PostPage)

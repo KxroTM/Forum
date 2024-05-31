@@ -15,6 +15,7 @@ var Profile = template.Must(template.ParseFiles("./src/templates/light/profile.h
 var CreatePosts = template.Must(template.ParseFiles("./src/templates/light/createpost.html"))
 var CreatePostsError = template.Must(template.ParseFiles("./src/templates/light/createposterror.html"))
 var LightPost = template.Must(template.ParseFiles("./src/templates/light/post.html"))
+var Populaire = template.Must(template.ParseFiles("./src/templates/light/populaire.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -29,3 +30,4 @@ var DarkRegisterError = template.Must(template.ParseFiles("./src/templates/dark/
 var DarkCreatePosts = template.Must(template.ParseFiles("./src/templates/dark/createpost.html"))
 var DarkCreatePostsError = template.Must(template.ParseFiles("./src/templates/dark/createposterror.html"))
 var DarkPost = template.Must(template.ParseFiles("./src/templates/dark/post.html"))
+var DarkPopulaire = template.Must(template.ParseFiles("./src/templates/dark/populaire.html"))

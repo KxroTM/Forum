@@ -608,6 +608,31 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func PopulairePage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	AllData = GetAllDatas(r)
+	AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+
+	if AllData.ColorMode == "light" {
+		err = Populaire.ExecuteTemplate(w, "populaire.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkPopulaire.ExecuteTemplate(w, "populaire.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)

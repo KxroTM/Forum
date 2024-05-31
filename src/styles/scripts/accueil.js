@@ -1,5 +1,5 @@
 function reportToggle(id) {
-    var report = document.getElementById(id);
+    var report = document.getElementById(id+"report");
     console.log(id);
     if (report.style.opacity == 0) {
         report.style.opacity = 1;
@@ -12,6 +12,7 @@ function reportToggle(id) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const postImages = document.querySelectorAll('#postimg');
+    const post = document.querySelectorAll('.post');
 
     postImages.forEach(img => {
         img.addEventListener('click', () => {
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 overlay.style.top = '0';
                 overlay.style.left = '0';
                 overlayimg.src = img.src;
-                overlayimg.style.width = '65%';
+                overlayimg.style.height = '65%';
                 overlay.style.zIndex = '10000';
             }
             overlay.addEventListener('click', () => {
@@ -34,4 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     });
+
+    post.forEach(p => {
+        p.addEventListener('click', () => {
+            if (!event.target.classList.contains('ignore-click') && !event.target.closest('.ignore-click')) {
+                window.location.href = '/post/id=' + p.id;
+            }});
+    });
+
 });

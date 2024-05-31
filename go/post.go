@@ -200,7 +200,8 @@ func GetAllPostsByLikeCount(db *sql.DB) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links)
+		post.Links = strings.TrimSpace(post.Links)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
