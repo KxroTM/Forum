@@ -44,6 +44,7 @@ button:hover {
   margin-top: -51vh;
   position: relative;
   right: 0.3vw;
+  box-shadow: #28974B 0px 0px 10px;
 }
 
 .editProfil {
@@ -550,12 +551,20 @@ a {
 
 .post-content {
     padding: 16px;
+    position: relative;
+    left: 5vw;
+    width: 40vw;
 }
 
 .post-content p {
     text-overflow: ellipsis;
     margin: 0 0 16px;
     overflow: hidden;
+}
+
+.post-content img {
+  max-height: 20vh;
+  box-shadow: #000 0px 0px 5px;
 }
 
 .post-image {

@@ -384,12 +384,20 @@ a {
 
 .post-content {
     padding: 16px;
+    position: relative;
+    left: 5vw;
+    width: 40vw;
 }
 
 .post-content p {
     text-overflow: ellipsis;
     margin: 0 0 16px;
     overflow: hidden;
+}
+
+.post-content img {
+  max-height: 20vh;
+  box-shadow: #000 0px 0px 5px;
 }
 
 .post-image {
