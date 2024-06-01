@@ -24,6 +24,23 @@ function reportOverlay(id) {
     }
 }
 
+function toggleNotif() {
+    fleche = document.getElementById("piqueoverlay");
+    notif = document.getElementById("notifoverlay");
+
+    if (notif.style.opacity == 0) {
+        notif.style.opacity = 1;
+        notif.style.zIndex = 10000;
+        fleche.style.opacity = 1;
+        fleche.style.zIndex = 10001;
+    } else {
+        notif.style.opacity = 0;
+        notif.style.zIndex = -10;
+        fleche.style.opacity = 0;
+        notif.style.zIndex = -10;
+    }
+}
+
 function reglageToggle() {
     var reglage = document.getElementById("fullreglage");
     if (reglage.style.opacity == 0) {
