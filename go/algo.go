@@ -13,7 +13,7 @@ func ForYouPageAlgorithm(db *sql.DB, user_id string) []Post {
 	var AllPosts = GetAllPosts(db)
 
 	for _, post := range AllPosts {
-		if strings.Contains(user.CategorieSub, post.Categorie) {
+		if strings.Contains(user.CategorieSub, post.Categorie) && user.CategorieSub != "" {
 			if !contains(posts, post) {
 				posts = append(posts, post)
 			}

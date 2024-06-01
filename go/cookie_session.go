@@ -46,34 +46,65 @@ func getSessionData(r *http.Request) (SessionData, error) {
 
 	cookie, err := r.Cookie("session")
 	if err != nil {
-		return SessionData{
-			User: Session{
-				Role:      "guest",
-				ColorMode: "light",
-			},
-		}, err
+		if AllData.ColorMode == "light" {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "light",
+				},
+			}, err
+		} else {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "dark",
+				},
+			}, err
+		}
 	}
 
 	decodedData, err := base64.StdEncoding.DecodeString(cookie.Value)
 	if err != nil {
-		return SessionData{
-			User: Session{
-				Role:      "guest",
-				ColorMode: "light",
-			},
-		}, err
+		if AllData.ColorMode == "light" {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "light",
+				},
+			}, err
+		} else {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "dark",
+				},
+			}, err
+		}
 	}
 
 	err = json.Unmarshal(decodedData, &data)
 	if err != nil {
-		return SessionData{
-			User: Session{
-				Role:      "guest",
-				ColorMode: "light",
-			},
-		}, err
+		if AllData.ColorMode == "light" {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "light",
+				},
+			}, err
+		} else {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "dark",
+				},
+			}, err
+		}
 	}
-
+	if AllData.ColorMode == "light" {
+		data.User.ColorMode = "light"
+	} else {
+		data.User.ColorMode = "dark"
+	}
 	return data, nil
 }
 

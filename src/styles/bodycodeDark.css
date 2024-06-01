@@ -20,20 +20,6 @@
     z-index: 0;
   }
 
-  .gotoPost{
-    /* position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    z-index: 1;  /* Met le formulaire devant tout autre contenu */
-  }
-
 .buttonOnglet {
   position: absolute;
   display: flex;
@@ -46,14 +32,14 @@
 }
 
 .buttonOnglet button {
-  background-color: rgba(40, 151, 75, 0.21);
+  background-color: rgba(6, 153, 191, 0.31);
   color: white;
   padding: 0.5em 1em;
 }
 
 a {
   text-decoration: none;
-  color: black;
+  color: rgb(196, 194, 194);
 }
 
     .buttonLike {
@@ -98,7 +84,7 @@ a {
     
       
       .container1 input:checked ~ .checkmark path {
-        fill: #28974B;
+        fill: #0698BF;
         stroke-width: 0;
         
       }
@@ -211,14 +197,14 @@ a {
       padding: 5px 10px;
       border: none;
       background-color: transparent;
-      color: #000000;
+      color: #646464;
       font-size: 14px;
       cursor: pointer;
       transition: color 0.3s;
   }
   
   .repost-button:hover {
-      color: #28974B;
+      color: #1da1f2;
   }
   
   .icon {
@@ -278,7 +264,7 @@ a {
 .line6 {
     width: 60%;
     min-height: 1px;
-    background: #28974B;
+    background: rgba(6, 153, 191, 0.31);
     position: relative;
     transform: translateY(-50%);
     margin-top: 5vh;
@@ -310,7 +296,7 @@ a {
   z-index: -10;
   left: 42.6vw;
   top: 4.8vh;
-  background-color: rgba(40, 151, 75, 0.21);
+  background-color: rgba(6, 153, 191, 0.31);
   border-radius: 10px;
 }
 
@@ -326,7 +312,7 @@ a {
   height : 0;
   border-bottom : 10px solid transparent;
   border-top : 10px solid transparent;
-  border-left : 10px solid rgba(40, 151, 75, 0.21);
+  border-left : 10px solid rgba(6, 153, 191, 0.31);
   font-size: 0;
   line-height: 0;
   transform : rotate(-90deg);
@@ -343,11 +329,11 @@ a {
 
 
 .post {
-    background-color: #ffffff;
-    border: 1px solid #e1e4e8;
+    background-color: #1D1D1D;
+    border: 1px solid #1D1D1D;
     border-radius: 8px;
     width: 50vw;
-    box-shadow:#28974b4b 0px 0px 5px;
+    box-shadow:rgba(6, 153, 191, 0.31) 0px 0px 5px;
     margin: 20px;
     cursor: pointer;
 }
@@ -359,11 +345,12 @@ a {
 
 .post-header img{
   margin-top: -12vh;
-  border: #00000052 1px solid;
+  border: #ffffff7e 1px solid;
 }
 
 .post-date {
   margin-left: 1vw;
+  color: rgb(196, 194, 194);
 }
 
 .header-info {
@@ -376,12 +363,12 @@ a {
 .post-title {
     margin: 0;
     font-size: 24px;
-    color: #333333;
+    color: rgb(196, 194, 194);
 }
 
 .post-author {
     font-size: 24px;
-    color: #888888;
+    color: rgb(196, 194, 194);
 }
 
 .post-content {
@@ -389,6 +376,7 @@ a {
     position: relative;
     left: 5vw;
     width: 40vw;
+    color: rgb(196, 194, 194);
 }
 
 .post-content p {
@@ -399,7 +387,7 @@ a {
 
 .post-content img {
   max-height: 20vh;
-  box-shadow: #000 0px 0px 5px;
+  box-shadow: #ffffff 0px 0px 5px;
 }
 
 .post-image {

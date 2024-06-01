@@ -1,0 +1,191 @@
+body {
+  background-color:#1D1D1D;
+}
+
+button {
+  border: 0px solid ;
+  background-color: #1D1D1D;
+  border-radius: 0.9em;
+  padding: 0.8em 1.2em 0.8em 1em;
+  transition: all ease-in-out 0.2s;
+  font-size: 16px;
+  cursor: pointer;
+ }
+ 
+ button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(196, 194, 194);
+  font-weight: 600;
+ }
+ 
+ button:hover {
+  background-color:rgba(6, 153, 191, 0.31);
+ }
+
+.createpost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 75vw;
+    min-height: 80.5vh;
+    max-height: 95vh;
+    top: 14.5vh;
+    left: 9.6vw;
+    padding-top: 4vh;
+}
+        .post-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+        }
+        .post-container h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(6, 153, 191, 0.31);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .checkbox-container {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid rgba(6, 153, 191, 0.31);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .checkbox-group input[type="checkbox"]:checked + label {
+            background-color: rgba(6, 153, 191, 0.31);
+            color: #fff;
+            border-color: rgba(6, 153, 191, 0.31);
+        }
+        .submit-btn {
+            display: block;
+            width: 10vw;
+            padding: 10px;
+            background-color: rgba(6, 153, 191, 0.31);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            left : 10vw;
+            margin-top: 3vh;
+        }
+        .submit-btn:hover {
+            background-color: rgba(6, 153, 191, 0.31);
+        }
+
+        .selecttype .switch-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        .selecttype .switch-container label {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .selecttype .switch-container label:hover {
+            background-color: rgba(6, 153, 191, 0.31);
+            color: #fff;
+        }
+        .selecttype input[type="radio"]:checked + label {
+            background-color: rgba(6, 153, 191, 0.31);
+            color: #fff;
+        }
+
+        .switch-container {
+            margin-bottom: 15px;
+            width: 15vw;
+        }
+        .selecttype label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .selecttype input,
+        .selecttypetextarea,
+        .selecttype select {
+            display: none;
+            background-color: #1D1D1D;
+        }
+
+        .switch-container .post_type {
+          margin-left: 1vw;
+        }
+
+        .selecttype {
+          margin-top: 2vh;
+        }
+
+        .createpost .create {
+            width: 30vw;
+        }
+
+        .createpost span {
+          font-size: 38px;
+          font-weight: 600;
+          color: #ffffff;
+          margin-bottom: 2vh;
+          font-family: "Gill Sans", sans-serif;
+        }
+
+        .createpost .line4 {
+          position: relative;
+          top: -1vh;
+          width: 25vw;
+        }
+
+        .createpost label {
+          font-family: "Gill Sans", sans-serif;
+        }
+
+
+.error {
+    color: red;
+    font-size: 14px;
+    /* margin-top: 5px; */
+}

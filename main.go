@@ -29,6 +29,8 @@ func main() {
 	http.HandleFunc("/profile/", forum.ProfilePage)
 	http.HandleFunc("/creer-un-post", forum.CreatePostPage)
 	http.HandleFunc("/post/", forum.PostPage)
+	http.HandleFunc("/posts", forum.PostsPage)
+	http.HandleFunc("/changeColorMode", forum.ChangeColorMode)
 
 	err := openLink()
 	if err != nil {

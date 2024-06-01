@@ -1,0 +1,58 @@
+.rightbar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 15vw;
+    height: 85vh;
+    overflow: hidden;
+}
+
+
+.line3 {
+    width: 2px;
+    height: 85vh; 
+    background: rgba(6, 153, 191, 0.31);
+    position: fixed;
+    top: 15vh; 
+    left: 85vw; 
+}
+
+.buttonVoirTout{
+    position: relative;
+    margin-left: 2.5vw;
+    margin-top: 3vh;    
+    width: 10vw;
+    height: 6vh;
+}
+
+.buttonVoirTout button {
+    padding: 0.8em 3em; 
+}
+
+.users {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-left: 1vw;
+    margin-top: 5vh;
+    width: 13vw;
+    height: 65vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+.users img {
+    border-radius: 40px;
+}
+
+.users p {
+    position: relative;
+    font-size: 13px;
+    margin-top: -1vh;
+    left: 1.5vw;
+    color: rgb(0, 204, 255);
+    max-width: 109px;
+}
+
+.users h3 {
+    color : rgb(196, 194, 194);
+}

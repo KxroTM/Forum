@@ -224,8 +224,14 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	updateUserSession(r)
-
+	query := r.URL.RawQuery
 	AllData = GetAllDatas(r)
+
+	if query == "pourtoi" {
+		AllData.AllPosts = ForYouPageAlgorithm(Db, UserSession.User_id)
+	} else if query == "suivies" {
+		AllData.AllPosts = GetPostByFollowing(Db, UserSession.User_id)
+	}
 
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
@@ -631,6 +637,40 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
+}
+
+func PostsPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	AllData = GetAllDatas(r)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+
+	if AllData.ColorMode == "light" {
+		err = Posts.ExecuteTemplate(w, "filtragePost.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkPosts.ExecuteTemplate(w, "filtragePost.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+func ChangeColorMode(w http.ResponseWriter, r *http.Request) {
+	AllData = GetAllDatas(r)
+	if AllData.ColorMode == "light" {
+		AllData.ColorMode = "dark"
+	} else {
+		AllData.ColorMode = "light"
+	}
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {

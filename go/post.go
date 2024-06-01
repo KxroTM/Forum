@@ -323,3 +323,16 @@ func GetPostByReport(db *sql.DB) ([]Post, error) {
 
 	return posts, nil
 }
+
+func GetPostByFollowing(db *sql.DB, user_id string) []Post {
+	var posts []Post
+	var AllPosts = GetAllPosts(db)
+	user := GetAccountById(db, user_id)
+
+	for _, post := range AllPosts {
+		if strings.Contains(user.FollowingList, post.Author) {
+			posts = append(posts, post)
+		}
+	}
+	return posts
+}

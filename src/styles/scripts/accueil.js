@@ -10,9 +10,22 @@ function reportToggle(id) {
     }
 }
 
+function reglageToggle() {
+    var reglage = document.getElementById("fullreglage");
+    if (reglage.style.opacity == 0) {
+        reglage.style.opacity = 1;
+        reglage.style.zIndex = 1000;
+    } else {
+        reglage.style.opacity = 0;
+        reglage.style.zIndex = -10;
+    }
+
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const postImages = document.querySelectorAll('#postimg');
     const post = document.querySelectorAll('.post');
+    const colorMode = document.getElementById('theme-switch');
 
     postImages.forEach(img => {
         img.addEventListener('click', () => {
@@ -41,6 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!event.target.classList.contains('ignore-click') && !event.target.closest('.ignore-click')) {
                 window.location.href = '/post/id=' + p.id;
             }});
+    });
+
+    colorMode.addEventListener('click' , () => {
+        setTimeout(() => {
+            window.location.href = '/changeColorMode';
+        }, 500);
     });
 
 });
