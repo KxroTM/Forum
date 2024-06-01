@@ -75,3 +75,37 @@ position: fixed;
 right: 4vw;
 position: fixed;
 }
+
+.overreport{
+    opacity: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.reportOverlay {
+    position: absolute;
+    width: 25vw;
+    height: 25vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 30px;
+    box-shadow: rgba(40, 151, 75, 0.21) 0px 0px 15px;
+}
+
+.txtReport p {
+    color: rgb(0, 0, 0);
+    font-size: 25px;
+    font-family: 'Roboto', sans-serif;
+}

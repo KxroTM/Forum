@@ -73,6 +73,27 @@
             {{end}}
         </div>
     </div>
+    <div class="overreport" id="reportOverlay">
+        <div class="reportOverlay">
+            <div class ="txtReport">
+                <p>Signaler le post ?</p>
+            </div>
+            <div class ="buttonReport">
+                <a href="" id="reportLink">
+                    <button>
+                        <span>
+                            Oui
+                        </span>
+                    </button>
+                </a>
+                <button onclick="reportOverlay()">
+                    <span>
+                        Non
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <div class="searchBar">
@@ -133,7 +154,7 @@
         <div class="line2"></div>
         <div class="buttonAccueil">
             <a href="/accueil">
-            <button style="background-color:rgba(6, 153, 191, 0.31);">
+            <button>
                 <span>
                     <img src ="../../style/img/homeDark.png" width="24" height="24">
                     Accueil
@@ -153,7 +174,7 @@
         </div>
         <div class="buttonPosts">
             <a href="/posts">
-            <button>
+            <button style="background-color:rgba(6, 153, 191, 0.31);">
                 <span>
                     <img src="../../style/img/postsDark.png" width="24" height="24">
                     Posts
@@ -238,13 +259,11 @@
                     <div class="reportToggle ignore-click" id="{{.Posts_id}}report">
                         <div class="flechedroite"></div>
                         <div class="report">
-                            <a href="/signaler?id={{.Posts_id}}">
-                            <button>
+                            <button onclick='reportOverlay({{.Posts_id}})'>
                                 <span>
                                     Signaler
                                 </span>
                             </button>
-                            </a>
                         </div>
                     </div>
                     <a href="/profile/@{{.Author}}"><img src="{{.User_pfp}}" width="90" height="90" style="border-radius: 60px;"></a>

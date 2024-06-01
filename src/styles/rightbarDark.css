@@ -42,12 +42,13 @@
 
 .users img {
     border-radius: 40px;
+    margin-right: 0.5vw;
 }
 
 .users p {
     position: relative;
     font-size: 13px;
-    margin-top: -1vh;
+    margin-top: -0.1vh;
     left: 1.5vw;
     color: rgb(0, 204, 255);
     max-width: 109px;

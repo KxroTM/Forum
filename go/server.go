@@ -259,11 +259,19 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 
 	parts := strings.Split(path, "/")
 	if len(parts) < 3 || !strings.HasPrefix(parts[2], "@") {
-		err := Error404.ExecuteTemplate(w, "error.html", "Invalid URL")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if AllData.ColorMode == "light" {
+			err := Error404.ExecuteTemplate(w, "error.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkError.ExecuteTemplate(w, "error.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
 		}
-		return
 	}
 
 	username := strings.TrimPrefix(parts[2], "@")
@@ -274,11 +282,19 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.UserTarget == (User{}) {
-		err := ErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if AllData.ColorMode == "light" {
+			err := ErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
 		}
-		return
 	}
 
 	if AllData.ColorMode == "light" {
@@ -307,11 +323,19 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 	parts := strings.Split(path, "/")
 	if len(parts) < 3 || !strings.HasPrefix(parts[2], "id=") {
-		err := Error404.ExecuteTemplate(w, "error.html", "Invalid URL")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if AllData.ColorMode == "light" {
+			err := Error404.ExecuteTemplate(w, "error.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkError.ExecuteTemplate(w, "error.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
 		}
-		return
 	}
 
 	id := strings.TrimPrefix(parts[2], "id=")
@@ -324,11 +348,19 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if AllData.Post == (Post{}) {
-		err := ErrorPost.ExecuteTemplate(w, "errorPost.html", "Invalid URL")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if AllData.ColorMode == "light" {
+			err := ErrorPost.ExecuteTemplate(w, "errorPost.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkErrorPost.ExecuteTemplate(w, "errorPost.html", "Invalid URL")
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
 		}
-		return
 	}
 
 	if AllData.ColorMode == "light" {
