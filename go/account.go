@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"regexp"
@@ -512,10 +513,11 @@ func GetAllUsers(db *sql.DB) []User {
 	return users
 }
 
-func GetAllDatas(r *http.Request) DataStruct {
+func GetAllDatas(w http.ResponseWriter, r *http.Request) DataStruct {
 
-	data, _ := getSessionData(r)
+	data, _ := getSessionData(w, r)
 	Color := data.User.ColorMode
+	fmt.Println(Color)
 
 	return DataStruct{
 		User:            UserSession,

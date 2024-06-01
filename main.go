@@ -31,6 +31,7 @@ func main() {
 	http.HandleFunc("/post/", forum.PostPage)
 	http.HandleFunc("/posts", forum.PostsPage)
 	http.HandleFunc("/changeColorMode", forum.ChangeColorMode)
+	http.HandleFunc("/notifications", forum.NotificationsPage)
 
 	err := openLink()
 	if err != nil {

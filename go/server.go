@@ -49,12 +49,12 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
-	data, _ := getSessionData(r)
+	data, _ := getSessionData(w, r)
 	if data.User.Email != "" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
@@ -162,12 +162,12 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 
 	// Si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
-	data, _ := getSessionData(r)
+	data, _ := getSessionData(w, r)
 	if data.User.Email != "" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
@@ -223,9 +223,9 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 	query := r.URL.RawQuery
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 
 	if query == "pourtoi" {
 		AllData.AllPosts = ForYouPageAlgorithm(Db, UserSession.User_id)
@@ -254,7 +254,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 	path := r.URL.Path
 
 	parts := strings.Split(path, "/")
@@ -276,7 +276,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 
 	username := strings.TrimPrefix(parts[2], "@")
 
-	AllData := GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 	AllData.UserTarget = GetAccountByUsername(Db, username)
 	AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
@@ -318,7 +318,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 	path := r.URL.Path
 
 	parts := strings.Split(path, "/")
@@ -340,7 +340,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 	id := strings.TrimPrefix(parts[2], "id=")
 
-	AllData := GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 	AllData.Post, err = GetPost(Db, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -379,7 +379,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreatePostPage(w http.ResponseWriter, r *http.Request) {
-	data, _ := getSessionData(r)
+	data, _ := getSessionData(w, r)
 	if data.User.Email == "" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
@@ -390,9 +390,9 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if r.Method == http.MethodPost {
@@ -652,9 +652,9 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 	AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
@@ -677,9 +677,9 @@ func PostsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	updateUserSession(r)
+	updateUserSession(w, r)
 
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.ColorMode == "light" {
@@ -695,8 +695,33 @@ func PostsPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func NotificationsPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(w, r)
+
+	AllData = GetAllDatas(w, r)
+	// AllData.AllNotifications, _ = GetNotifications(Db, UserSession.User_id)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+
+	if AllData.ColorMode == "light" {
+		err = Notifications.ExecuteTemplate(w, "notification.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkNotifications.ExecuteTemplate(w, "notification.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
 func ChangeColorMode(w http.ResponseWriter, r *http.Request) {
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 	if AllData.ColorMode == "light" {
 		AllData.ColorMode = "dark"
 	} else {
@@ -712,7 +737,7 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	AllData = GetAllDatas(r)
+	AllData = GetAllDatas(w, r)
 
 	w.WriteHeader(http.StatusNotFound)
 

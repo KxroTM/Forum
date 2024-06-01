@@ -415,3 +415,9 @@ a {
 .btn:hover {
     background-color: #005fa3;
 } 
+
+.post-footer p {
+  color : rgb(196, 194, 194);
+  position: relative;
+  bottom: 1vh;
+}

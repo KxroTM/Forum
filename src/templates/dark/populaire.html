@@ -94,6 +94,31 @@
             </div>
         </div>
     </div>
+    <div class="piqueoverlay" id="piqueoverlay"></div>
+    <div class="notifoverlay" id="notifoverlay">
+        <div class="notifForm">
+            <div class ="titleNotif">
+                <p>Notifications</p>
+            </div>
+            <div class="Notifications">
+                <div class="notif">
+                    <img src="../../style/img/aAimer.png" height="50">
+                    <p>Un utilisateur a aimé votre post</p>
+                </div>
+                <!-- 4 max -->
+            </div>
+            <div class="allNotif">
+                <a href="/notifications">
+                    <button>
+                        <span>
+                        Tout voir
+                        </span>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <div class="searchBar">
@@ -111,7 +136,7 @@
             </a>
         </div>
         <div class="buttonNotification">
-            <button>
+            <button onclick="toggleNotif()">
                 <span> 
                     <img src ="../../style/img/clocheDark.png" width="24" height="24" alt="Notification Icon">
                 </span>

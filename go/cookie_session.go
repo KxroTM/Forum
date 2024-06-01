@@ -41,7 +41,7 @@ func createSessionCookie(w http.ResponseWriter, data SessionData, hours time.Dur
 	return nil
 }
 
-func getSessionData(r *http.Request) (SessionData, error) {
+func getSessionData(w http.ResponseWriter, r *http.Request) (SessionData, error) {
 	var data SessionData
 
 	cookie, err := r.Cookie("session")
@@ -100,11 +100,46 @@ func getSessionData(r *http.Request) (SessionData, error) {
 			}, err
 		}
 	}
+
 	if AllData.ColorMode == "light" {
 		data.User.ColorMode = "light"
 	} else {
 		data.User.ColorMode = "dark"
 	}
+
+	encodedData, err := json.Marshal(data)
+	if err != nil {
+		if AllData.ColorMode == "light" {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "light",
+				},
+			}, err
+		} else {
+			return SessionData{
+				User: Session{
+					Role:      "guest",
+					ColorMode: "dark",
+				},
+			}, err
+		}
+	}
+
+	encodedString := base64.StdEncoding.EncodeToString(encodedData)
+
+	cookieTemps := http.Cookie{
+		Name:     cookie.Name,
+		Value:    encodedString,
+		HttpOnly: cookie.HttpOnly,
+		Secure:   cookie.Secure,
+		SameSite: cookie.SameSite,
+		Expires:  cookie.Expires,
+		Path:     cookie.Path,
+	}
+
+	http.SetCookie(w, &cookieTemps)
+
 	return data, nil
 }
 
@@ -122,8 +157,8 @@ func deleteSessionCookie(w http.ResponseWriter) {
 	http.SetCookie(w, &cookie)
 }
 
-func updateUserSession(r *http.Request) {
-	data, _ := getSessionData(r)
+func updateUserSession(w http.ResponseWriter, r *http.Request) {
+	data, _ := getSessionData(w, r)
 	if data.User.Email == "" {
 		return
 	}
