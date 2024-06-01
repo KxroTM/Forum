@@ -11,6 +11,7 @@ type Category struct {
 	Name        string
 	Description string
 	Users       int
+	Image       string
 }
 
 func GetAllCategories(db *sql.DB) []Category {
@@ -24,7 +25,7 @@ func GetAllCategories(db *sql.DB) []Category {
 
 	for rows.Next() {
 		var category Category
-		rows.Scan(&category.Category_id, &category.Name, &category.Description, &category.Users)
+		rows.Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
 		categories = append(categories, category)
 	}
 	if err := rows.Err(); err != nil {
@@ -33,7 +34,7 @@ func GetAllCategories(db *sql.DB) []Category {
 	return categories
 }
 
-func CreateCategory(db *sql.DB, name string, description string) bool {
+func CreateCategory(db *sql.DB, name, description, image string) bool {
 
 	if !isCategoryExists(db, name) {
 		return false
@@ -43,13 +44,13 @@ func CreateCategory(db *sql.DB, name string, description string) bool {
 	if err != nil {
 		return false
 	}
-	_, err = db.Exec("INSERT INTO categories (category_id, name, description, users) VALUES (?, ?, ?, ?)", u.String(), name, description, 0)
+	_, err = db.Exec("INSERT INTO categories (category_id, name, description, users, image) VALUES (?, ?, ?, ?, ?)", u.String(), name, description, 0, image)
 	return err == nil
 }
 
 func GetCategoryById(db *sql.DB, id string) Category {
 	var category Category
-	err := db.QueryRow("SELECT * FROM categories WHERE category_id = ?", id).Scan(&category.Category_id, &category.Name, &category.Description, &category.Users)
+	err := db.QueryRow("SELECT * FROM categories WHERE category_id = ?", id).Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
 	if err != nil {
 		return Category{}
 	}
@@ -64,4 +65,9 @@ func isCategoryExists(db *sql.DB, name string) bool {
 		return false
 	}
 	return count == 0
+}
+
+func DeleteCategory(db *sql.DB, id string) bool {
+	_, err := db.Exec("DELETE FROM categories WHERE category_id = ?", id)
+	return err == nil
 }
