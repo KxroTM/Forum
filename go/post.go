@@ -26,6 +26,9 @@ type Post struct {
 	Report    int
 	Author    string
 	Links     string
+	IsLike    bool
+	IsDislike bool
+	IsRetweet bool
 }
 
 var PostSession Post
@@ -41,8 +44,19 @@ func GetAllPosts(db *sql.DB) []Post {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links, &post.IsLike, &post.IsDislike, &post.IsRetweet)
 		post.Links = strings.TrimSpace(post.Links)
+		if UserSession.Username != "" {
+			if strings.Contains(post.Liker, UserSession.Username) {
+				post.IsLike = true
+			}
+			if strings.Contains(post.Disliker, UserSession.Username) {
+				post.IsDislike = true
+			}
+			if strings.Contains(post.Retweeter, UserSession.Username) {
+				post.IsRetweet = true
+			}
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -79,11 +93,14 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 		Disliker:  "",
 		Author:    user.Username,
 		Links:     link,
+		IsLike:    false,
+		IsDislike: false,
+		IsRetweet: false,
 	}
 
 	db.Exec(`INSERT INTO posts (posts_id, UUID, user_pfp, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker, author, links) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker, PostSession.Author, PostSession.Links)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker, PostSession.Author, PostSession.Links, PostSession.IsLike, PostSession.IsDislike, PostSession.IsRetweet)
 	return nil
 }
 
@@ -110,12 +127,23 @@ func GetPost(db *sql.DB, post_id string) (Post, error) {
 	var post Post
 
 	for rows.Next() {
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links, &post.IsLike, &post.IsDislike, &post.IsRetweet)
 	}
 	if err := rows.Err(); err != nil {
 		return Post{}, err
 	}
-
+	post.Links = strings.TrimSpace(post.Links)
+	if UserSession.Username != "" {
+		if strings.Contains(post.Liker, UserSession.Username) {
+			post.IsLike = true
+		}
+		if strings.Contains(post.Disliker, UserSession.Username) {
+			post.IsDislike = true
+		}
+		if strings.Contains(post.Retweeter, UserSession.Username) {
+			post.IsRetweet = true
+		}
+	}
 	return post, nil
 }
 
@@ -142,8 +170,19 @@ func GetAllPostsByUser(db *sql.DB, user_id string) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links, &post.IsLike, &post.IsDislike, &post.IsRetweet)
 		post.Links = strings.TrimSpace(post.Links)
+		if UserSession.Username != "" {
+			if strings.Contains(post.Liker, UserSession.Username) {
+				post.IsLike = true
+			}
+			if strings.Contains(post.Disliker, UserSession.Username) {
+				post.IsDislike = true
+			}
+			if strings.Contains(post.Retweeter, UserSession.Username) {
+				post.IsRetweet = true
+			}
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -179,7 +218,19 @@ func GetAllPostsByCategorie(db *sql.DB, categorie string) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author, &post.Links)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links, &post.IsLike, &post.IsDislike, &post.IsRetweet)
+		post.Links = strings.TrimSpace(post.Links)
+		if UserSession.Username != "" {
+			if strings.Contains(post.Liker, UserSession.Username) {
+				post.IsLike = true
+			}
+			if strings.Contains(post.Disliker, UserSession.Username) {
+				post.IsDislike = true
+			}
+			if strings.Contains(post.Retweeter, UserSession.Username) {
+				post.IsRetweet = true
+			}
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -200,8 +251,19 @@ func GetAllPostsByLikeCount(db *sql.DB) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links, &post.IsLike, &post.IsDislike, &post.IsRetweet)
 		post.Links = strings.TrimSpace(post.Links)
+		if UserSession.Username != "" {
+			if strings.Contains(post.Liker, UserSession.Username) {
+				post.IsLike = true
+			}
+			if strings.Contains(post.Disliker, UserSession.Username) {
+				post.IsDislike = true
+			}
+			if strings.Contains(post.Retweeter, UserSession.Username) {
+				post.IsRetweet = true
+			}
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -217,6 +279,18 @@ func GetAllPostsByRetweet(db *sql.DB, username string) []Post {
 
 	for _, post := range AllPosts {
 		if strings.Contains(post.Retweeter, username) {
+			post.Links = strings.TrimSpace(post.Links)
+			if UserSession.Username != "" {
+				if strings.Contains(post.Liker, UserSession.Username) {
+					post.IsLike = true
+				}
+				if strings.Contains(post.Disliker, UserSession.Username) {
+					post.IsDislike = true
+				}
+				if strings.Contains(post.Retweeter, UserSession.Username) {
+					post.IsRetweet = true
+				}
+			}
 			posts = append(posts, post)
 		}
 	}
@@ -230,6 +304,18 @@ func GetAllPostsByLike(db *sql.DB, username string) []Post {
 
 	for _, post := range AllPosts {
 		if strings.Contains(post.Liker, username) {
+			post.Links = strings.TrimSpace(post.Links)
+			if UserSession.Username != "" {
+				if strings.Contains(post.Liker, UserSession.Username) {
+					post.IsLike = true
+				}
+				if strings.Contains(post.Disliker, UserSession.Username) {
+					post.IsDislike = true
+				}
+				if strings.Contains(post.Retweeter, UserSession.Username) {
+					post.IsRetweet = true
+				}
+			}
 			posts = append(posts, post)
 		}
 	}
@@ -314,7 +400,7 @@ func GetPostByReport(db *sql.DB) ([]Post, error) {
 
 	for rows.Next() {
 		var post Post
-		rows.Scan(&post.Posts_id, &post.User_id, &post.User_pfp, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.Author)
+		rows.Scan(&post.Posts_id, &post.User_id, &post.Categorie, &post.Title, &post.Text, &post.Like, &post.Liker, &post.Dislike, &post.Retweet, &post.Retweeter, &post.Date, &post.Report, &post.Disliker, &post.User_pfp, &post.Author, &post.Links, &post.IsLike, &post.IsDislike, &post.IsRetweet)
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -331,6 +417,18 @@ func GetPostByFollowing(db *sql.DB, user_id string) []Post {
 
 	for _, post := range AllPosts {
 		if strings.Contains(user.FollowingList, post.Author) {
+			post.Links = strings.TrimSpace(post.Links)
+			if UserSession.Username != "" {
+				if strings.Contains(post.Liker, UserSession.Username) {
+					post.IsLike = true
+				}
+				if strings.Contains(post.Disliker, UserSession.Username) {
+					post.IsDislike = true
+				}
+				if strings.Contains(post.Retweeter, UserSession.Username) {
+					post.IsRetweet = true
+				}
+			}
 			posts = append(posts, post)
 		}
 	}

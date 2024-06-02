@@ -15,6 +15,15 @@ func ForYouPageAlgorithm(db *sql.DB, user_id string) []Post {
 	for _, post := range AllPosts {
 		if strings.Contains(user.CategorieSub, post.Categorie) && user.CategorieSub != "" {
 			if !contains(posts, post) {
+				if strings.Contains(post.Liker, UserSession.Username) {
+					post.IsLike = true
+				}
+				if strings.Contains(post.Disliker, UserSession.Username) {
+					post.IsDislike = true
+				}
+				if strings.Contains(post.Retweeter, UserSession.Username) {
+					post.IsRetweet = true
+				}
 				posts = append(posts, post)
 			}
 		}
@@ -23,6 +32,15 @@ func ForYouPageAlgorithm(db *sql.DB, user_id string) []Post {
 	for _, post := range AllPosts {
 		if strings.Contains(user.FollowingList, post.User_id) {
 			if !contains(posts, post) {
+				if strings.Contains(post.Liker, UserSession.Username) {
+					post.IsLike = true
+				}
+				if strings.Contains(post.Disliker, UserSession.Username) {
+					post.IsDislike = true
+				}
+				if strings.Contains(post.Retweeter, UserSession.Username) {
+					post.IsRetweet = true
+				}
 				posts = append(posts, post)
 			}
 		}
