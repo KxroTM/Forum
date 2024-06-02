@@ -123,18 +123,5 @@ func updateUserSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	AllData.ColorMode = data.User.ColorMode
-	if UserSession.Email == "" {
-		UserSession = GetAccountById(Db, data.User.UUID)
-	}
-}
-
-func updateSessionCookie(w http.ResponseWriter, r *http.Request, tempdata SessionData) error {
-	cookie, err := r.Cookie("session")
-	var timeleft time.Duration
-	if err != nil {
-		timeleft = 24 * time.Hour
-	} else {
-		timeleft = time.Until(cookie.Expires) // = temps restant avant expiration
-	}
-	return createSessionCookie(w, tempdata, timeleft)
+	UserSession = GetAccountById(Db, data.User.UUID)
 }

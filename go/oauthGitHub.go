@@ -3,7 +3,6 @@ package forum
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -46,7 +45,7 @@ func GitHubCallback(w http.ResponseWriter, r *http.Request) {
 
 	state := r.FormValue("state")
 	if state != oauthStateString {
-		fmt.Printf("L'état OAuth n'est pas valide: %s\n", state)
+		log.Printf("L'état OAuth n'est pas valide: %s\n", state)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}

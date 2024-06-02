@@ -80,7 +80,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 				Email:     UserSession.Email,
 				Username:  UserSession.Username,
 				Role:      UserSession.Role,
-				ColorMode: "light",
+				ColorMode: AllData.ColorMode,
 			},
 		}, 24*time.Hour)
 		if err != nil {
@@ -106,7 +106,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 				Email:     UserSession.Email,
 				Username:  UserSession.Username,
 				Role:      UserSession.Role,
-				ColorMode: "light",
+				ColorMode: AllData.ColorMode,
 			},
 		}, 24*time.Hour)
 		if err != nil {

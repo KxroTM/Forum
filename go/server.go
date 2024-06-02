@@ -496,14 +496,12 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 
 				errr := CreatePost(Db, AllData.User.User_id, "", title, content, FileName)
 				if errr != nil {
-					fmt.Println(errr)
 					http.Error(w, errr.Error(), http.StatusInternalServerError)
 					return
 				}
 			} else {
 				errr := CreatePost(Db, AllData.User.User_id, "", title, content, "")
 				if errr != nil {
-					fmt.Println(errr)
 					http.Error(w, errr.Error(), http.StatusInternalServerError)
 					return
 				}
@@ -607,7 +605,6 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 
 			errr := CreatePost(Db, AllData.User.User_id, "", imageTitle, "", FileName)
 			if errr != nil {
-				fmt.Println(errr)
 				http.Error(w, errr.Error(), http.StatusInternalServerError)
 				return
 			}
@@ -722,6 +719,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func ChangeColorMode(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(w, r)
 	AllData = GetAllDatas(w, r)
 	if AllData.ColorMode == "light" {
 		AllData.ColorMode = "dark"
@@ -729,15 +727,29 @@ func ChangeColorMode(w http.ResponseWriter, r *http.Request) {
 		AllData.ColorMode = "light"
 	}
 
-	updateSessionCookie(w, r, SessionData{
-		User: Session{
-			UUID:      UserSession.User_id,
-			Email:     UserSession.Email,
-			Username:  UserSession.Username,
-			Role:      UserSession.Role,
-			ColorMode: AllData.ColorMode,
-		},
-	})
+	data, _ := getSessionData(w, r)
+
+	if UserSession.Role == "user" || UserSession.Role == "admin" {
+		createSessionCookie(w, SessionData{
+			User: Session{
+				UUID:      UserSession.User_id,
+				Email:     UserSession.Email,
+				Username:  UserSession.Username,
+				Role:      UserSession.Role,
+				ColorMode: AllData.ColorMode,
+			},
+		}, 24*time.Hour)
+	} else {
+		createSessionCookie(w, SessionData{
+			User: Session{
+				UUID:      data.User.UUID,
+				Email:     data.User.Email,
+				Username:  data.User.Username,
+				Role:      "guest",
+				ColorMode: AllData.ColorMode,
+			},
+		}, 24*time.Hour)
+	}
 
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }
