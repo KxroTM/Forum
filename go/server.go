@@ -77,7 +77,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 						Email:     user.Email,
 						Username:  user.Username,
 						Role:      user.Role,
-						ColorMode: "light",
+						ColorMode: data.User.ColorMode,
 					},
 				}, 24*time.Hour)
 				if err != nil {
@@ -90,7 +90,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 						Email:     user.Email,
 						Username:  user.Username,
 						Role:      user.Role,
-						ColorMode: "light",
+						ColorMode: data.User.ColorMode,
 					},
 				}, 730*time.Hour)
 
@@ -224,6 +224,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	updateUserSession(w, r)
+
 	query := r.URL.RawQuery
 	AllData = GetAllDatas(w, r)
 
@@ -727,6 +728,17 @@ func ChangeColorMode(w http.ResponseWriter, r *http.Request) {
 	} else {
 		AllData.ColorMode = "light"
 	}
+
+	updateSessionCookie(w, r, SessionData{
+		User: Session{
+			UUID:      UserSession.User_id,
+			Email:     UserSession.Email,
+			Username:  UserSession.Username,
+			Role:      UserSession.Role,
+			ColorMode: AllData.ColorMode,
+		},
+	})
+
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }
 

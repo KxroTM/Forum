@@ -43,21 +43,20 @@ func createSessionCookie(w http.ResponseWriter, data SessionData, hours time.Dur
 
 func getSessionData(w http.ResponseWriter, r *http.Request) (SessionData, error) {
 	var data SessionData
-
 	cookie, err := r.Cookie("session")
 	if err != nil {
-		if AllData.ColorMode == "light" {
+		if AllData.ColorMode == "dark" {
 			return SessionData{
 				User: Session{
 					Role:      "guest",
-					ColorMode: "light",
+					ColorMode: "dark",
 				},
 			}, err
 		} else {
 			return SessionData{
 				User: Session{
 					Role:      "guest",
-					ColorMode: "dark",
+					ColorMode: "light",
 				},
 			}, err
 		}
@@ -65,18 +64,18 @@ func getSessionData(w http.ResponseWriter, r *http.Request) (SessionData, error)
 
 	decodedData, err := base64.StdEncoding.DecodeString(cookie.Value)
 	if err != nil {
-		if AllData.ColorMode == "light" {
+		if AllData.ColorMode == "dark" {
 			return SessionData{
 				User: Session{
 					Role:      "guest",
-					ColorMode: "light",
+					ColorMode: "dark",
 				},
 			}, err
 		} else {
 			return SessionData{
 				User: Session{
 					Role:      "guest",
-					ColorMode: "dark",
+					ColorMode: "light",
 				},
 			}, err
 		}
@@ -84,61 +83,22 @@ func getSessionData(w http.ResponseWriter, r *http.Request) (SessionData, error)
 
 	err = json.Unmarshal(decodedData, &data)
 	if err != nil {
-		if AllData.ColorMode == "light" {
-			return SessionData{
-				User: Session{
-					Role:      "guest",
-					ColorMode: "light",
-				},
-			}, err
-		} else {
+		if AllData.ColorMode == "dark" {
 			return SessionData{
 				User: Session{
 					Role:      "guest",
 					ColorMode: "dark",
 				},
 			}, err
-		}
-	}
-
-	if AllData.ColorMode == "light" {
-		data.User.ColorMode = "light"
-	} else {
-		data.User.ColorMode = "dark"
-	}
-
-	encodedData, err := json.Marshal(data)
-	if err != nil {
-		if AllData.ColorMode == "light" {
+		} else {
 			return SessionData{
 				User: Session{
 					Role:      "guest",
 					ColorMode: "light",
 				},
 			}, err
-		} else {
-			return SessionData{
-				User: Session{
-					Role:      "guest",
-					ColorMode: "dark",
-				},
-			}, err
 		}
 	}
-
-	encodedString := base64.StdEncoding.EncodeToString(encodedData)
-
-	cookieTemps := http.Cookie{
-		Name:     cookie.Name,
-		Value:    encodedString,
-		HttpOnly: cookie.HttpOnly,
-		Secure:   cookie.Secure,
-		SameSite: cookie.SameSite,
-		Expires:  cookie.Expires,
-		Path:     cookie.Path,
-	}
-
-	http.SetCookie(w, &cookieTemps)
 
 	return data, nil
 }
@@ -162,7 +122,19 @@ func updateUserSession(w http.ResponseWriter, r *http.Request) {
 	if data.User.Email == "" {
 		return
 	}
+	AllData.ColorMode = data.User.ColorMode
 	if UserSession.Email == "" {
 		UserSession = GetAccountById(Db, data.User.UUID)
 	}
+}
+
+func updateSessionCookie(w http.ResponseWriter, r *http.Request, tempdata SessionData) error {
+	cookie, err := r.Cookie("session")
+	var timeleft time.Duration
+	if err != nil {
+		timeleft = 24 * time.Hour
+	} else {
+		timeleft = time.Until(cookie.Expires) // = temps restant avant expiration
+	}
+	return createSessionCookie(w, tempdata, timeleft)
 }
