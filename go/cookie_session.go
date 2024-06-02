@@ -41,7 +41,7 @@ func createSessionCookie(w http.ResponseWriter, data SessionData, hours time.Dur
 	return nil
 }
 
-func getSessionData(w http.ResponseWriter, r *http.Request) (SessionData, error) {
+func getSessionData(r *http.Request) (SessionData, error) {
 	var data SessionData
 	cookie, err := r.Cookie("session")
 	if err != nil {
@@ -117,8 +117,8 @@ func deleteSessionCookie(w http.ResponseWriter) {
 	http.SetCookie(w, &cookie)
 }
 
-func updateUserSession(w http.ResponseWriter, r *http.Request) {
-	data, _ := getSessionData(w, r)
+func updateUserSession(r *http.Request) {
+	data, _ := getSessionData(r)
 	if data.User.Email == "" {
 		return
 	}

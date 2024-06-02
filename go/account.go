@@ -512,9 +512,9 @@ func GetAllUsers(db *sql.DB) []User {
 	return users
 }
 
-func GetAllDatas(w http.ResponseWriter, r *http.Request) DataStruct {
+func GetAllDatas(r *http.Request) DataStruct {
 
-	data, _ := getSessionData(w, r)
+	data, _ := getSessionData(r)
 	Color := data.User.ColorMode
 
 	return DataStruct{

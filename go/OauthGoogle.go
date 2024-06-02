@@ -21,7 +21,7 @@ var googleOauthConfig = &oauth2.Config{
 }
 
 func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
-	data, _ := getSessionData(w, r)
+	data, _ := getSessionData(r)
 	if data.User.Role != "guest" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
@@ -38,7 +38,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	data, _ := getSessionData(w, r)
+	data, _ := getSessionData(r)
 	if data.User.Role != "guest" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		return
