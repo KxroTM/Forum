@@ -8,7 +8,6 @@ type Comment struct {
 	Comment_id string
 	Posts_id   string
 	User_id    string
-	User_pfp   string
 	Text       string
 	Date       string
 	Like       int
@@ -16,10 +15,8 @@ type Comment struct {
 	Report     int
 	Liker      string
 	Disliker   string
+	User_pfp   string
 }
-
-var CommentSession Comment
-var AllComments []Comment
 
 func GetAllComment(db *sql.DB) []Comment {
 	rows, err := db.Query("SELECT * FROM comments")
@@ -31,11 +28,21 @@ func GetAllComment(db *sql.DB) []Comment {
 	var comments []Comment
 	for rows.Next() {
 		var comment Comment
-		err := rows.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.User_pfp, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker)
+		err := rows.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker, &comment.User_pfp)
 		if err != nil {
 			panic(err)
 		}
 		comments = append(comments, comment)
 	}
 	return comments
+}
+
+func GetComment(db *sql.DB, comment_id string) Comment {
+	row := db.QueryRow("SELECT * FROM comments WHERE comment_id = ?", comment_id)
+	var comment Comment
+	err := row.Scan(&comment.Comment_id, &comment.Posts_id, &comment.User_id, &comment.Text, &comment.Date, &comment.Like, &comment.Dislike, &comment.Report, &comment.Liker, &comment.Disliker, &comment.User_pfp)
+	if err != nil {
+		panic(err)
+	}
+	return comment
 }
