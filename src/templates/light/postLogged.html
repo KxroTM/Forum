@@ -113,6 +113,36 @@
             </div>
         </div>
     </div>
+    <div class="overlayprofile" id="overlayprofile">
+        <div class="profileMenu">
+            <a href="/profile/@{{.User.Username}}">
+                <button>
+                    <span>
+                        <img src="../../style/img/profileLight.png" height="40">
+                        Profil
+                    </span>
+                </button>
+            </a>
+            <br>
+            <a href="/parametres">
+                <button>
+                    <span>
+                        <img src="../../style/img/engrenageDark.png" width="30" height="20">
+                        Paramètres
+                    </span>
+                </button>
+            </a>
+            <br>
+            <a href="/deconnexion">
+                <button>
+                    <span>
+                        <img src="../../style/img/deconnexion.png" width="30" height="20">
+                        Déconnexion
+                    </span>
+                </button>
+            </a>
+        </div>
+    </div>
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <div class="searchBar">
@@ -137,7 +167,7 @@
             </button>
         </div>
         <div class ="buttonConnecter">
-            <img src="{{.User.Pfp}}" width="100" height="100">
+            <img src="{{.User.Pfp}}" width="100" height="100" onclick="toggleProfile()">
         </div>
         <div class="line1"></div>
     </div>

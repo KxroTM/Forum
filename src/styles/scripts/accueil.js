@@ -50,7 +50,18 @@ function reglageToggle() {
         reglage.style.opacity = 0;
         reglage.style.zIndex = -10;
     }
+}
 
+function toggleProfile() {
+    overlay = document.getElementById("overlayprofile");
+
+    if (overlay.style.opacity == 0) {
+        overlay.style.opacity = 1;
+        overlay.style.zIndex = 10000;
+    } else {
+        overlay.style.opacity = 0;
+        overlay.style.zIndex = -10;
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

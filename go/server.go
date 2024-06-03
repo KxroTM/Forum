@@ -779,6 +779,13 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+
+	data, _ := getSessionData(r)
+	if data.User.Email == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
 	updateUserSession(r)
 
 	AllData = GetAllDatas(r)
