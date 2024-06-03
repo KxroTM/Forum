@@ -236,15 +236,30 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
-	if AllData.ColorMode == "light" {
-		err = Home.ExecuteTemplate(w, "accueil.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+	if AllData.User.Email == "" {
+		if AllData.ColorMode == "light" {
+			err = Home.ExecuteTemplate(w, "accueil.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkHome.ExecuteTemplate(w, "accueil.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	} else {
-		err := DarkHome.ExecuteTemplate(w, "accueil.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		if AllData.ColorMode == "light" {
+			err = HomeLogged.ExecuteTemplate(w, "accueilLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkHomeLogged.ExecuteTemplate(w, "accueilLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	}
 }
@@ -298,17 +313,34 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if AllData.ColorMode == "light" {
-		err = Profile.ExecuteTemplate(w, "profile.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+	if AllData.User.Email == "" {
+		if AllData.ColorMode == "light" {
+			err = Profile.ExecuteTemplate(w, "profile.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		} else {
+			err = DarkProfile.ExecuteTemplate(w, "profile.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	} else {
-		err = DarkProfile.ExecuteTemplate(w, "profile.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		if AllData.ColorMode == "light" {
+			err = ProfileLogged.ExecuteTemplate(w, "profileLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		} else {
+			err = DarkProfileLogged.ExecuteTemplate(w, "profileLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 }
@@ -364,17 +396,34 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if AllData.ColorMode == "light" {
-		err = LightPost.ExecuteTemplate(w, "post.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+	if AllData.User.Email == "" {
+		if AllData.ColorMode == "light" {
+			err = LightPost.ExecuteTemplate(w, "post.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		} else {
+			err = DarkPost.ExecuteTemplate(w, "post.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	} else {
-		err = DarkPost.ExecuteTemplate(w, "post.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		if AllData.ColorMode == "light" {
+			err = LightPostLogged.ExecuteTemplate(w, "postLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		} else {
+			err = DarkPostLogged.ExecuteTemplate(w, "postLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 }
@@ -656,15 +705,31 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 	AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
-	if AllData.ColorMode == "light" {
-		err = Populaire.ExecuteTemplate(w, "populaire.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+	if AllData.User.Email == "" {
+		if AllData.ColorMode == "light" {
+			err = Populaire.ExecuteTemplate(w, "populaire.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkPopulaire.ExecuteTemplate(w, "populaire.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	} else {
-		err := DarkPopulaire.ExecuteTemplate(w, "populaire.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		if AllData.ColorMode == "light" {
+			err = PopulaireLogged.ExecuteTemplate(w, "populaireLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkPopulaireLogged.ExecuteTemplate(w, "populaireLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	}
 }
@@ -680,15 +745,30 @@ func PostsPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
-	if AllData.ColorMode == "light" {
-		err = Posts.ExecuteTemplate(w, "filtragePost.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+	if AllData.User.Email == "" {
+		if AllData.ColorMode == "light" {
+			err = Posts.ExecuteTemplate(w, "filtragePost.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkPosts.ExecuteTemplate(w, "filtragePost.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	} else {
-		err := DarkPosts.ExecuteTemplate(w, "filtragePost.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		if AllData.ColorMode == "light" {
+			err = PostsLogged.ExecuteTemplate(w, "filtragePostLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkPostsLogged.ExecuteTemplate(w, "filtragePostLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	}
 }
@@ -702,7 +782,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 
 	AllData = GetAllDatas(r)
-	// AllData.AllNotifications, _ = GetNotifications(Db, UserSession.User_id)
+	AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.ColorMode == "light" {

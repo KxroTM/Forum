@@ -198,3 +198,9 @@ position: fixed;
 .titleNotif p {
     font-family: 'Roboto', sans-serif;
 }
+
+.buttonConnecter img {
+    border-radius: 144px;
+    border:1px solid rgb(0, 0, 0);
+    cursor: pointer;
+}

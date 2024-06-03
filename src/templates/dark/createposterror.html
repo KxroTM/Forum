@@ -96,7 +96,7 @@
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <div class="searchBar">
-            <img src="../../style/img/loupeDark.png" width="8%">
+            <img src="../../style/img/loupeLight.png" width="8%">
             <input type="text" placeholder="Rechercher...">
             <button type="submit">Rechercher</button>
         </div>
@@ -112,18 +112,12 @@
         <div class="buttonNotification">
             <button onclick="toggleNotif()">
                 <span> 
-                    <img src ="../../style/img/clocheDark.png" width="24" height="24" alt="Notification Icon">
+                    <img src ="../../style/img/clocheLight.png" width="24" height="24" alt="Notification Icon">
                 </span>
             </button>
         </div>
         <div class ="buttonConnecter">
-            <a href="/connexion">
-            <button>
-                <span>
-                    Se connecter
-                </span>
-            </button>
-            </a>
+            <img src="{{.User.Pfp}}" width="100" height="100">
         </div>
         <div class="line1"></div>
     </div>
@@ -134,7 +128,7 @@
             <a href="/accueil">
             <button>
                 <span>
-                    <img src ="../../style/img/homeDark.png" width="24" height="24">
+                    <img src ="../../style/img/homeLight.png" width="24" height="24">
                     Accueil
                 </span>
             </button>
@@ -144,7 +138,7 @@
             <a href="/populaire"> 
             <button>
                 <span>
-                    <img src="../../style/img/popularDark.png" width="24" height="24">
+                    <img src="../../style/img/popularLight.png" width="24" height="24">
                     Populaire
                 </span>
             </button>
@@ -154,7 +148,7 @@
             <a href="/posts">
             <button>
                 <span>
-                    <img src="../../style/img/postsDark.png" width="24" height="24">
+                    <img src="../../style/img/postsLight.png" width="24" height="24">
                     Posts
                 </span>
             </button>
@@ -186,7 +180,7 @@
             <div class="buttonReglage">
                 <button onclick="reglageToggle()">
                     <span>
-                        <img src="../../style/img/engrenageDark.png" width="30" height="20">
+                        <img src="../../style/img/engrenageLight.png" width="30" height="20">
                         Réglages
                     </span>
                 </button>

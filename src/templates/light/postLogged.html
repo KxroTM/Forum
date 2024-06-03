@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <link rel="stylesheet" type="text/css" href="../../style/notificationLight.css"/>
+    <link rel="icon" href="../style/media/icon.png">
+    <link rel="stylesheet" type="text/css" href="../../style/post.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/navbar.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/leftbar.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/rightbar.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
-    <title>@{{.UserTarget.Username}}</title>
+    <title>{{.Post.Title}}</title>
 </head>
 <body>
     <div class="fullreglage" id="fullreglage">
@@ -68,6 +68,27 @@
             {{end}}
         </div>
     </div>
+    <div class="overreport" id="reportOverlay">
+        <div class="reportOverlay">
+            <div class ="txtReport">
+                <p>Signaler le post ?</p>
+            </div>
+            <div class ="buttonReport">
+                <a href="" id="reportLink">
+                    <button>
+                        <span>
+                            Oui
+                        </span>
+                    </button>
+                </a>
+                <button onclick="reportOverlay()">
+                    <span>
+                        Non
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="piqueoverlay" id="piqueoverlay"></div>
     <div class="notifoverlay" id="notifoverlay">
         <div class="notifForm">
@@ -125,7 +146,7 @@
         <div class="line2"></div>
         <div class="buttonAccueil">
             <a href="/accueil">
-            <button style="background-color: rgba(40, 151, 75, 0.21);">
+            <button>
                 <span>
                     <img src ="../../style/img/homeDark.png" width="24" height="24">
                     Accueil
@@ -214,17 +235,7 @@
             </div>
         </div>
     </div>
-
-    <div class="bodycode">
-      <div class="titleNotification">
-        <h1>Notifications</h1>
-      </div>
-      <div class="imgLike">
-                <img src="../../style/img/aAimer.png" width="70" height="40">
-                <div class="icon1">
-                </div>
-                <h5>@User a aimer ton post</h5>
-    </div>
 </body>
 <script src="../../style/scripts/accueil.js"></script>
+
 </html>
