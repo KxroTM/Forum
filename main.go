@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-
+	forum.InvalidAllMail(forum.Db)
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./src/styles"))))
 	http.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
 
@@ -33,6 +33,7 @@ func main() {
 	http.HandleFunc("/posts", forum.PostsPage)
 	http.HandleFunc("/changeColorMode", forum.ChangeColorMode)
 	http.HandleFunc("/notifications", forum.NotificationsPage)
+	http.HandleFunc("/forgot-password", forum.ForgotPasswordPage)
 
 	err := openLink()
 	if err != nil {
