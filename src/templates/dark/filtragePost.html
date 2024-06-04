@@ -19,7 +19,7 @@
         <div class="fullreg">
             <button>
                 <span>
-                    <img src="../../style/img/engrenageDark.png" width="30" height="20">
+                    <img src="../../style/img/engrenageLight.png" width="30" height="20">
                     Réglages
                 </span>
             </button>
@@ -101,14 +101,51 @@
                 <p>Notifications</p>
             </div>
             <div class="Notifications">
-                <div class="notif">
-                    <img src="../../style/img/bienvenueDark.png" height="50" style="margin-right: 1vw;margin-top: 1vh;">
-                    <p>Bienvenue sur <br>ParlonsSanté !</p>
-                </div>
-                <!-- 4 max -->
+                {{ range $count, $notif := .AllNotifications }}
+                    {{ if lt $count 4 }}
+                        {{if eq .notif.Reason "likePost"}}
+                            <div class="notif">
+                                <img src="../../style/img/aAimer.png" height="50">
+                                <p>@{{.notif.User_id2}} a aimé votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "likeComment"}}
+                            <div class="notif">
+                                <img src="../../style/img/aAimer.png" height="50">
+                                <p>@{{.notif.User_id2}} a aimé votre commentaire</p>
+                            </div>
+                        {{else if eq .notif.Reason "dislikePost"}}
+                            <div class="notif">
+                                <img src="../../style/img/dislike.png" height="50">
+                                <p>@{{.notif.User_id2}} n'a pas aimé votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "dislikeComment"}}
+                            <div class="notif">
+                                <img src="../../style/img/dislike.png" height="50">
+                                <p>@{{.notif.User_id2}} n'a pas aimé votre commentaire</p>
+                            </div>
+                        {{else if eq .notif.Reason "repost"}}
+                            <div class="notif">
+                                <img src="../../style/img/republication.webp" height="50">
+                                <p>@{{.notif.User_id2}} à republié votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "comment"}}
+                            <div class="notif">
+                                <img src="../../style/img/commentaire.png" height="50">
+                                <p>@{{.notif.User_id2}} a commenté votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "follow"}}
+                            <div class="notif">
+                                <img src="../../style/img/follow.png" height="50">
+                                <p>@{{.notif.User_id2}} vous a suivi</p>
+                            </div>
+                        {{ end }}
+                    {{ else }}
+                        {{ break }}
+                    {{ end }}
+                {{ end }}
             </div>
-            <div class="allNotif" style="margin-top: -2vh;">
-                <a href="/connexion">
+            <div class="allNotif">
+                <a href="/notifications">
                     <button>
                         <span>
                         Tout voir

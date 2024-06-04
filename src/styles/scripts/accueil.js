@@ -60,7 +60,7 @@ function toggleProfile() {
         overlay.style.zIndex = 10000;
     } else {
         overlay.style.opacity = 0;
-        overlay.style.zIndex = -10;
+        overlay.style.zIndex = -1000;
     }
 }
 

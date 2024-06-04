@@ -13,10 +13,11 @@ type Notification struct {
 	User_id2        string
 	Date            string
 	Checked         bool
+	Reason          string
 }
 
 func CreateNotification(Db *sql.DB, Notification Notification) {
-	_, err := Db.Exec("INSERT INTO notifications (comment_id, posts_id, user_id, user_id2, date, checked) VALUES (?, ?, ?, ?, ?, ?)", Notification.Comment_id, Notification.Posts_id, Notification.User_id, Notification.User_id2, Notification.Date, false)
+	_, err := Db.Exec("INSERT INTO notifications (comment_id, posts_id, user_id, user_id2, date, checked, reason) VALUES (?, ?, ?, ?, ?, ?, ?)", Notification.Comment_id, Notification.Posts_id, Notification.User_id, Notification.User_id2, Notification.Date, false, Notification.Reason)
 	if err != nil {
 		fmt.Println("Error creating notification:", err)
 	}
@@ -32,7 +33,7 @@ func GetNotifications(Db *sql.DB, User_id string) []Notification {
 	for rows.Next() {
 		var Notification Notification
 		err := rows.Scan(&Notification.Notification_id, &Notification.Comment_id, &Notification.Posts_id,
-			&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked)
+			&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
 		if err != nil {
 			fmt.Println("Error getting notifications:", err)
 		}
@@ -45,7 +46,7 @@ func GetNotification(Db *sql.DB, Notification_id string) Notification {
 	row := Db.QueryRow("SELECT * FROM notifications WHERE notification_id = ?", Notification_id)
 	var Notification Notification
 	err := row.Scan(&Notification.Notification_id, &Notification.Comment_id, &Notification.Posts_id,
-		&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked)
+		&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
 	if err != nil {
 		fmt.Println("Error getting notification:", err)
 	}
@@ -62,7 +63,7 @@ func GetUnreadNotifications(Db *sql.DB, User_id string) []Notification {
 	for rows.Next() {
 		var Notification Notification
 		err := rows.Scan(&Notification.Notification_id, &Notification.Comment_id, &Notification.Posts_id,
-			&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked)
+			&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
 		if err != nil {
 			fmt.Println("Error getting notifications:", err)
 		}
