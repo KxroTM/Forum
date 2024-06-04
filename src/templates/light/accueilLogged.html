@@ -101,11 +101,48 @@
                 <p>Notifications</p>
             </div>
             <div class="Notifications">
-                <div class="notif">
-                    <img src="../../style/img/aAimer.png" height="50">
-                    <p>Un utilisateur a aimé votre post</p>
-                </div>
-                <!-- 4 max -->
+                {{ range $count, $notif := .AllNotifications }}
+                    {{ if lt $count 4 }}
+                        {{if eq .notif.Reason "likePost"}}
+                            <div class="notif">
+                                <img src="../../style/img/aAimer.png" height="50">
+                                <p>@{{.notif.User_id2}} a aimé votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "likeComment"}}
+                            <div class="notif">
+                                <img src="../../style/img/aAimer.png" height="50">
+                                <p>@{{.notif.User_id2}} a aimé votre commentaire</p>
+                            </div>
+                        {{else if eq .notif.Reason "dislikePost"}}
+                            <div class="notif">
+                                <img src="../../style/img/dislike.png" height="50">
+                                <p>@{{.notif.User_id2}} n'a pas aimé votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "dislikeComment"}}
+                            <div class="notif">
+                                <img src="../../style/img/dislike.png" height="50">
+                                <p>@{{.notif.User_id2}} n'a pas aimé votre commentaire</p>
+                            </div>
+                        {{else if eq .notif.Reason "repost"}}
+                            <div class="notif">
+                                <img src="../../style/img/republication.webp" height="50">
+                                <p>@{{.notif.User_id2}} à republié votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "comment"}}
+                            <div class="notif">
+                                <img src="../../style/img/commentaire.png" height="50">
+                                <p>@{{.notif.User_id2}} a commenté votre post</p>
+                            </div>
+                        {{else if eq .notif.Reason "follow"}}
+                            <div class="notif">
+                                <img src="../../style/img/follow.png" height="50">
+                                <p>@{{.notif.User_id2}} vous a suivi</p>
+                            </div>
+                        {{ end }}
+                    {{ else }}
+                        {{ break }}
+                    {{ end }}
+                {{ end }}
             </div>
             <div class="allNotif">
                 <a href="/notifications">
@@ -327,7 +364,11 @@
                     {{ end }}
                 </div>
                 <div class="post-footer">
+                    {{ if eq $.User.User_id .Posts_id }}
                     <div class="buttonLike ignore-click">
+                    {{ else }}
+                    <div class="buttonLike ignore-click" onclick='likePost({{.Posts_id}})'>
+                    {{ end }}
                         <label class="container1">
                             {{ if .IsLike }}
                             <input type="checkbox" checked>
@@ -342,8 +383,11 @@
                         </label>
                     </div>
                     <p class ="nbLikes">{{.Like}}</p>
-
+                    {{ if eq $.User.User_id .Posts_id }}
                     <div class="buttonDislike ignore-click">
+                    {{ else }}
+                    <div class="buttonDislike ignore-click" onclick='dislikePost({{.Posts_id}})'>
+                    {{ end }}
                         <label class="container2">
                             {{ if .IsDislike }}
                             <input type="checkbox" checked>
@@ -355,7 +399,11 @@
                     </div>
                     <p class ="nbDislike">{{.Dislike}}</p>
 
+                    {{ if eq $.User.User_id .Posts_id }}
                     <div class="container3 ignore-click" title="Republier">
+                    {{ else }}
+                    <div class="container3 ignore-click" title="Republier" onclick='retweetPost({{.Posts_id}})'>
+                    {{ end }}
                         {{ if .IsRetweet}}
                         <input type="checkbox" id="repostCheckbox" class="repost-checkbox" checked>
                         {{ else }}

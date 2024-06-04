@@ -34,6 +34,9 @@ func main() {
 	http.HandleFunc("/changeColorMode", forum.ChangeColorMode)
 	http.HandleFunc("/notifications", forum.NotificationsPage)
 	http.HandleFunc("/forgot-password", forum.ForgotPasswordPage)
+	http.HandleFunc("/likePost", forum.LikeLogique)
+	http.HandleFunc("/dislikePost", forum.DislikeLogique)
+	http.HandleFunc("/retweetPost", forum.RetweetLogique)
 
 	err := openLink()
 	if err != nil {

@@ -341,6 +341,16 @@ func LikePost(db *sql.DB, post_id string, username string) error {
 	return nil
 }
 
+func UnLikePost(db *sql.DB, post_id string, username string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
+	PostSession.Liker = strings.Replace(PostSession.Liker, ","+username, "", -1)
+	db.Exec(`UPDATE posts SET like = ?, liker = ? WHERE posts_id = ?`, PostSession.Like-1, PostSession.Liker, post_id)
+	return nil
+}
+
 func DislikePost(db *sql.DB, post_id string, username string) error {
 	PostSession, err := GetPost(db, post_id)
 	if err != nil {
@@ -356,6 +366,16 @@ func DislikePost(db *sql.DB, post_id string, username string) error {
 		db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike+1, post_id, PostSession.Disliker)
 
 	}
+	return nil
+}
+
+func UnDislikePost(db *sql.DB, post_id string, username string) error {
+	PostSession, err := GetPost(db, post_id)
+	if err != nil {
+		return err
+	}
+	PostSession.Disliker = strings.Replace(PostSession.Disliker, ","+username, "", -1)
+	db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike-1, PostSession.Disliker, post_id)
 	return nil
 }
 

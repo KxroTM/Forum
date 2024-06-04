@@ -105,3 +105,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+
+function likePost(id) {    
+    window.location.href = '/likePost?'+id;
+}
+
+function dislikePost(id) {
+    window.location.href = '/dislikePost?'+id;
+}
+
+function retweetPost(id) {
+    window.location.href = '/retweetPost?'+id;
+}

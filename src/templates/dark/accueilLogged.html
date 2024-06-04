@@ -367,7 +367,11 @@
                     {{ end }}
                 </div>
                 <div class="post-footer">
+                    {{ if eq $.User.User_id .Posts_id }}
                     <div class="buttonLike ignore-click">
+                    {{ else }}
+                    <div class="buttonLike ignore-click" onclick='likePost({{.Posts_id}})'>
+                    {{ end }}
                         <label class="container1">
                             {{ if .IsLike }}
                             <input type="checkbox" checked>
@@ -382,8 +386,11 @@
                         </label>
                     </div>
                     <p class ="nbLikes">{{.Like}}</p>
-
+                    {{ if eq $.User.User_id .Posts_id }}
                     <div class="buttonDislike ignore-click">
+                    {{ else }}
+                    <div class="buttonDislike ignore-click" onclick='dislikePost({{.Posts_id}})'>
+                    {{ end }}
                         <label class="container2">
                             {{ if .IsDislike }}
                             <input type="checkbox" checked>
@@ -395,7 +402,11 @@
                     </div>
                     <p class ="nbDislike">{{.Dislike}}</p>
 
+                    {{ if eq $.User.User_id .Posts_id }}
                     <div class="container3 ignore-click" title="Republier">
+                    {{ else }}
+                    <div class="container3 ignore-click" title="Republier" onclick='retweetPost({{.Posts_id}})'>
+                    {{ end }}
                         {{ if .IsRetweet}}
                         <input type="checkbox" id="repostCheckbox" class="repost-checkbox" checked>
                         {{ else }}

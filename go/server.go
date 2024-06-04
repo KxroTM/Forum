@@ -921,3 +921,115 @@ func ForgotPasswordPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func LikeLogique(w http.ResponseWriter, r *http.Request) {
+
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.URL.RawQuery
+
+	if postID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	postSession, err := GetPost(Db, postID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if strings.Contains(postSession.Liker, UserSession.Username) {
+		UnLikePost(Db, postID, UserSession.Username)
+	} else {
+		LikePost(Db, postID, UserSession.Username)
+		fmt.Println("Liked")
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func DislikeLogique(w http.ResponseWriter, r *http.Request) {
+
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.URL.RawQuery
+
+	if postID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	postSession, err := GetPost(Db, postID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if strings.Contains(postSession.Disliker, UserSession.Username) {
+		UnDislikePost(Db, postID, UserSession.Username)
+	} else {
+		DislikePost(Db, postID, UserSession.Username)
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func RetweetLogique(w http.ResponseWriter, r *http.Request) {
+
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.URL.RawQuery
+
+	if postID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	postSession, err := GetPost(Db, postID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if strings.Contains(postSession.Retweeter, UserSession.Username) {
+		UnRetweetPost(Db, postID, UserSession.Username)
+	} else {
+		RetweetPost(Db, postID, UserSession.Username)
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
