@@ -122,7 +122,7 @@ position: fixed;
     background-color: #1D1D1D;
     z-index: -10;
     opacity: 0;
-    border-radius: 30px;
+    border-radius: 15px;
     box-shadow: rgba(6, 153, 191, 0.31) 0px 0px 5px;
 }
 
@@ -133,7 +133,7 @@ position: fixed;
     display: flex;
     align-items: center;
     flex-direction: column;
-    border-radius: 30px;
+    border-radius: 15px;
 }
 
 .titleNotif {
@@ -219,7 +219,7 @@ position: fixed;
     z-index: -10;
     background-color: #1D1D1D;
     z-index: 10000;
-    border-radius: 30px;
+    border-radius: 15px;
 }
 
 .profileMenu {
@@ -231,7 +231,7 @@ position: fixed;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    border-radius: 30px;
+    border-radius: 15px;
     box-shadow: rgba(6, 153, 191, 0.31) 0px 0px 7px;
     cursor: pointer;
 }
