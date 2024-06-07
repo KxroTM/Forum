@@ -49,9 +49,18 @@ func CreateCategory(db *sql.DB, name, description, image string) bool {
 }
 
 func GetCategoryById(db *sql.DB, id string) Category {
-	var category Category
-	err := db.QueryRow("SELECT * FROM categories WHERE category_id = ?", id).Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
+	rows, err := db.Query("SELECT * FROM categories WHERE category_id = ?", id)
 	if err != nil {
+		return Category{}
+	}
+	defer rows.Close()
+
+	var category Category
+
+	for rows.Next() {
+		rows.Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
+	}
+	if err := rows.Err(); err != nil {
 		return Category{}
 	}
 	return category
