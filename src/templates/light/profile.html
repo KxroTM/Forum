@@ -217,33 +217,33 @@
         </div>
     </div> 
 
-        <div class="rightbar">
-            <div class="line3">
-                <div class="users">
-                <h3>Utilisateurs recommandés :</h3>
-                {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
-                    <a href="/profile/@{{$user.Username}}">
-                    <button>
-                        <span>
-                            <img src="{{$user.Pfp}}" width="60" height="60">
-                            @{{.Username}}
-                        </span>
-                    </button>
-                    </a>
-                    <p>{{ index $.RecommendedUser.Reason $i }}</p>
-                {{ end }}
-                </div>
-                <div class ="buttonVoirTout">
-                    <a href="/utilisateurs">
-                    <button>
-                        <span>
-                            Voir tout
-                        </span>
-                    </button>
-                    </a>
-                </div>
+    <div class="rightbar">
+        <div class="line3">
+            <div class="users">
+            <h3>Utilisateurs recommandés :</h3>
+            {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                <a href="/profile/@{{$user.Username}}">
+                <button>
+                    <span>
+                        <img src="{{$user.Pfp}}" width="60" height="60">
+                        @{{.Username}}
+                    </span>
+                </button>
+                </a>
+                <p>{{ index $.RecommendedUser.Reason $i }}</p>
+            {{ end }}
+            </div>
+            <div class ="buttonVoirTout">
+                <a href="/utilisateurs">
+                <button>
+                    <span>
+                        Voir tout
+                    </span>
+                </button>
+                </a>
             </div>
         </div>
+    </div>
 
         <div class="bodycode">
             <!-- ici -->
@@ -252,17 +252,19 @@
                 <div class="Pseudo">
                     <h1>@{{.UserTarget.Username}}</h1>
                 </div>
+                <div class="Follow">
+                    <div class="follower">
+                        <h1>{{.UserTarget.Follower}}</h1><p>Abonnés</p>
+                    </div>
+                    <div class="following">
+                        <h1>{{.UserTarget.Following}}</h1><p>Abonnements</p>
+                    </div>
+                </div>
             </div>
             <div class="Biographie">
                 <h5>{{.UserTarget.Bio}}</h5>
             </div>
-            <div class="editProfil">     
-                <button>    
-                    <span>
-                        Éditer le profil
-                    </span>
-                </button>
-            </div>
+
             <div class="line12">
             </div>
             <div class="middle">

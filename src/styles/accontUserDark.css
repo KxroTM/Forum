@@ -1,29 +1,30 @@
 body {
-  background-color: #FFF;
+  background-color:#1D1D1D;
 }
 
 button {
-  border: 0px solid;
-  background-color: #FFF;
+  border: 0px solid ;
+  background-color: #1D1D1D;
   border-radius: 0.9em;
   padding: 0.8em 1.2em 0.8em 1em;
   transition: all ease-in-out 0.2s;
   font-size: 16px;
   cursor: pointer;
-}
-
-button span {
+ }
+ 
+ button span {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #000;
+  color: rgb(196, 194, 194);
   font-weight: 600;
-}
+ }
+ 
+ button:hover {
+  background-color:rgba(6, 153, 191, 0.31);
+ }
 
-button:hover {
-  background-color: rgba(40, 151, 75, 0.21);
-}
-
+ 
 .bodycode {
   position: relative;
   display: flex;
@@ -40,11 +41,11 @@ button:hover {
   width: 74.9vw;
   height: 33vh;
   flex-shrink: 0;
-  background: #28974B;
+  background: rgba(6, 153, 191, 0.31);
   margin-top: -51vh;
   position: relative;
   right: 0.3vw;
-  box-shadow: #28974B 0px 0px 10px;
+  box-shadow: rgba(6, 153, 191, 0.31) 0px 0px 10px;
 }
 
 .editProfil {
@@ -56,7 +57,7 @@ button:hover {
 }
 
 .editProfil button {
-  background-color: rgba(40, 151, 75, 0.21);
+  background-color: rgba(6, 153, 191, 0.31);
   height: 6vh;
   width: 9vw;
 }
@@ -597,4 +598,33 @@ a {
 
 .leftbar{
   top: 10vh;
+}
+
+.Follow {
+  top: 25vh;
+  left: 4.5vw;
+  position: relative;
+  width: 2vw;
+  display: flex;
+  flex-direction: row;
+  font-family: 'Roboto', sans-serif;
+}
+
+.follower {
+  display: flex;
+  flex-direction: row;
+}
+
+.following {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1vw;
+}
+
+.follower h1{
+  margin-right: 0.5vw;
+}
+
+.following h1{
+  margin-right: 0.5vw;
 }

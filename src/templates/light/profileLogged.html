@@ -313,16 +313,40 @@
                 <div class="Pseudo">
                     <h1>@{{.UserTarget.Username}}</h1>
                 </div>
+                <div class="Follow">
+                    <div class="follower">
+                        <h1>{{.UserTarget.Follower}}</h1><p>Abonnés</p>
+                    </div>
+                    <div class="following">
+                        <h1>{{.UserTarget.Following}}</h1><p>Abonnements</p>
+                    </div>
+                </div>
             </div>
             <div class="Biographie">
                 <h5>{{.UserTarget.Bio}}</h5>
             </div>
-            <div class="editProfil">     
-                <button>    
-                    <span>
-                        Éditer le profil
-                    </span>
-                </button>
+            <div class="editProfil">
+                {{ if eq .User.User_id .UserTarget.User_id }}
+                <a href="/parametres">
+                    <button>    
+                        <span>
+                            Éditer le profil
+                        </span>
+                    </button>
+                </a>
+                {{ else}}
+                <a href="/followUser?{{.UserTarget.User_id}}">
+                    <button>
+                        <span>
+                            {{ if .UserTarget.ImFollowed }}
+                            Ne plus suivre
+                            {{ else }}
+                            Suivre
+                            {{ end }}
+                        </span>
+                    </button>
+                </a>
+                {{ end }}
             </div>
             <div class="line12">
             </div>
@@ -387,7 +411,7 @@
                     <h2 class="post-title">{{.Title}}</h2><br>
                     <p>{{.Text}}</p>
                     {{ if .Links }}
-                    <img src="{{.Links}}" alt="Image du post" class="post-image ignore-click" id="postimg">
+                    <img src=".{{.Links}}" alt="Image du post" class="post-image ignore-click" id="postimg">
                     {{ end }}
                 </div>
                 <div class="post-footer">

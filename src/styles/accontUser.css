@@ -598,3 +598,32 @@ a {
 .leftbar{
   top: 10vh;
 }
+
+.Follow {
+  top: 25vh;
+  left: 4.5vw;
+  position: relative;
+  width: 2vw;
+  display: flex;
+  flex-direction: row;
+  font-family: 'Roboto', sans-serif;
+}
+
+.follower {
+  display: flex;
+  flex-direction: row;
+}
+
+.following {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1vw;
+}
+
+.follower h1{
+  margin-right: 0.5vw;
+}
+
+.following h1{
+  margin-right: 0.5vw;
+}

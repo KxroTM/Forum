@@ -328,15 +328,20 @@ func LikePost(db *sql.DB, post_id string, username string) error {
 	if err != nil {
 		return err
 	}
-	PostSession.Liker = PostSession.Liker + "," + username
+
+	if PostSession.Liker == "" {
+		PostSession.Liker = username
+	} else {
+		PostSession.Liker = PostSession.Liker + "," + username
+	}
 
 	if strings.Contains(PostSession.Disliker, username) {
 		PostSession.Disliker = strings.Replace(PostSession.Disliker, ","+username, "", -1)
 
-		db.Exec(`UPDATE posts SET like = ?, liker = ?, dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Like+1, PostSession.Liker, PostSession.Dislike-1, post_id, PostSession.Disliker)
+		db.Exec(`UPDATE posts SET like = ?, liker = ?, dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Like+1, PostSession.Liker, PostSession.Dislike-1, PostSession.Disliker, post_id)
 
 	} else {
-		db.Exec(`UPDATE posts SET like = ?, liker = ? WHERE posts_id = ?`, PostSession.Like+1, post_id, PostSession.Liker)
+		db.Exec(`UPDATE posts SET like = ?, liker = ? WHERE posts_id = ?`, PostSession.Like+1, PostSession.Liker, post_id)
 	}
 	return nil
 }
@@ -346,7 +351,7 @@ func UnLikePost(db *sql.DB, post_id string, username string) error {
 	if err != nil {
 		return err
 	}
-	PostSession.Liker = strings.Replace(PostSession.Liker, ","+username, "", -1)
+	PostSession.Liker = strings.Replace(PostSession.Liker, username, "", -1)
 	db.Exec(`UPDATE posts SET like = ?, liker = ? WHERE posts_id = ?`, PostSession.Like-1, PostSession.Liker, post_id)
 	return nil
 }
@@ -356,14 +361,20 @@ func DislikePost(db *sql.DB, post_id string, username string) error {
 	if err != nil {
 		return err
 	}
-	PostSession.Disliker = PostSession.Disliker + "," + username
+
+	if PostSession.Disliker == "" {
+		PostSession.Disliker = username
+	} else {
+		PostSession.Disliker = PostSession.Disliker + "," + username
+	}
+
 	if strings.Contains(PostSession.Liker, username) {
 		PostSession.Liker = strings.Replace(PostSession.Liker, ","+username, "", -1)
 
-		db.Exec(`UPDATE posts SET like = ?, liker = ?, dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Like-1, PostSession.Liker, PostSession.Dislike+1, post_id, PostSession.Disliker)
+		db.Exec(`UPDATE posts SET like = ?, liker = ?, dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Like-1, PostSession.Liker, PostSession.Dislike+1, PostSession.Disliker, post_id)
 
 	} else {
-		db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike+1, post_id, PostSession.Disliker)
+		db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike+1, PostSession.Disliker, post_id)
 
 	}
 	return nil
@@ -374,7 +385,7 @@ func UnDislikePost(db *sql.DB, post_id string, username string) error {
 	if err != nil {
 		return err
 	}
-	PostSession.Disliker = strings.Replace(PostSession.Disliker, ","+username, "", -1)
+	PostSession.Disliker = strings.Replace(PostSession.Disliker, username, "", -1)
 	db.Exec(`UPDATE posts SET dislike = ?, disliker = ? WHERE posts_id = ?`, PostSession.Dislike-1, PostSession.Disliker, post_id)
 	return nil
 }
@@ -384,7 +395,12 @@ func RetweetPost(db *sql.DB, post_id string, username string) error {
 	if err != nil {
 		return err
 	}
-	PostSession.Retweeter = PostSession.Retweeter + "," + username
+	if PostSession.Retweeter == "" {
+		PostSession.Retweeter = username
+	} else {
+		PostSession.Retweeter = PostSession.Retweeter + "," + username
+	}
+
 	db.Exec(`UPDATE posts SET retweet = ?, retweeter = ? WHERE posts_id = ?`, PostSession.Retweet+1, PostSession.Retweeter, post_id)
 
 	return nil
@@ -395,7 +411,7 @@ func UnRetweetPost(db *sql.DB, post_id string, username string) error {
 	if err != nil {
 		return err
 	}
-	PostSession.Retweeter = strings.Replace(PostSession.Retweeter, ","+username, "", -1)
+	PostSession.Retweeter = strings.Replace(PostSession.Retweeter, username, "", -1)
 	db.Exec(`UPDATE posts SET retweet = ?, retweeter = ? WHERE posts_id = ?`, PostSession.Retweet-1, PostSession.Retweeter, post_id)
 	return nil
 }

@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <link rel="stylesheet" type="text/css" href="./accontUserDark.css"/>
+    <link rel="icon" href="../style/media/icon.png">
+    <link rel="stylesheet" type="text/css" href="../../style/accontUserDark.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/navbarDark.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/leftbarDark.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/rightbarDark.css"/>
     <meta charset="UTF-8">
-    <title>Accueil</title>
+    <title>@{{.UserTarget.Username}}</title>
 </head>
 <body>
+    <div class="overlay" id="overlay" style="display: none;">
+        <img id="imgoverlay">
+    </div>
     <div class="fullreglage" id="fullreglage">
         <div class="fullreg">
             <button>
@@ -249,16 +253,17 @@
             <div class="Pseudo">
                 <h1>@{{.UserTarget.Username}}</h1>
             </div>
+            <div class="Follow">
+                <div class="follower">
+                    <h1>{{.UserTarget.Follower}}</h1><p>Abonnés</p>
+                </div>
+                <div class="following">
+                    <h1>{{.UserTarget.Following}}</h1><p>Abonnements</p>
+                </div>
+            </div>  
         </div>
         <div class="Biographie">
             <h5>Biographie</h5>
-        </div>
-        <div class="editProfil">     
-            <button>    
-                <span>
-                    Edit Profile
-                </span>
-            </button>
         </div>
         <div class="line6">
         </div>

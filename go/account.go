@@ -40,6 +40,9 @@ type User struct {
 	FollowerList  string
 	Following     int
 	FollowingList string
+	IsMyAccount   bool
+	ImFollowed    bool
+	HeFollowed    bool
 }
 
 var UserSession User
@@ -251,6 +254,19 @@ func GetAccountByUsername(db *sql.DB, username string) User {
 		}
 		return User{}
 	}
+
+	if UserSession.Username == user.Username {
+		user.IsMyAccount = true
+	}
+
+	if strings.Contains(UserSession.FollowingList, user.Username) {
+		user.ImFollowed = true
+	}
+
+	if strings.Contains(UserSession.FollowerList, user.Username) {
+		user.HeFollowed = true
+	}
+
 	return user
 }
 
@@ -430,9 +446,9 @@ func RemoveCategoriesSub(db *sql.DB, user_id string, categorie string) {
 	db.Exec(`UPDATE categories SET users = users - 1 WHERE name = ?`, categorie)
 }
 
-func UpdateFollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va follow
+func UpdateFollowing(db *sql.DB, user_id, username string) { // username etant la personne que l'on va follow
 
-	userToFollow := GetAccount(db, username)
+	userToFollow := GetAccountByUsername(db, username)
 
 	// Mise a jour de notre nombre de following
 	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, UserSession.Following+1, user_id)
@@ -449,7 +465,7 @@ func UpdateFollowing(db *sql.DB, user_id string, username string) { // username 
 
 func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va unfollow
 
-	userToUnfollow := GetAccount(db, username)
+	userToUnfollow := GetAccountByUsername(db, username)
 
 	// Mise a jour de notre nombre de following
 	db.Exec(`UPDATE users SET following = ? WHERE UUID = ?`, UserSession.Following-1, user_id)

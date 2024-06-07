@@ -37,6 +37,7 @@ func main() {
 	http.HandleFunc("/likePost", forum.LikeLogique)
 	http.HandleFunc("/dislikePost", forum.DislikeLogique)
 	http.HandleFunc("/retweetPost", forum.RetweetLogique)
+	http.HandleFunc("/followUser", forum.FollowLogique)
 
 	err := openLink()
 	if err != nil {

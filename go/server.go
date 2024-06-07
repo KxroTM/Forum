@@ -297,6 +297,10 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
+	if strings.Contains(AllData.UserTarget.FollowerList, UserSession.Username) {
+		AllData.UserTarget.HeFollowed = true
+	}
+
 	if AllData.UserTarget == (User{}) {
 		if AllData.ColorMode == "light" {
 			err := ErrorUser.ExecuteTemplate(w, "errorUser.html", "Invalid URL")
@@ -954,7 +958,6 @@ func LikeLogique(w http.ResponseWriter, r *http.Request) {
 		UnLikePost(Db, postID, UserSession.Username)
 	} else {
 		LikePost(Db, postID, UserSession.Username)
-		fmt.Println("Liked")
 	}
 
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
@@ -1029,6 +1032,42 @@ func RetweetLogique(w http.ResponseWriter, r *http.Request) {
 		UnRetweetPost(Db, postID, UserSession.Username)
 	} else {
 		RetweetPost(Db, postID, UserSession.Username)
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func FollowLogique(w http.ResponseWriter, r *http.Request) {
+
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	user_id := r.URL.RawQuery
+
+	if user_id == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	userSession := GetAccount(Db, UserSession.Email)
+	userTarget := GetAccountById(Db, user_id)
+
+	if strings.Contains(userSession.FollowingList, userTarget.Username) {
+		UpdateUnfollowing(Db, userSession.User_id, userTarget.Username)
+		AllData.UserTarget.ImFollowed = false
+	} else {
+		UpdateFollowing(Db, userSession.User_id, userTarget.Username)
+		AllData.UserTarget.ImFollowed = true
 	}
 
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
