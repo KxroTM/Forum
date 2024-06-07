@@ -1106,11 +1106,9 @@ func CategoriePage(w http.ResponseWriter, r *http.Request) {
 
 	categorie_id := r.URL.RawQuery[3:]
 
-	fmt.Println(categorie_id)
-
 	categorie := GetCategoryById(Db, categorie_id)
 
-	fmt.Println(categorie)
+	AllData.Categorie = categorie
 
 	AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
 

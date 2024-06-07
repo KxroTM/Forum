@@ -208,7 +208,7 @@ func GetAllPostsByDate(db *sql.DB) []Post {
 }
 
 func GetAllPostsByCategorie(db *sql.DB, categorie string) ([]Post, error) {
-	rows, err := db.Query("SELECT * FROM posts WHERE categorie LIKE %?%", categorie)
+	rows, err := db.Query("SELECT * FROM posts WHERE categorie LIKE ?", "%"+categorie+"%")
 	if err != nil {
 		return nil, err
 	}

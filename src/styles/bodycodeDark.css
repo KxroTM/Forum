@@ -421,3 +421,12 @@ a {
   position: relative;
   bottom: 1vh;
 }
+
+.categorieName {
+  color: rgb(255, 255, 255);
+  position: fixed;
+  top:18vh;
+  align-items: center;
+  font-family: "roboto", sans-serif;
+}
+    

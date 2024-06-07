@@ -217,32 +217,11 @@
         <div class="line1"></div>
     </div>
 
-    <div class="undernavbar">
-        <div class="buttonPourToi">
-            <a href="/accueil?pourtoi">
-            <button style="text-align: center;">
-                <span>
-                    Pour toi
-                </span>
-            </button>
-            </a>
-        </div>
-        <div class ="buttonSuivi">
-            <a href="/accueil?suivies">
-            <button style="text-align: center;">
-                <span>
-                    Suivies
-                </span>
-            </button>
-            </a>
-        </div>  
-    </div>
-
     <div class="leftbar">
         <div class="line2"></div>
         <div class="buttonAccueil">
             <a href="/accueil">
-            <button style="background-color:rgba(6, 153, 191, 0.31);">
+            <button>
                 <span>
                     <img src ="../../style/img/homeLight.png" width="24" height="24">
                     Accueil
@@ -333,6 +312,9 @@
     </div>
 
     <div class="bodycode">
+        <div class="categorieName">
+            <h1>{{.Categorie.Name}}</h1>
+        </div>        
         <div class="golangPost">
             {{ range .AllPosts }}
             <div class="post" id='{{.Posts_id}}'>

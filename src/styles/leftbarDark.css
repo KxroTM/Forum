@@ -94,7 +94,16 @@
     position: relative;
     margin-top: 3vh;
     width: 8vw;
-    height: 7vh;
+    min-height: 7vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.catégories button {
+    margin-bottom: 1vh;
+    width: 8vw;
+    min-height: 6vh;
 }
 
 .buttonVoirToutCategorie button {
