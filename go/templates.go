@@ -25,6 +25,8 @@ var PostsLogged = template.Must(template.ParseFiles("./src/templates/light/filtr
 var Notifications = template.Must(template.ParseFiles("./src/templates/light/notification.html"))
 var ForgotPassword = template.Must(template.ParseFiles("./src/templates/light/forgotpassword.html"))
 var ForgotPasswordError = template.Must(template.ParseFiles("./src/templates/light/forgotpassworderror.html"))
+var Categorie = template.Must(template.ParseFiles("./src/templates/light/categorie.html"))
+var CategorieLogged = template.Must(template.ParseFiles("./src/templates/light/categorieLogged.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -49,3 +51,5 @@ var DarkPostsLogged = template.Must(template.ParseFiles("./src/templates/dark/fi
 var DarkNotifications = template.Must(template.ParseFiles("./src/templates/dark/notification.html"))
 var DarkForgotPassword = template.Must(template.ParseFiles("./src/templates/dark/forgotpassword.html"))
 var DarkForgotPasswordError = template.Must(template.ParseFiles("./src/templates/dark/forgotpassworderror.html"))
+var DarkCategorie = template.Must(template.ParseFiles("./src/templates/dark/categorie.html"))
+var DarkCategorieLogged = template.Must(template.ParseFiles("./src/templates/dark/categorieLogged.html"))

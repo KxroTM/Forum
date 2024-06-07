@@ -161,6 +161,52 @@ func SignUpUser(db *sql.DB, username, email, password, passwordcheck string) err
 	return nil
 }
 
+func SignUpUserOauth(db *sql.DB, username, email, password string) error {
+
+	time := time.Now().Format("02-01-2006")
+
+	u, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
+	UserSession = User{
+		User_id:       u.String(),
+		Role:          "user",
+		Username:      username,
+		Email:         email,
+		Password:      hashPasswordSHA256(password),
+		CreationDate:  time,
+		UpdateDate:    time,
+		Pfp:           "",
+		Bio:           "",
+		Links:         "",
+		CategorieSub:  "",
+		Follower:      0,
+		FollowerList:  "",
+		Following:     0,
+		FollowingList: "",
+	}
+
+	pfp := rand.Intn(4) + 1
+	switch pfp {
+	case 1:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_01.png"
+	case 2:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_02.png"
+	case 3:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_03.png"
+	case 4:
+		UserSession.Pfp = "../../style/media/default_avatar/avatar_04.png"
+	}
+
+	db.Exec(`INSERT INTO users (UUID, role, username, email, password, created_at, updated_at, profilePicture, followers, following, bio, links, categoriesSub, followersList, followingList) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, UserSession.User_id, UserSession.Role, UserSession.Username, UserSession.Email, UserSession.Password, UserSession.CreationDate, UserSession.UpdateDate, UserSession.Pfp, UserSession.Follower, UserSession.Following, UserSession.Bio, UserSession.Links, UserSession.CategorieSub, UserSession.FollowerList, UserSession.FollowingList)
+
+	SendCreatedAccountEmail(email, username)
+	return nil
+}
+
 func LoginUser(db *sql.DB, email, password string) (bool, error) {
 	if email == "" {
 		return false, ErrEmptyFieldEmail

@@ -48,7 +48,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	token, err := googleOauthConfig.Exchange(r.Context(), code)
 	if err != nil {
-		http.Error(w, "Échec de l'échange du code d'autorisation: "+err.Error(), http.StatusInternalServerError)
+		http.Redirect(w, r, "/google-login", http.StatusSeeOther)
 		return
 	}
 
@@ -90,9 +90,13 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	} else {
 		password := generateStrongPassword() + "@1L"
 
-		username := strings.Split(usertemp.Email, "@")
+		username := strings.Split(usertemp.Email, "@")[0]
 
-		err := SignUpUser(Db, username[0], usertemp.Email, password, password)
+		if len(username) > 15 {
+			username = username[:14]
+		}
+
+		err := SignUpUserOauth(Db, username, usertemp.Email, password)
 
 		if err != nil {
 			http.Error(w, "Erreur lors de l'inscription de l'utilisateur: "+err.Error(), http.StatusInternalServerError)

@@ -98,9 +98,9 @@ func CreatePost(db *sql.DB, user_id string, categorie string, title string, text
 		IsRetweet: false,
 	}
 
-	db.Exec(`INSERT INTO posts (posts_id, UUID, user_pfp, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker, author, links) 
+	db.Exec(`INSERT INTO posts (posts_id, UUID, categorie, title, text, like, liker, dislike, retweet, retweeter, date, report, disliker, user_pfp, author, links, isLike, isDislike, isRetweet) 
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-					`, PostSession.Posts_id, PostSession.User_id, PostSession.User_pfp, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker, PostSession.Author, PostSession.Links, PostSession.IsLike, PostSession.IsDislike, PostSession.IsRetweet)
+					`, PostSession.Posts_id, PostSession.User_id, PostSession.Categorie, PostSession.Title, PostSession.Text, PostSession.Like, PostSession.Liker, PostSession.Dislike, PostSession.Retweet, PostSession.Retweeter, PostSession.Date, PostSession.Report, PostSession.Disliker, PostSession.User_pfp, PostSession.Author, PostSession.Links, PostSession.IsLike, PostSession.IsDislike, PostSession.IsRetweet)
 	return nil
 }
 
@@ -208,7 +208,7 @@ func GetAllPostsByDate(db *sql.DB) []Post {
 }
 
 func GetAllPostsByCategorie(db *sql.DB, categorie string) ([]Post, error) {
-	rows, err := db.Query("SELECT * FROM posts WHERE categorie = ?", categorie)
+	rows, err := db.Query("SELECT * FROM posts WHERE categorie LIKE %?%", categorie)
 	if err != nil {
 		return nil, err
 	}

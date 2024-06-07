@@ -454,6 +454,13 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 		if postType == "text" {
 			title := r.FormValue("title")
 			content := r.FormValue("text")
+			categ := r.Form["categories[]"]
+			var categories string
+
+			for _, cat := range categ {
+				categories = categories + "/" + cat
+			}
+
 			err := r.ParseMultipartForm(20 << 20)
 			if err != nil {
 				AllData.Error = ErrBadSizeImg
@@ -547,13 +554,13 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 					FileName = FileName + " " + destination
 				}
 
-				errr := CreatePost(Db, AllData.User.User_id, "", title, content, FileName)
+				errr := CreatePost(Db, AllData.User.User_id, categories, title, content, FileName)
 				if errr != nil {
 					http.Error(w, errr.Error(), http.StatusInternalServerError)
 					return
 				}
 			} else {
-				errr := CreatePost(Db, AllData.User.User_id, "", title, content, "")
+				errr := CreatePost(Db, AllData.User.User_id, categories, title, content, "")
 				if errr != nil {
 					http.Error(w, errr.Error(), http.StatusInternalServerError)
 					return
@@ -562,6 +569,13 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 
 		} else if postType == "image" {
 			imageTitle := r.FormValue("image_title")
+			categ := r.Form["categories[]"]
+			var categories string
+
+			for _, cat := range categ {
+				categories = categories + "/" + cat
+			}
+
 			err := r.ParseMultipartForm(20 << 20)
 			if err != nil {
 				AllData.Error = ErrBadSizeImg
@@ -656,7 +670,7 @@ func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			errr := CreatePost(Db, AllData.User.User_id, "", imageTitle, "", FileName)
+			errr := CreatePost(Db, AllData.User.User_id, categories, imageTitle, "", FileName)
 			if errr != nil {
 				http.Error(w, errr.Error(), http.StatusInternalServerError)
 				return
@@ -1071,4 +1085,59 @@ func FollowLogique(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func CategoriePage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+
+	if r.URL.RawQuery == "" {
+		http.Redirect(w, r, "/categories", http.StatusSeeOther)
+		return
+	}
+
+	updateUserSession(r)
+
+	AllData = GetAllDatas(r)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+
+	categorie_id := r.URL.RawQuery[3:]
+
+	fmt.Println(categorie_id)
+
+	categorie := GetCategoryById(Db, categorie_id)
+
+	fmt.Println(categorie)
+
+	AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
+
+	if AllData.User.Email == "" {
+		if AllData.ColorMode == "light" {
+			err = Categorie.ExecuteTemplate(w, "categorie.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkCategorie.ExecuteTemplate(w, "categorie.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
+	} else {
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+		if AllData.ColorMode == "light" {
+			err = CategorieLogged.ExecuteTemplate(w, "categorieLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkCategorieLogged.ExecuteTemplate(w, "categorieLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
+	}
 }
