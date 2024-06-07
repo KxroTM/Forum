@@ -260,12 +260,13 @@
                 <div class="following">
                     <h1>{{.UserTarget.Following}}</h1><p>Abonnements</p>
                 </div>
-            </div>  
+            </div>
         </div>
         <div class="Biographie">
-            <h5>Biographie</h5>
+            <h5>{{.UserTarget.Bio}}</h5>
         </div>
-        <div class="line6">
+
+        <div class="line12">
         </div>
         <div class="middle">
             <div class="Posts">
@@ -285,14 +286,14 @@
             <div class="Aimer">
                 <button>
                     <span>
-                        Aimer
+                        Aimé
                     </span>
                 </button>
             </div>
             <div class="Republier">
                 <button>
                     <span>
-                        Republier
+                        Republié
                     </span>
                 </button>
             </div>
@@ -300,91 +301,83 @@
 
         <div class="golangPost">
             {{ range .AllPosts }}
-            <a href ="/post/id={{.Posts_id}}">
-            <form class="gotoPost"></form>
-            </a>
-            <div class="upperPost">
-                <div class="user">
-                    <a href="/profile/@{{.Author}}"><img src="{{.User_pfp}}" width="70" height="70"></a>
-                    <a href="/profile/@{{.Author}}"><h5>@{{.Author}}</h5></a>
-                    <h6>{{.Date}}</h6>
-                </div>   
-                <div class="buttonOnglet">
-                    <button onclick='reportToggle({{.Posts_id}})'>
-                        <span>
-                            ...
-                        </span>
-                    </button>
-                </div>
-                <div class="reportToggle" id="{{.Posts_id}}">
-                    <div class="flechedroite"></div>
-                    <div class="report">
-                        <button onclick='reportOverlay({{.Posts_id}})'>
+            <div class="post" id='{{.Posts_id}}'>
+                <div class="post-header">
+                    <div class="buttonOnglet ignore-click">
+                        <button onclick='reportToggle({{.Posts_id}})'>
                             <span>
-                                Signaler
+                                ...
                             </span>
                         </button>
                     </div>
-                </div>
-            </div>
-            <div class="bodyPost">
-                <div class="title">
-                    <h4>{{.Title}}</h4>
-                </div>
-                <div class="content">
-                    <p>{{.Text}}</p>
-                </div>
-                {{ if .Links }}
-                <div class="image">
-                    <img id="postimg" src="../{{.Links}}" width="100%" height="100%">
-                </div>
-                {{ end }}
-            </div>
-            <div class="lowerPost">
-                <div class="buttonLike">
-                    <label class="container1">
-                        {{ if .IsLike }}
-                        <input checked="checked" type="checkbox">
-                        {{ else }}
-                        <input type="checkbox">
-                        {{ end }}
-                        <div class="checkmark">
-                        <svg viewBox="0 0 350 350">
-                        <rect fill="none" height="256" width="256"></rect>
-                        <path d="M224.6,51.9a59.5,59.5,0,0,0-43-19.9,60.5,60.5,0,0,0-44,17.6L128,59.1l-7.5-7.4C97.2,28.3,59.2,26.3,35.9,47.4a59.9,59.9,0,0,0-2.3,87l83.1,83.1a15.9,15.9,0,0,0,22.6,0l81-81C243.7,113.2,245.6,75.2,224.6,51.9Z" stroke-width="20px" stroke="#FFF" fill="none"></path></svg>
+                    <div class="reportToggle ignore-click" id="{{.Posts_id}}report">
+                        <div class="flechedroite"></div>
+                        <div class="report">
+                            <button onclick='reportOverlay({{.Posts_id}})'>
+                                <span>
+                                    Signaler
+                                </span>
+                            </button>
                         </div>
-                    </label>
+                    </div>
+                    <a href="/profile/@{{.Author}}"><img src="{{.User_pfp}}" width="90" height="90" style="border-radius: 60px;"></a>
+                    <div class="header-info">
+                        <span class="post-author"><a href="/profile/@{{.Author}}">@{{.Author}}</a></span><span class="post-date">{{.Date}}</span>
+                    </div>
                 </div>
-                <p class ="nbLikes">{{.Like}}</p>
-
-                <div class="buttonDislike">
-                    <label class="container2">
-                        {{ if .IsDislike }}
-                        <input type="checkbox" checked>
-                        {{ else }}
-                        <input type="checkbox">
-                        {{ end }}
-                        <svg id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M2.156,14.901l2.489-8.725C5.012,4.895,6.197,4,7.528,4h13.473C21.554,4,22,4.448,22,5v14  c0,0.215-0.068,0.425-0.197,0.597l-5.392,7.24C15.813,27.586,14.951,28,14.027,28c-1.669,0-3.026-1.357-3.026-3.026V20H5.999  c-1.265,0-2.427-0.579-3.188-1.589C2.047,17.399,1.809,16.12,2.156,14.901z" id="XMLID_259_"></path><path d="M25.001,20h4C29.554,20,30,19.552,30,19V5c0-0.552-0.446-1-0.999-1h-4c-0.553,0-1,0.448-1,1v14  C24.001,19.552,24.448,20,25.001,20z M27.001,6.5c0.828,0,1.5,0.672,1.5,1.5c0,0.828-0.672,1.5-1.5,1.5c-0.828,0-1.5-0.672-1.5-1.5  C25.501,7.172,26.173,6.5,27.001,6.5z" id="XMLID_260_"></path></svg>
-                    </label>
-                </div>
-                <p class ="nbDislike">{{.Dislike}}</p>
-
-                <div class="container3" title="Republier">
-                    {{ if .IsRetweet }}
-                    <input type="checkbox" id="repostCheckbox" class="repost-checkbox" checked>
-                    {{ else }}
-                    <input type="checkbox" id="repostCheckbox" class="repost-checkbox">
+                <div class="post-content">
+                    <h2 class="post-title">{{.Title}}</h2><br>
+                    <p>{{.Text}}</p>
+                    {{ if .Links }}
+                    <img src="../{{.Links}}" alt="Image du post" class="post-image ignore-click" id="postimg">
                     {{ end }}
-                    <label for="repostCheckbox" class="repost-button">
-                        <span class="icon">
-                            <span class="arrow up"></span>
-                            <span class="arrow down"></span>
-                            <span class="line"></span>
-                        </span>
-                        <span class="text"></span>
-                    </label>
                 </div>
-                <p class ="nbRepu">{{.Retweet}}</p>
+                <div class="post-footer">
+                    <div class="buttonLike ignore-click">
+                        <label class="container1">
+                            {{ if .IsLike }}
+                            <input checked="checked" type="checkbox">
+                            {{ else }}
+                            <input type="checkbox">
+                            {{ end }}
+                            <div class="checkmark">
+                            <svg viewBox="0 0 350 350">
+                            <rect fill="none" height="256" width="256"></rect>
+                            <path d="M224.6,51.9a59.5,59.5,0,0,0-43-19.9,60.5,60.5,0,0,0-44,17.6L128,59.1l-7.5-7.4C97.2,28.3,59.2,26.3,35.9,47.4a59.9,59.9,0,0,0-2.3,87l83.1,83.1a15.9,15.9,0,0,0,22.6,0l81-81C243.7,113.2,245.6,75.2,224.6,51.9Z" stroke-width="20px" stroke="#FFF" fill="none"></path></svg>
+                            </div>
+                        </label>
+                    </div>
+                    <p class ="nbLikes">{{.Like}}</p>
+
+                    <div class="buttonDislike ignore-click">
+                        <label class="container2">
+                            {{ if .IsDislike }}
+                            <input type="checkbox" checked>
+                            {{ else }}
+                            <input type="checkbox">
+                            {{ end }}
+                            <svg id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M2.156,14.901l2.489-8.725C5.012,4.895,6.197,4,7.528,4h13.473C21.554,4,22,4.448,22,5v14  c0,0.215-0.068,0.425-0.197,0.597l-5.392,7.24C15.813,27.586,14.951,28,14.027,28c-1.669,0-3.026-1.357-3.026-3.026V20H5.999  c-1.265,0-2.427-0.579-3.188-1.589C2.047,17.399,1.809,16.12,2.156,14.901z" id="XMLID_259_"></path><path d="M25.001,20h4C29.554,20,30,19.552,30,19V5c0-0.552-0.446-1-0.999-1h-4c-0.553,0-1,0.448-1,1v14  C24.001,19.552,24.448,20,25.001,20z M27.001,6.5c0.828,0,1.5,0.672,1.5,1.5c0,0.828-0.672,1.5-1.5,1.5c-0.828,0-1.5-0.672-1.5-1.5  C25.501,7.172,26.173,6.5,27.001,6.5z" id="XMLID_260_"></path></svg>
+                        </label>
+                    </div>
+                    <p class ="nbDislike">{{.Dislike}}</p>
+
+                    <div class="container3 ignore-click" title="Republier">
+                        {{ if .IsRetweet }}
+                        <input type="checkbox" id="repostCheckbox" class="repost-checkbox" checked>
+                        {{ else }}
+                        <input type="checkbox" id="repostCheckbox" class="repost-checkbox">
+                        {{ end }}
+                        <label for="repostCheckbox" class="repost-button">
+                            <span class="icon">
+                                <span class="arrow up"></span>
+                                <span class="arrow down"></span>
+                                <span class="line"></span>
+                            </span>
+                            <span class="text"></span>
+                        </label>
+                    </div>
+                    <p class ="nbRepu">{{.Retweet}}</p>
+                </div>
             </div>
 
             <div class="line6"></div>
@@ -393,5 +386,5 @@
         </div>
     </div>
 </body>
-<script src="./src/styles/scripts/accueil.js"></script>
+<script src="../../style/scripts/accueil.js"></script>
 </html>

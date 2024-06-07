@@ -6,9 +6,12 @@
     <link rel="stylesheet" type="text/css" href="../../style/leftbarDark.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/rightbarDark.css"/>
     <meta charset="UTF-8">
-    <title>Accueil</title>
+    <title>@{{.UserTarget.Username}}</title>
 </head>
 <body>
+    <div class="overlay" id="overlay" style="display: none;">
+        <img id="imgoverlay">
+    </div>
     <div class="fullreglage" id="fullreglage">
         <div class="fullreg">
             <button>
@@ -303,81 +306,81 @@
     </div>
 
     <div class="bodycode">
-        <!-- ici -->
-        <div class="backFond">
-            <img src="{{.UserTarget.Pfp}}" width="60" height="60">
-            <div class="Pseudo">
-                <h1>@{{.UserTarget.Username}}</h1>
-            </div>
-            <div class="Follow">
-                <div class="follower">
-                    <h1>{{.UserTarget.Follower}}</h1><p>Abonnés</p>
+            <!-- ici -->
+            <div class="backFond">
+                <img src="{{.UserTarget.Pfp}}" width="60" height="60">
+                <div class="Pseudo">
+                    <h1>@{{.UserTarget.Username}}</h1>
                 </div>
-                <div class="following">
-                    <h1>{{.UserTarget.Following}}</h1><p>Abonnements</p>
+                <div class="Follow">
+                    <div class="follower">
+                        <h1>{{.UserTarget.Follower}}</h1><p>Abonnés</p>
+                    </div>
+                    <div class="following">
+                        <h1>{{.UserTarget.Following}}</h1><p>Abonnements</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="Biographie">
-            <h5>Biographie</h5>
-        </div>
-        <div class="editProfil">
-            {{ if eq .User.User_id .UserTarget.User_id }}
-            <a href="/parametres">
-                <button>    
-                    <span>
-                        Éditer le profil
-                    </span>
-                </button>
-            </a>
-            {{ else}}
-            <a href="/followUser?{{.UserTarget.User_id}}">
-                <button>
-                    <span>
-                        {{ if .UserTarget.ImFollowed }}
-                        Ne plus suivre
-                        {{ else }}
-                        Suivre
-                        {{ end }}
-                    </span>
-                </button>
-            </a>
-            {{ end }}
-        </div>
-        <div class="line6">
-        </div>
-        <div class="middle">
-            <div class="Posts">
-                <button>
-                    <span>
-                        Posts
-                    </span>
-                </button>
+            <div class="Biographie">
+                <h5>{{.UserTarget.Bio}}</h5>
             </div>
-            <div class="Commentaires">
-                <button>
-                    <span>
-                        Commentaires
-                    </span>
-                </button>
+            <div class="editProfil">
+                {{ if eq .User.User_id .UserTarget.User_id }}
+                <a href="/parametres">
+                    <button>    
+                        <span>
+                            Éditer le profil
+                        </span>
+                    </button>
+                </a>
+                {{ else}}
+                <a href="/followUser?{{.UserTarget.User_id}}">
+                    <button>
+                        <span>
+                            {{ if .UserTarget.ImFollowed }}
+                            Ne plus suivre
+                            {{ else }}
+                            Suivre
+                            {{ end }}
+                        </span>
+                    </button>
+                </a>
+                {{ end }}
             </div>
-            <div class="Aimer">
-                <button>
-                    <span>
-                        Aimer
-                    </span>
-                </button>
+            <div class="line12">
             </div>
-            <div class="Republier">
-                <button>
-                    <span>
-                        Republier
-                    </span>
-                </button>
+            <div class="middle">
+                <div class="Posts">
+                    <button>
+                        <span>
+                            Posts
+                        </span>
+                    </button>
+                </div>
+                <div class="Commentaires">
+                    <button>
+                        <span>
+                            Commentaires
+                        </span>
+                    </button>
+                </div>
+                <div class="Aimer">
+                    <button>
+                        <span>
+                            Aimé
+                        </span>
+                    </button>
+                </div>
+                <div class="Republier">
+                    <button>
+                        <span>
+                            Republié
+                        </span>
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <div class="golangPost">
+    <div class="golangPost">
             {{ range .AllPosts }}
             <div class="post" id='{{.Posts_id}}'>
                 <div class="post-header">
@@ -474,6 +477,7 @@
             {{ end }}
         </div>
     </div>
+ 
 </body>
-<script src="./src/styles/scripts/accueil.js"></script>
+<script src="../../style/scripts/accueil.js"></script>
 </html>
