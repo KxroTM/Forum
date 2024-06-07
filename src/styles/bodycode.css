@@ -430,8 +430,8 @@ a {
 
 .categorieName {
   color: rgb(0, 0, 0);
-  position: fixed;
-  top:18vh;
+  position: absolute;
+  top:-10vh;
   align-items: center;
   font-family: "roboto", sans-serif;
 }
