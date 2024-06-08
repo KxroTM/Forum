@@ -172,3 +172,9 @@ a {
 .logo a {
     width: 100%;
 }
+
+.resetpass {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

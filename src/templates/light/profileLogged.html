@@ -354,32 +354,40 @@
             </div>
             <div class="middle">
                 <div class="Posts">
-                    <button>
-                        <span>
-                            Posts
-                        </span>
-                    </button>
+                    <a href ="/profile/@{{.UserTarget.Username}}?posts">
+                        <button>
+                            <span>
+                                Posts
+                            </span>
+                        </button>
+                    </a>
                 </div>
                 <div class="Commentaires">
-                    <button>
-                        <span>
-                            Commentaires
-                        </span>
-                    </button>
+                    <a href="/profile/@{{.UserTarget.Username}}?comments">
+                        <button>
+                            <span>
+                                Commentaires
+                            </span>
+                        </button>
+                    </a>
                 </div>
                 <div class="Aimer">
-                    <button>
-                        <span>
-                            Aimé
-                        </span>
-                    </button>
+                    <a href="/profile/@{{.UserTarget.Username}}?likes">
+                        <button>
+                            <span>
+                                Aimés
+                            </span>
+                        </button>
+                    </a>
                 </div>
                 <div class="Republier">
-                    <button>
-                        <span>
-                            Republié
-                        </span>
-                    </button>
+                    <a href="/profile/@{{.UserTarget.Username}}?retweets">
+                        <button>
+                            <span>
+                                Republiés
+                            </span>
+                        </button>
+                    </a>
                 </div>
             </div>
 

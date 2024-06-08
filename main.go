@@ -39,6 +39,8 @@ func main() {
 	http.HandleFunc("/retweetPost", forum.RetweetLogique)
 	http.HandleFunc("/followUser", forum.FollowLogique)
 	http.HandleFunc("/categorie", forum.CategoriePage)
+	http.HandleFunc("/report", forum.ReportLogique)
+	http.HandleFunc("/forgot-password-success", forum.ForgotPasswordSuccessPage)
 
 	err := openLink()
 	if err != nil {

@@ -228,20 +228,28 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.RawQuery
 	AllData = GetAllDatas(r)
 
-	if query == "pourtoi" {
-		AllData.AllPosts = ForYouPageAlgorithm(Db, UserSession.User_id)
-	} else if query == "suivies" {
-		AllData.AllPosts = GetPostByFollowing(Db, UserSession.User_id)
-	}
-
-	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
-
 	recherche := r.FormValue("recherche")
 	if recherche != "" {
 		AllData.AllPosts = GetPostBySearch(Db, recherche, GetAllPosts(Db))
 	} else {
 		AllData.AllPosts = GetAllPosts(Db)
 	}
+
+	if query == "pourtoi" {
+		if AllData.User.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+			return
+		}
+		AllData.AllPosts = ForYouPageAlgorithm(Db, UserSession.User_id)
+	} else if query == "suivies" {
+		if AllData.User.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+			return
+		}
+		AllData.AllPosts = GetPostByFollowing(Db, UserSession.User_id)
+	}
+
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
@@ -300,15 +308,28 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	username := strings.TrimPrefix(parts[2], "@")
 
 	AllData = GetAllDatas(r)
-	AllData.UserTarget = GetAccountByUsername(Db, username)
-	AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
-	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	recherche := r.FormValue("recherche")
 	if recherche != "" {
 		AllData.AllPosts = GetPostBySearch(Db, recherche, AllData.AllPosts)
 	} else {
 		AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
+	}
+
+	AllData.UserTarget = GetAccountByUsername(Db, username)
+	AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+
+	query := r.URL.RawQuery
+
+	if query == "posts" {
+		AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
+	} else if query == "likes" {
+		AllData.AllPosts = GetAllPostsByLike(Db, AllData.UserTarget.Username)
+	} else if query == "retweets" {
+		AllData.AllPosts = GetAllPostsByRetweet(Db, AllData.UserTarget.Username)
+	} else if query == "comments" {
+		// AllData.AllPosts = GetAllPostsByComment(Db, AllData.UserTarget.User_id)
 	}
 
 	if strings.Contains(AllData.UserTarget.FollowerList, UserSession.Username) {
@@ -736,8 +757,6 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 
 	AllData = GetAllDatas(r)
-	AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
-	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	recherche := r.FormValue("recherche")
 	if recherche != "" {
@@ -745,6 +764,9 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
 	}
+
+	AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
@@ -775,6 +797,7 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// filtrage a faire !!!!
 func PostsPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
@@ -1146,16 +1169,16 @@ func CategoriePage(w http.ResponseWriter, r *http.Request) {
 
 	categorie := GetCategoryById(Db, categorie_id)
 
-	AllData.Categorie = categorie
-
-	AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
-
 	recherche := r.FormValue("recherche")
 	if recherche != "" {
 		AllData.AllPosts = GetPostBySearch(Db, recherche, AllData.AllPosts)
 	} else {
 		AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
 	}
+
+	AllData.Categorie = categorie
+
+	AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
 
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
@@ -1181,6 +1204,42 @@ func CategoriePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+		}
+	}
+}
+
+func ReportLogique(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.URL.RawQuery
+
+	if postID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	ReportPost(Db, postID)
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func ForgotPasswordSuccessPage(w http.ResponseWriter, r *http.Request) {
+	AllData = GetAllDatas(r)
+
+	if AllData.ColorMode == "light" {
+		err := ForgotPasswordSuccess.ExecuteTemplate(w, "password_reset_success.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkForgotPasswordSuccess.ExecuteTemplate(w, "password_reset_success.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 }
