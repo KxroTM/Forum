@@ -470,3 +470,27 @@ func GetPostByFollowing(db *sql.DB, user_id string) []Post {
 	}
 	return posts
 }
+
+func GetPostBySearch(db *sql.DB, search string, from []Post) []Post {
+	var posts []Post
+	var AllPosts = from
+
+	for _, post := range AllPosts {
+		if strings.Contains(strings.ToLower(post.Title), strings.ToLower(search)) || strings.Contains(strings.ToLower(post.Text), strings.ToLower(search)) || strings.Contains(strings.ToLower(post.Author), strings.ToLower(search)) {
+			post.Links = strings.TrimSpace(post.Links)
+			if UserSession.Username != "" {
+				if strings.Contains(post.Liker, UserSession.Username) {
+					post.IsLike = true
+				}
+				if strings.Contains(post.Disliker, UserSession.Username) {
+					post.IsDislike = true
+				}
+				if strings.Contains(post.Retweeter, UserSession.Username) {
+					post.IsRetweet = true
+				}
+			}
+			posts = append(posts, post)
+		}
+	}
+	return posts
+}

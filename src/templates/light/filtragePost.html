@@ -102,13 +102,13 @@
             </div>
             <div class="Notifications">
                 <div class="notif">
-                    <img src="../../style/img/aAimer.png" height="50">
-                    <p>Un utilisateur a aimé votre post</p>
+                    <img src="../../style/img/bienvenueLight.png" height="50" style="margin-right: 1vw;margin-top: 1vh;">
+                    <p>Bienvenue sur <br>ParlonsSanté !</p>
                 </div>
                 <!-- 4 max -->
             </div>
-            <div class="allNotif">
-                <a href="/notifications">
+            <div class="allNotif" style="margin-top: -2vh;">
+                <a href="/connexion">
                     <button>
                         <span>
                         Tout voir
@@ -117,14 +117,16 @@
                 </a>
             </div>
         </div>
-    </div>
+    </div> 
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
-        <div class="searchBar">
-            <img src="../../style/img/loupeDark.png" width="8%">
-            <input type="text" placeholder="Rechercher...">
-            <button type="submit">Rechercher</button>
-        </div>
+        <form method="post">
+            <div class="searchBar">
+                <img src="../../style/img/loupeDark.png" width="8%">
+                <input type="text" placeholder="Rechercher..." name="recherche">
+                <button type="submit">Rechercher</button>
+            </div>
+        </form>
         <div class="buttonAddPost">
             <a href="/creer-un-post">
             <button>

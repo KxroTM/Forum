@@ -3,6 +3,7 @@ package forum
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 type Notification struct {
@@ -115,4 +116,16 @@ func GetCountNotifications(Db *sql.DB, User_id string) int {
 		fmt.Println("Error getting count notifications:", err)
 	}
 	return count
+}
+
+func GetNotifBySearch(Db *sql.DB, User_id string, Search string) []Notification {
+	notifs := GetNotifications(Db, User_id)
+	var notifications []Notification
+	for _, notif := range notifs {
+		user2 := GetAccountById(Db, notif.User_id2)
+		if strings.Contains(strings.ToLower(user2.Username), strings.ToLower(Search)) || strings.Contains(strings.ToLower(notif.Reason), strings.ToLower(Search)) {
+			notifications = append(notifications, notif)
+		}
+	}
+	return notifications
 }

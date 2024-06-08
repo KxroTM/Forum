@@ -236,6 +236,13 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
+	recherche := r.FormValue("recherche")
+	if recherche != "" {
+		AllData.AllPosts = GetPostBySearch(Db, recherche, GetAllPosts(Db))
+	} else {
+		AllData.AllPosts = GetAllPosts(Db)
+	}
+
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
 			err = Home.ExecuteTemplate(w, "accueil.html", AllData)
@@ -297,6 +304,13 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
+	recherche := r.FormValue("recherche")
+	if recherche != "" {
+		AllData.AllPosts = GetPostBySearch(Db, recherche, AllData.AllPosts)
+	} else {
+		AllData.AllPosts, _ = GetAllPostsByUser(Db, AllData.UserTarget.User_id)
+	}
+
 	if strings.Contains(AllData.UserTarget.FollowerList, UserSession.Username) {
 		AllData.UserTarget.HeFollowed = true
 	}
@@ -349,6 +363,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Recherche a faire
 func PostPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
@@ -432,6 +447,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Recherche a faire
 func CreatePostPage(w http.ResponseWriter, r *http.Request) {
 	data, _ := getSessionData(r)
 	if data.User.Email == "" {
@@ -723,6 +739,13 @@ func PopulairePage(w http.ResponseWriter, r *http.Request) {
 	AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
+	recherche := r.FormValue("recherche")
+	if recherche != "" {
+		AllData.AllPosts = GetPostBySearch(Db, recherche, AllData.AllPosts)
+	} else {
+		AllData.AllPosts, _ = GetAllPostsByLikeCount(Db)
+	}
+
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
 			err = Populaire.ExecuteTemplate(w, "populaire.html", AllData)
@@ -763,6 +786,13 @@ func PostsPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
+	recherche := r.FormValue("recherche")
+	if recherche != "" {
+		AllData.AllPosts = GetPostBySearch(Db, recherche, AllData.AllPosts)
+	} else {
+		AllData.AllPosts = GetAllPosts(Db)
+	}
+
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
 			err = Posts.ExecuteTemplate(w, "filtragePost.html", AllData)
@@ -791,6 +821,7 @@ func PostsPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// A checker si ça marcher
 func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
@@ -809,6 +840,13 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 	AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+
+	recherche := r.FormValue("recherche")
+	if recherche != "" {
+		AllData.AllNotifications = GetNotifBySearch(Db, UserSession.User_id, recherche)
+	} else {
+		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+	}
 
 	if AllData.ColorMode == "light" {
 		err = Notifications.ExecuteTemplate(w, "notification.html", AllData)
@@ -1111,6 +1149,13 @@ func CategoriePage(w http.ResponseWriter, r *http.Request) {
 	AllData.Categorie = categorie
 
 	AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
+
+	recherche := r.FormValue("recherche")
+	if recherche != "" {
+		AllData.AllPosts = GetPostBySearch(Db, recherche, AllData.AllPosts)
+	} else {
+		AllData.AllPosts, _ = GetAllPostsByCategorie(Db, categorie.Name)
+	}
 
 	if AllData.User.Email == "" {
 		if AllData.ColorMode == "light" {
