@@ -16,7 +16,7 @@ func SendPasswordResetEmail(email, token string) error {
 	t, _ := template.ParseFiles("./go/template_resetpassword.html")
 	t.Execute(&body, struct{ Route string }{Route: route})
 
-	auth := smtp.PlainAuth("", "forumprojetynov@gmail.com", "ljhu jgfl atnq lkbh", "smtp.gmail.com")
+	auth := smtp.PlainAuth("", "forumprojetynov@gmail.com", EmailPassword, "smtp.gmail.com")
 
 	headers := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
@@ -35,7 +35,7 @@ func SendCreatedAccountEmail(email, username string) error {
 	t, _ := template.ParseFiles("./go/template_accountcreated.html")
 	t.Execute(&body, struct{ Username string }{Username: username})
 
-	auth := smtp.PlainAuth("", "forumprojetynov@gmail.com", "ljhu jgfl atnq lkbh", "smtp.gmail.com")
+	auth := smtp.PlainAuth("", "forumprojetynov@gmail.com", EmailPassword, "smtp.gmail.com")
 
 	headers := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 

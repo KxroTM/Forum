@@ -61,6 +61,11 @@ func init() {
 		log.Fatal("Erreur lors de l'ouverture de la base de données:", err)
 		return
 	}
+	err = forum.GetEnvData()
+	if err != nil {
+		log.Fatalf("Erreur lors du chargement du fichier .env: %v", err)
+		return
+	}
 }
 
 func openLink() error {

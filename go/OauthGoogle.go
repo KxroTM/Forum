@@ -12,15 +12,16 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-var googleOauthConfig = &oauth2.Config{
-	ClientID:     "279057952766-sm8djuadlk75sh12oamo3fkb4q3r003l.apps.googleusercontent.com",
-	ClientSecret: "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",
-	RedirectURL:  "http://localhost:8080/google-callback",
-	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-	Endpoint:     google.Endpoint,
-}
-
 func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
+
+	var googleOauthConfig = &oauth2.Config{
+		ClientID:     GoogleClientID,
+		ClientSecret: GoogleClientSecret,
+		RedirectURL:  "http://localhost:8080/google-callback",
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
+	}
+
 	data, _ := getSessionData(r)
 	if data.User.Role != "guest" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
@@ -32,6 +33,15 @@ func GoogleLoginPage(w http.ResponseWriter, r *http.Request) {
 
 // Fonction permettant d'avoir accès aux informations de l'utilisateur connecté via Google
 func GoogleCallback(w http.ResponseWriter, r *http.Request) {
+
+	var googleOauthConfig = &oauth2.Config{
+		ClientID:     GoogleClientID,
+		ClientSecret: GoogleClientSecret,
+		RedirectURL:  "http://localhost:8080/google-callback",
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
+	}
+
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
 	if err != nil {

@@ -5,27 +5,29 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
 )
 
-var (
-	oauthConf = &oauth2.Config{
-		ClientID:     "d36714255c2c1ce0ca0e",
-		ClientSecret: "5a877183c40f8ef24e1356c159c116fc522c04de",
-		RedirectURL:  "http://localhost:8080/github-callback",
-		Scopes:       []string{"user:email"},
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  "https://github.com/login/oauth/authorize",
-			TokenURL: "https://github.com/login/oauth/access_token",
-		},
-	}
-	oauthStateString = "84983c60f7daadc1cb8698621f802c0d9f9a3c3c295c810748fb048115c186ec"
-)
-
 func GitHubLoginPage(w http.ResponseWriter, r *http.Request) {
+
+	var (
+		oauthConf = &oauth2.Config{
+			ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
+			ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
+			RedirectURL:  "http://localhost:8080/github-callback",
+			Scopes:       []string{"user:email"},
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  "https://github.com/login/oauth/authorize",
+				TokenURL: "https://github.com/login/oauth/access_token",
+			},
+		}
+		oauthStateString = "84983c60f7daadc1cb8698621f802c0d9f9a3c3c295c810748fb048115c186ec"
+	)
+
 	data, _ := getSessionData(r)
 	if data.User.Role != "guest" {
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
@@ -37,6 +39,21 @@ func GitHubLoginPage(w http.ResponseWriter, r *http.Request) {
 
 // Fonction permettant d'avoir accès aux informations de l'utilisateur connecté via GitHub
 func GitHubCallback(w http.ResponseWriter, r *http.Request) {
+
+	var (
+		oauthConf = &oauth2.Config{
+			ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
+			ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
+			RedirectURL:  "http://localhost:8080/github-callback",
+			Scopes:       []string{"user:email"},
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  "https://github.com/login/oauth/authorize",
+				TokenURL: "https://github.com/login/oauth/access_token",
+			},
+		}
+		oauthStateString = "84983c60f7daadc1cb8698621f802c0d9f9a3c3c295c810748fb048115c186ec"
+	)
+
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
 	if err != nil {
