@@ -321,7 +321,8 @@ func DeleteAllUsers(db *sql.DB) {
 }
 
 func ChangePassword(db *sql.DB, user_id string, newPassword string) {
-	db.Exec(`UPDATE users SET password = ? WHERE UUID = ?`, hashPasswordSHA256(newPassword), user_id)
+	time := time.Now().Format("02-01-2006")
+	db.Exec(`UPDATE users SET password = ?, updated_at = ? WHERE UUID = ?`, hashPasswordSHA256(newPassword), time, user_id)
 }
 
 func IsPasswordValid(password string) bool {

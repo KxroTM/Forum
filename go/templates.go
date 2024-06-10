@@ -28,6 +28,11 @@ var ForgotPasswordError = template.Must(template.ParseFiles("./src/templates/lig
 var Categorie = template.Must(template.ParseFiles("./src/templates/light/categorie.html"))
 var CategorieLogged = template.Must(template.ParseFiles("./src/templates/light/categorieLogged.html"))
 var ForgotPasswordSuccess = template.Must(template.ParseFiles("./src/templates/light/password_reset_success.html"))
+var ResetPassword = template.Must(template.ParseFiles("./src/templates/light/reset_password.html"))
+var ResetPasswordError = template.Must(template.ParseFiles("./src/templates/light/reset_password_error.html"))
+var PasswordResetSuccess = template.Must(template.ParseFiles("./src/templates/light/reset_success.html"))
+var NoMailFound = template.Must(template.ParseFiles("./src/templates/light/noMailFound.html"))
+var ExpiredLink = template.Must(template.ParseFiles("./src/templates/light/expiredLink.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -55,3 +60,8 @@ var DarkForgotPasswordError = template.Must(template.ParseFiles("./src/templates
 var DarkCategorie = template.Must(template.ParseFiles("./src/templates/dark/categorie.html"))
 var DarkCategorieLogged = template.Must(template.ParseFiles("./src/templates/dark/categorieLogged.html"))
 var DarkForgotPasswordSuccess = template.Must(template.ParseFiles("./src/templates/dark/password_reset_success.html"))
+var DarkResetPassword = template.Must(template.ParseFiles("./src/templates/dark/reset_password.html"))
+var DarkResetPasswordError = template.Must(template.ParseFiles("./src/templates/dark/reset_password_error.html"))
+var DarkPasswordResetSuccess = template.Must(template.ParseFiles("./src/templates/dark/reset_success.html"))
+var DarkNoMailFound = template.Must(template.ParseFiles("./src/templates/dark/noMailFound.html"))
+var DarkExpiredLink = template.Must(template.ParseFiles("./src/templates/dark/expiredLink.html"))

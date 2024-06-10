@@ -41,6 +41,10 @@ func main() {
 	http.HandleFunc("/categorie", forum.CategoriePage)
 	http.HandleFunc("/report", forum.ReportLogique)
 	http.HandleFunc("/forgot-password-success", forum.ForgotPasswordSuccessPage)
+	http.HandleFunc("/reset-password", forum.ResetPasswordPage)
+	http.HandleFunc("/reset-password-success", forum.PasswordResetSuccessPage)
+	http.HandleFunc("/no-mail-found", forum.NoMailFoundPage)
+	http.HandleFunc("/lien-expire", forum.ExpiredLinkPage)
 
 	err := openLink()
 	if err != nil {

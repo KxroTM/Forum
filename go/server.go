@@ -946,61 +946,6 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ForgotPasswordPage(w http.ResponseWriter, r *http.Request) {
-	clientIP := r.RemoteAddr
-	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
-	if err != nil {
-		log.Println(err)
-	}
-	updateUserSession(r)
-
-	AllData = GetAllDatas(r)
-
-	if r.Method == http.MethodPost {
-		email := r.FormValue("email")
-		if email == "" {
-			if AllData.ColorMode == "light" {
-				err := ForgotPasswordError.ExecuteTemplate(w, "forgotpassworderror.html", AllData)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-				}
-				return
-			} else {
-				err := DarkForgotPasswordError.ExecuteTemplate(w, "forgotpassworderror.html", AllData)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-				}
-				return
-			}
-		}
-		if FindAccount(Db, email) {
-			token := EncodeToken(email)
-
-			CreateRoute(w, r, token)
-			SendPasswordResetEmail(email, token)
-			if email != "" {
-				http.Redirect(w, r, "/forgot-password-success", http.StatusSeeOther)
-				return
-			}
-		} else {
-			http.Redirect(w, r, "/no-mail-found", http.StatusSeeOther)
-			return
-		}
-	}
-
-	if AllData.ColorMode == "light" {
-		err = ForgotPassword.ExecuteTemplate(w, "forgotpassword.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	} else {
-		err = DarkForgotPassword.ExecuteTemplate(w, "forgotpassword.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	}
-}
-
 func LikeLogique(w http.ResponseWriter, r *http.Request) {
 
 	clientIP := r.RemoteAddr
@@ -1228,6 +1173,7 @@ func ReportLogique(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }
 
+// Page une fois après avoir fais la demande de changement de mot de passe (reussite)
 func ForgotPasswordSuccessPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 
@@ -1238,6 +1184,179 @@ func ForgotPasswordSuccessPage(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		err := DarkForgotPasswordSuccess.ExecuteTemplate(w, "password_reset_success.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+// Page pour écrire le mail pour changer de mot de passe
+func ForgotPasswordPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+
+	AllData = GetAllDatas(r)
+
+	if r.Method == http.MethodPost {
+		email := r.FormValue("email")
+		if email == "" {
+			if AllData.ColorMode == "light" {
+				err := ForgotPasswordError.ExecuteTemplate(w, "forgotpassworderror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkForgotPasswordError.ExecuteTemplate(w, "forgotpassworderror.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+		}
+		if FindAccount(Db, email) {
+			token := EncodeToken(email)
+
+			CreateRoute(w, r, token)
+			SendPasswordResetEmail(email, token)
+			if email != "" {
+				http.Redirect(w, r, "/forgot-password-success", http.StatusSeeOther)
+				return
+			}
+		} else {
+			http.Redirect(w, r, "/no-mail-found", http.StatusSeeOther)
+			return
+		}
+	}
+
+	if AllData.ColorMode == "light" {
+		err = ForgotPassword.ExecuteTemplate(w, "forgotpassword.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err = DarkForgotPassword.ExecuteTemplate(w, "forgotpassword.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+// Page pour écrire le nouveau mdp si le token est valide
+func ResetPasswordPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+
+	token := r.FormValue("token")
+	if ResetPasswordMap[token] == "valid" {
+		if token == "" {
+			http.Error(w, "Token manquant dans l'URL", http.StatusBadRequest)
+			return
+		}
+
+		if r.Method == http.MethodPost {
+			newPassword := r.FormValue("password")
+			checkPassword := r.FormValue("checkpassword")
+
+			// condition du mot de passe
+			if newPassword != "" && newPassword == checkPassword {
+				token = strings.Trim(token, "/")
+
+				email, _ := DecodeToken(token)
+				user := GetAccount(Db, email)
+
+				ChangePassword(Db, user.User_id, newPassword)
+				http.Redirect(w, r, "/reset-password-success", http.StatusSeeOther)
+				return
+			} else {
+				if AllData.ColorMode == "light" {
+					err := ResetPasswordError.ExecuteTemplate(w, "reset_password_error.html", AllData)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+					}
+					return
+				} else {
+					err := DarkResetPasswordError.ExecuteTemplate(w, "reset_password_error.html", AllData)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+					}
+					return
+				}
+			}
+		}
+		if AllData.ColorMode == "light" {
+			err := ResetPassword.ExecuteTemplate(w, "reset_password.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkResetPassword.ExecuteTemplate(w, "reset_password.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
+	} else {
+		http.Redirect(w, r, "/lien-expire", http.StatusSeeOther)
+	}
+}
+
+// Page lorsque le mdp est modifié
+func PasswordResetSuccessPage(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+	ResetPasswordMap[URL] = "invalid"
+	if AllData.ColorMode == "light" {
+		err := PasswordResetSuccess.ExecuteTemplate(w, "reset_success.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkPasswordResetSuccess.ExecuteTemplate(w, "reset_success.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+// Page lorsque l'email n'est pas trouvé
+func NoMailFoundPage(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+
+	if AllData.ColorMode == "light" {
+		err := NoMailFound.ExecuteTemplate(w, "noMailFound.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkNoMailFound.ExecuteTemplate(w, "noMailFound.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+// Page lorsque le lien est expiré
+func ExpiredLinkPage(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+
+	if AllData.ColorMode == "light" {
+		err := ExpiredLink.ExecuteTemplate(w, "expiredLink.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkExpiredLink.ExecuteTemplate(w, "expiredLink.html", AllData)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
