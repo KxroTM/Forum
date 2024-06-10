@@ -406,11 +406,11 @@
                     <div class="container3 ignore-click" title="Republier" onclick='retweetPost({{.Posts_id}})'>
                     {{ end }}
                         {{ if .IsRetweet}}
-                        <input type="checkbox" id="repostCheckbox" class="repost-checkbox" checked>
+                        <input type="checkbox" id="repostCheckbox-{{.Posts_id}}" class="repost-checkbox" checked>
                         {{ else }}
-                        <input type="checkbox" id="repostCheckbox" class="repost-checkbox">
+                        <input type="checkbox" id="repostCheckbox-{{.Posts_id}}" class="repost-checkbox">
                         {{ end }}
-                        <label for="repostCheckbox" class="repost-button">
+                        <label for="repostCheckbox-{{.Posts_id}}" class="repost-button">
                             <span class="icon">
                                 <span class="arrow up"></span>
                                 <span class="arrow down"></span>
