@@ -33,6 +33,7 @@ var ResetPasswordError = template.Must(template.ParseFiles("./src/templates/ligh
 var PasswordResetSuccess = template.Must(template.ParseFiles("./src/templates/light/reset_success.html"))
 var NoMailFound = template.Must(template.ParseFiles("./src/templates/light/noMailFound.html"))
 var ExpiredLink = template.Must(template.ParseFiles("./src/templates/light/expiredLink.html"))
+var Reglage = template.Must(template.ParseFiles("./src/templates/light/reglage.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -65,3 +66,4 @@ var DarkResetPasswordError = template.Must(template.ParseFiles("./src/templates/
 var DarkPasswordResetSuccess = template.Must(template.ParseFiles("./src/templates/dark/reset_success.html"))
 var DarkNoMailFound = template.Must(template.ParseFiles("./src/templates/dark/noMailFound.html"))
 var DarkExpiredLink = template.Must(template.ParseFiles("./src/templates/dark/expiredLink.html"))
+var DarkReglage = template.Must(template.ParseFiles("./src/templates/dark/reglage.html"))

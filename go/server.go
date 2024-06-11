@@ -1363,8 +1363,7 @@ func ExpiredLinkPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-func ReglagePage {
+func ReglagePage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 	AllData = GetAllDatas(r)
 
