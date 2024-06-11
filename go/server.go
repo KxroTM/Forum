@@ -1362,3 +1362,21 @@ func ExpiredLinkPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+
+func ReglagePage {
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+
+	if AllData.ColorMode == "light" {
+		err := Reglage.ExecuteTemplate(w, "reglage.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkReglage.ExecuteTemplate(w, "reglage.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
