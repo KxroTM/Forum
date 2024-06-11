@@ -45,6 +45,7 @@ func main() {
 	http.HandleFunc("/reset-password-success", forum.PasswordResetSuccessPage)
 	http.HandleFunc("/no-mail-found", forum.NoMailFoundPage)
 	http.HandleFunc("/lien-expire", forum.ExpiredLinkPage)
+	http.HandleFunc("/parametres", forum.ReglagePage)
 
 	err := openLink()
 	if err != nil {
