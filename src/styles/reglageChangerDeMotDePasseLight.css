@@ -1,0 +1,114 @@
+.buttonTitleMDP {
+    width: 20vw;
+    height: 8vh;
+    bottom: 57vh;
+    left: 25vw;
+    position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
+}
+
+.buttonTitleMDP button:hover {
+    background-color: transparent;
+}
+
+.buttonTitleMDP h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+}
+
+.mdpActuel{
+    width: 30vw;
+    height: 8vh;
+    bottom: 45vh;
+    left: 40vw;
+    position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
+}
+
+.input {
+    background-color: transparent;
+    height: 5vh;
+    width: 30vw;
+    padding: 10px;
+    /* text-align: center; */
+    border: 2px solid black;
+    border-radius: 5px;
+    /* box-shadow: 3px 3px 2px rgb(249, 255, 85); */
+  }
+  
+  .input:focus {
+    background-color: transparent;
+    transition: .1s;
+    transition-property: box-shadow;
+  }
+
+.lineSeparer {
+    width: 60vw;
+    height: 1.5px;
+    background: #28974B;
+    position: fixed;
+    top: 50vh;
+    left: 25vw;
+    transform: translateY(-50%);
+}
+
+.mdpNouveau {
+    width: 30vw;
+    height: 8vh;
+    bottom: 35vh;
+    left: 40vw;
+    position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
+}
+
+.buttonTitleMDP button:hover {
+    background-color: transparent;
+}
+
+.buttonTitleMDP h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+}
+
+.mdpNouveauConfirmer {
+    width: 30vw;
+    height: 8vh;
+    bottom: 30vh;
+    left: 40vw;
+    position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
+}
+
+.buttonEnregistrer button {
+    background-color: #28974B;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.buttonEnregistrer {
+    bottom : 20vh;
+    left: 70vw;
+    position: relative;
+}
+
+.buttonEnregistrer span {
+    color: white;
+}
+
+.txtMdp {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    bottom: 68vh;
+    left: 40vw;
+    position: relative;
+    cursor: pointer;
+}
