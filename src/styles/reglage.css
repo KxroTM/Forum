@@ -1,0 +1,95 @@
+body {
+    background-color:#FFF;
+} 
+
+button {
+    border: 0px solid ;
+    background-color: #FFF;
+    border-radius: 0.9em;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+    cursor: pointer;
+}
+   
+button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-weight: 600;
+}
+   
+button:hover {
+  background-color:rgba(40, 151, 75, 0.21);
+}
+
+.barre  {
+    width: 2px;
+    height: 85vh; 
+    background: #28974B;
+    position: fixed;
+    top: 15vh; 
+    right: 75vw; 
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    margin-left: 1vw;
+    margin-top: 1vh;
+
+}
+
+.reglageTxt {
+    width: 20vw;
+    height: 56vh;
+    top : 17vh;
+    right: -14vw;
+    position: relative;  
+}
+
+.buttonVotreProfile {
+    position: relative;
+    left: 12vw;
+    bottom: 33vh; 
+    width: 15vw;
+    height: 6vh;
+    
+}
+
+.buttonVotreProfile button {
+    padding: 0.8em 3em; 
+}
+
+.buttonPrenium {
+    position: relative;
+    bottom: 30vh;
+    left: 12.5vw;
+    width: 15vw;
+    height: 6vh;
+    
+}
+
+.buttonPrenium button {
+    padding: 0.8em 3em; 
+}
+
+.buttonCentreAssistance {
+    position: relative;
+    bottom: 27vh;
+    left: 12vw;
+    width: 15vw;
+    height: 6vh;
+}
+
+.buttonCentreAssistance button {
+    padding: 0.8em 1em; 
+    white-space: nowrap;
+}
+

@@ -1,0 +1,8 @@
+.barre  {
+    width: 2px;
+    height: 85vh; 
+    background: #28974B;
+    position: fixed;
+    top: 15vh; 
+    right: 75vw; 
+}
