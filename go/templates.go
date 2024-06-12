@@ -34,6 +34,9 @@ var PasswordResetSuccess = template.Must(template.ParseFiles("./src/templates/li
 var NoMailFound = template.Must(template.ParseFiles("./src/templates/light/noMailFound.html"))
 var ExpiredLink = template.Must(template.ParseFiles("./src/templates/light/expiredLink.html"))
 var Reglage = template.Must(template.ParseFiles("./src/templates/light/reglage.html"))
+var ReglageProfile = template.Must(template.ParseFiles("./src/templates/light/reglageVotreProfile.html"))
+var ReglagePrenium = template.Must(template.ParseFiles("./src/templates/light/prenium.html"))
+var ReglageAssist = template.Must(template.ParseFiles("./src/templates/light/assist.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -67,3 +70,6 @@ var DarkPasswordResetSuccess = template.Must(template.ParseFiles("./src/template
 var DarkNoMailFound = template.Must(template.ParseFiles("./src/templates/dark/noMailFound.html"))
 var DarkExpiredLink = template.Must(template.ParseFiles("./src/templates/dark/expiredLink.html"))
 var DarkReglage = template.Must(template.ParseFiles("./src/templates/dark/reglage.html"))
+var DarkReglageProfile = template.Must(template.ParseFiles("./src/templates/dark/reglageVotreProfile.html"))
+var DarkReglagePrenium = template.Must(template.ParseFiles("./src/templates/dark/prenium.html"))
+var DarkReglageAssist = template.Must(template.ParseFiles("./src/templates/dark/assist.html"))

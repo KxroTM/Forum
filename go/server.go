@@ -1367,6 +1367,52 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 	AllData = GetAllDatas(r)
 
+	settings := r.URL.RawQuery
+
+	if settings == "profile" {
+		if AllData.ColorMode == "light" {
+			err := ReglageProfile.ExecuteTemplate(w, "reglageVotreProfile.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkReglageProfile.ExecuteTemplate(w, "reglageVotreProfile.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+	} else if settings == "prenium" {
+		if AllData.ColorMode == "light" {
+			err := ReglagePrenium.ExecuteTemplate(w, "prenium.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkReglagePrenium.ExecuteTemplate(w, "prenium.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+	} else if settings == "assist" {
+		if AllData.ColorMode == "light" {
+			err := ReglageAssist.ExecuteTemplate(w, "assist.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		} else {
+			err := DarkReglageAssist.ExecuteTemplate(w, "assist.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+	}
+
 	if AllData.ColorMode == "light" {
 		err := Reglage.ExecuteTemplate(w, "reglage.html", AllData)
 		if err != nil {
