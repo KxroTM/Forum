@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+body {
+    overflow: hidden;
+}
+
+.buttonTitle h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+}
+
+.buttonTitle {
+    width: 15vw;
+    height: 8vh;
+    bottom: 57vh;
+    left: 25vw;
+    position: relative;
+}
+
+.buttonTitle button:hover {
+    background-color: transparent;
+}
+
+h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+}
+
+.buttonChangerDePhotoDeProfil{
+    width: 20vw;
+    height: 8vh;
+    bottom: 55vh;
+    left: 30vw;
+    position: relative;
+}
+
+.buttonChangerDePhotoDeProfil button:hover {
+    padding:  0.1em 3em;
+}
+
+.buttonChangerDeNomUtilisateur {
+    width: 20vw;
+    height: 8vh;
+    bottom: 50vh;
+    left: 30vw;
+    position: relative;
+}  
+
+.buttonChangerDeNomUtilisateur button:hover {
+    padding:  0.1em 2em;
+}
+
+
+.buttonChangerAdresseMail {
+    width: 20vw;
+    height: 8vh;
+    bottom: 45vh;
+    left: 30vw;
+    position: relative;
+}
+
+.buttonChangerAdresseMail button:hover {
+    padding:  0.1em 2em;
+}
