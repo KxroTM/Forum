@@ -1370,32 +1370,42 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 	settings := r.URL.RawQuery
 
 	if settings == "profile" {
-		if AllData.ColorMode == "light" {
-			err := ReglageProfile.ExecuteTemplate(w, "reglageVotreProfile.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
 		} else {
-			err := DarkReglageProfile.ExecuteTemplate(w, "reglageVotreProfile.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if AllData.ColorMode == "light" {
+				err := ReglageProfile.ExecuteTemplate(w, "reglageVotreProfile.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglageProfile.ExecuteTemplate(w, "reglageVotreProfile.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
 			}
-			return
 		}
 	} else if settings == "prenium" {
-		if AllData.ColorMode == "light" {
-			err := ReglagePrenium.ExecuteTemplate(w, "prenium.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
 		} else {
-			err := DarkReglagePrenium.ExecuteTemplate(w, "prenium.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if AllData.ColorMode == "light" {
+				err := ReglagePrenium.ExecuteTemplate(w, "prenium.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglagePrenium.ExecuteTemplate(w, "prenium.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
 			}
-			return
 		}
 	} else if settings == "assist" {
 		if AllData.ColorMode == "light" {
@@ -1412,32 +1422,42 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else if settings == "profile/account" {
-		if AllData.ColorMode == "light" {
-			err := ReglageInfo.ExecuteTemplate(w, "reglageInfoCompte.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
 		} else {
-			err := DarkReglageInfo.ExecuteTemplate(w, "reglageInfoCompte.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if AllData.ColorMode == "light" {
+				err := ReglageInfo.ExecuteTemplate(w, "reglageInfoCompte.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglageInfo.ExecuteTemplate(w, "reglageInfoCompte.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
 			}
-			return
 		}
 	} else if settings == "profile/change-password" {
-		if AllData.ColorMode == "light" {
-			err := ReglageChangePassword.ExecuteTemplate(w, "reglageChangerDeMotDePasse.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
 		} else {
-			err := DarkReglageChangePassword.ExecuteTemplate(w, "reglageChangerDeMotDePasse.html", AllData)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if AllData.ColorMode == "light" {
+				err := ReglageChangePassword.ExecuteTemplate(w, "reglageChangerDeMotDePasse.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglageChangePassword.ExecuteTemplate(w, "reglageChangerDeMotDePasse.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
 			}
-			return
 		}
 	}
 

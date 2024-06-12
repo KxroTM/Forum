@@ -58,7 +58,8 @@ var banWords = []string{
 	"haine", "violence", "assassinat", "extermination", "guerre", "destruction", "attaquer", "detruire", "aneantir",
 	"nazisme", "communisme", "fascisme", "dictature", "totalitarisme", "extremisme", "nationalisme", "anarchie",
 	"trump", "hitler", "staline", "mao", "benladen", "saddamhussein", "laden", "hussein", "kimjong-un", "poutine", "assad", "fdp", "arabe",
-	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine", "israel",
+	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine", "israel", "kippa",
+	"noir", "negre", "negro", "singe", "bardella",
 }
 
 func checkAllConditionsSignUp(db *sql.DB, username, email, password, passwordcheck string) error {

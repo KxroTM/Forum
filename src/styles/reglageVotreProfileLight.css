@@ -114,6 +114,7 @@ h1 {
 }
 
 .buttonInfoCompte button {
+    margin-top:1.5vh ;
     padding: 0.8em 3em; 
 }
 
@@ -130,10 +131,11 @@ h1 {
 }
 
 .buttonChangerDeMotDePasse button {
+    margin-top:0.5vh ;
     padding: 0.8em 3em; 
 }
 
 .buttonChangerDeMotDePasse img {
-    margin-top: 0.6vh;
+    margin-left: 0.6vh;
 }
 
