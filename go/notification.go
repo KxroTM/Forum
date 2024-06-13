@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
+
+	"github.com/gofrs/uuid"
 )
 
 type Notification struct {
@@ -17,11 +20,25 @@ type Notification struct {
 	Reason          string
 }
 
-func CreateNotification(Db *sql.DB, Notification Notification) {
-	_, err := Db.Exec("INSERT INTO notifications (comment_id, posts_id, user_id, user_id2, date, checked, reason) VALUES (?, ?, ?, ?, ?, ?, ?)", Notification.Comment_id, Notification.Posts_id, Notification.User_id, Notification.User_id2, Notification.Date, false, Notification.Reason)
+func CreateNotification(Db *sql.DB, Notification Notification) error {
+
+	uuid, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("Error creating notification:", err)
+		return err
 	}
+
+	Notification.Notification_id = uuid.String()
+
+	currentTime := time.Now()
+	date := currentTime.Format("02-01-2006 15:04")
+
+	_, err = Db.Exec("INSERT INTO notifications (notification_id, comment_id, posts_id, user_id, user_id2, date, checked, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Notification.Notification_id, Notification.Comment_id, Notification.Posts_id, Notification.User_id, Notification.User_id2, date, false, Notification.Reason)
+
+	if err != nil {
+		return err
+	}
+
+	return err
 }
 
 func GetNotifications(Db *sql.DB, User_id string) []Notification {
@@ -33,11 +50,13 @@ func GetNotifications(Db *sql.DB, User_id string) []Notification {
 	var Notifications []Notification
 	for rows.Next() {
 		var Notification Notification
-		err := rows.Scan(&Notification.Notification_id, &Notification.Comment_id, &Notification.Posts_id,
-			&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
+		err := rows.Scan(&Notification.Notification_id, &Notification.Comment_id, &Notification.Posts_id, &Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
 		if err != nil {
 			fmt.Println("Error getting notifications:", err)
 		}
+
+		Notification.User_id2 = GetAccountById(Db, Notification.User_id2).Username
+
 		Notifications = append(Notifications, Notification)
 	}
 	return Notifications

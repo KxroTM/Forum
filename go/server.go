@@ -265,14 +265,17 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+
 		if AllData.ColorMode == "light" {
 			err = HomeLogged.ExecuteTemplate(w, "accueilLogged.html", AllData)
 			if err != nil {
+				fmt.Println(err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
 			err := DarkHomeLogged.ExecuteTemplate(w, "accueilLogged.html", AllData)
 			if err != nil {
+				fmt.Println(err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}

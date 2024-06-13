@@ -509,6 +509,15 @@ func UpdateFollowing(db *sql.DB, user_id, username string) { // username etant l
 
 	// Mise a jour de la liste des followers de la personne que l'on follow
 	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, userToFollow.FollowerList+","+UserSession.Username, userToFollow.User_id)
+
+	CreateNotification(db, Notification{
+		User_id:    userToFollow.User_id,
+		User_id2:   UserSession.User_id,
+		Posts_id:   "",
+		Comment_id: "",
+		Reason:     "follow",
+		Checked:    false,
+	})
 }
 
 func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va unfollow
