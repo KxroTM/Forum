@@ -81,40 +81,40 @@
             <div class="Notifications">
                 {{ range $count, $notif := .AllNotifications }}
                     {{ if lt $count 4 }}
-                        {{if eq .notif.Reason "likePost"}}
+                        {{if eq $notif.Reason "likePost"}}
                             <div class="notif">
                                 <img src="../../style/img/aAimer.png" height="50">
-                                <p>@{{.notif.User_id2}} a aimé votre post</p>
+                                <p>@{{$notif.User_id2}} a aimé votre post</p>
                             </div>
-                        {{else if eq .notif.Reason "likeComment"}}
+                        {{else if eq $notif.Reason "likeComment"}}
                             <div class="notif">
                                 <img src="../../style/img/aAimer.png" height="50">
-                                <p>@{{.notif.User_id2}} a aimé votre commentaire</p>
+                                <p>@{{$notif.User_id2}} a aimé votre commentaire</p>
                             </div>
-                        {{else if eq .notif.Reason "dislikePost"}}
+                        {{else if eq $notif.Reason "dislikePost"}}
                             <div class="notif">
                                 <img src="../../style/img/dislike.png" height="50">
-                                <p>@{{.notif.User_id2}} n'a pas aimé votre post</p>
+                                <p>@{{$notif.User_id2}} n'a pas aimé votre post</p>
                             </div>
-                        {{else if eq .notif.Reason "dislikeComment"}}
+                        {{else if eq $notif.Reason "dislikeComment"}}
                             <div class="notif">
                                 <img src="../../style/img/dislike.png" height="50">
-                                <p>@{{.notif.User_id2}} n'a pas aimé votre commentaire</p>
+                                <p>@{{$notif.User_id2}} n'a pas aimé votre commentaire</p>
                             </div>
-                        {{else if eq .notif.Reason "repost"}}
+                        {{else if eq $notif.Reason "repost"}}
                             <div class="notif">
                                 <img src="../../style/img/republication.webp" height="50">
-                                <p>@{{.notif.User_id2}} à republié votre post</p>
+                                <p>@{{$notif.User_id2}} à republié votre post</p>
                             </div>
-                        {{else if eq .notif.Reason "comment"}}
+                        {{else if eq $notif.Reason "comment"}}
                             <div class="notif">
                                 <img src="../../style/img/commentaire.png" height="50">
-                                <p>@{{.notif.User_id2}} a commenté votre post</p>
+                                <p>@{{$notif.User_id2}} a commenté votre post</p>
                             </div>
-                        {{else if eq .notif.Reason "follow"}}
+                        {{else if eq $notif.Reason "follow"}}
                             <div class="notif">
                                 <img src="../../style/img/follow.png" height="50">
-                                <p>@{{.notif.User_id2}} vous a suivi</p>
+                                <p>@{{$notif.User_id2}} vous a suivi</p>
                             </div>
                         {{ end }}
                     {{ else }}
@@ -292,11 +292,65 @@
       <div class="titleNotification">
         <h1>Notifications</h1>
       </div>
-      <div class="imgLike">
-                <img src="../../style/img/aAimer.png" width="70" height="40">
-                <div class="icon1">
-                </div>
-                <h5>@User a aimer ton post</h5>
+      {{range .AllNotifications}}
+        {{if eq .Reason "likePost"}}
+          <div class="imgLike">
+            <img src="../../style/img/aAimer.png" width="70" height="40">
+            <div class="icon1">
+                           <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} a aimer ton post</h5>
+          </div>
+        {{else if eq .Reason "likeComment"}}
+          <div class="imgLike">
+            <img src="../../style/img/aAimer.png" width="70" height="40">
+            <div class="icon1">
+                            <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} a aimer ton commentaire</h5>
+          </div>
+        {{else if eq .Reason "dislikePost"}}
+          <div class="imgLike">
+            <img src="../../style/img/dislike.png" width="70" height="40">
+            <div class="icon1">
+                            <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} n'a pas aimer ton post</h5>
+          </div>
+        {{else if eq .Reason "dislikeComment"}}
+          <div class="imgLike">
+            <img src="../../style/img/dislike.png" width="70" height="40">
+            <div class="icon1">
+                            <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} n'a pas aimer ton commentaire</h5>
+          </div>
+        {{else if eq .Reason "repost"}}
+          <div class="imgLike">
+            <img src="../../style/img/republication.webp" width="70" height="40">
+            <div class="icon1">
+                            <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} a republié ton post</h5>
+          </div>
+        {{else if eq .Reason "comment"}}
+          <div class="imgLike">
+            <img src="../../style/img/commentaire.png" width="70" height="40">
+            <div class="icon1">
+                            <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} a commenté ton post</h5>
+          </div>
+        {{else if eq .Reason "follow"}}
+          <div class="imgLike">
+            <img src="../../style/img/follow.png" width="70" height="60">
+            <div class="icon1">
+                            <img src=".{{.User_pfp}}" width="60" height="60" style="border-radius: 30px;">
+            </div>
+            <h5>@{{.User_id2}} vous a suivi</h5>
+          </div>
+        {{end}}
+      {{end}}
     </div>
 </body>
 <script src="../../style/scripts/accueil.js"></script>

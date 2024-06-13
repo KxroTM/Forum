@@ -28,6 +28,7 @@ button {
     position: relative;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     width: 75vw;
     height: 75vh;
     top: 25vh;
@@ -39,9 +40,8 @@ button {
     width: 17vh;
     height: 3vw;
     margin-top: -10vh;
-    left: 40vw;
+    left: 30vw;
     position: relative;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.9);
 }
 
 h1 {
@@ -54,12 +54,11 @@ h1 {
 
 .imgLike {
   width: 73vw;
-  height: 25vh;
+  height: 20vh;
   flex-shrink: 0;
   margin-top: 6vh;
   margin-right: 9vw;
   cursor: pointer;
-  /* box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.9); */
   display: flex;
   align-items: center;
   border-bottom: rgba(6, 153, 191, 0.31) 2px solid; 
@@ -70,7 +69,6 @@ h1 {
   height: 58px;
   flex-shrink: 0;
   border-radius: 58px;
-  border: 1px solid #000;
   margin-left: 2vw;
 }
 

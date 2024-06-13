@@ -147,7 +147,7 @@ position: fixed;
 }
 
 .Notifications p {
-    font-size: 15px;
+    font-size: 12px;
     font-family: 'Roboto', sans-serif;
     max-width: 10vw;
     white-space: nowrap;
@@ -176,8 +176,8 @@ position: fixed;
 }
 
 .allNotif {
-    position: relative;
-    top: 19vh;
+    position: fixed;
+    top: 46vh;
 }
 
 .piqueoverlay {

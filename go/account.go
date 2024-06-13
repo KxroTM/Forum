@@ -58,7 +58,8 @@ var banWords = []string{
 	"haine", "violence", "assassinat", "extermination", "guerre", "destruction", "attaquer", "detruire", "aneantir",
 	"nazisme", "communisme", "fascisme", "dictature", "totalitarisme", "extremisme", "nationalisme", "anarchie",
 	"trump", "hitler", "staline", "mao", "benladen", "saddamhussein", "laden", "hussein", "kimjong-un", "poutine", "assad", "fdp", "arabe",
-	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine", "israel",
+	"nazi", "youssef", "youss", "yous", "gay", "pd", "lgbt", "homo", "bz", "ntm", "tamere", "mere", "nique", "tue", "extermine", "israel", "kippa",
+	"noir", "negre", "negro", "singe", "bardella",
 }
 
 func checkAllConditionsSignUp(db *sql.DB, username, email, password, passwordcheck string) error {
@@ -278,6 +279,7 @@ func GetAccount(db *sql.DB, email string) User {
 }
 
 func GetAccountById(db *sql.DB, user_id string) User {
+
 	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE UUID = ?"
 	var user User
 	err := db.QueryRow(query, user_id).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)
@@ -508,6 +510,15 @@ func UpdateFollowing(db *sql.DB, user_id, username string) { // username etant l
 
 	// Mise a jour de la liste des followers de la personne que l'on follow
 	db.Exec(`UPDATE users SET followersList = ? WHERE UUID = ?`, userToFollow.FollowerList+","+UserSession.Username, userToFollow.User_id)
+
+	CreateNotification(db, Notification{
+		User_id:    userToFollow.User_id,
+		User_id2:   UserSession.User_id,
+		Posts_id:   "",
+		Comment_id: "",
+		Reason:     "follow",
+		Checked:    false,
+	})
 }
 
 func UpdateUnfollowing(db *sql.DB, user_id string, username string) { // username etant la personne que l'on va unfollow
