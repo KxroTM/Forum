@@ -2,14 +2,19 @@
 <html lang="fr">
 <head>
     <link rel="icon" href="../style/media/icon.png">
-    <link rel="stylesheet" type="text/css" href="../../style/createpost.css"/>
+    <link rel="stylesheet" type="text/css" href="../../style/reglage.css">
     <link rel="stylesheet" type="text/css" href="../../style/navbar.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/leftbar.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/rightbar.css"/>
     <meta charset="UTF-8">
-    <title>Créer mon post</title>
+    <title>Reglage</title>
 </head>
-<body>
+<html>  
+    <body>
+    
+    <div class="overlay" id="overlay" style="display: none;">
+        <img id="imgoverlay">
+    </div>
     <div class="fullreglage" id="fullreglage">
         <div class="fullreg">
             <a href="/parametres">
@@ -70,6 +75,27 @@
             {{end}}
         </div>
     </div>
+    <div class="overreport" id="reportOverlay">
+        <div class="reportOverlay">
+            <div class ="txtReport">
+                <p>Signaler le post ?</p>
+            </div>
+            <div class ="buttonReport">
+                <a href="" id="reportLink">
+                    <button>
+                        <span>
+                            Oui
+                        </span>
+                    </button>
+                </a>
+                <button onclick="reportOverlay()">
+                    <span>
+                        Non
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="piqueoverlay" id="piqueoverlay"></div>
     <div class="notifoverlay" id="notifoverlay">
         <div class="notifForm">
@@ -77,51 +103,14 @@
                 <p>Notifications</p>
             </div>
             <div class="Notifications">
-                {{ range $count, $notif := .AllNotifications }}
-                    {{ if lt $count 4 }}
-                        {{if eq $notif.Reason "likePost"}}
-                            <div class="notif">
-                                <img src="../../style/img/aAimer.png" height="50">
-                                <p>@{{$notif.User_id2}} a aimé votre post</p>
-                            </div>
-                        {{else if eq $notif.Reason "likeComment"}}
-                            <div class="notif">
-                                <img src="../../style/img/aAimer.png" height="50">
-                                <p>@{{$notif.User_id2}} a aimé votre commentaire</p>
-                            </div>
-                        {{else if eq $notif.Reason "dislikePost"}}
-                            <div class="notif">
-                                <img src="../../style/img/dislike.png" height="50">
-                                <p>@{{$notif.User_id2}} n'a pas aimé votre post</p>
-                            </div>
-                        {{else if eq $notif.Reason "dislikeComment"}}
-                            <div class="notif">
-                                <img src="../../style/img/dislike.png" height="50">
-                                <p>@{{$notif.User_id2}} n'a pas aimé votre commentaire</p>
-                            </div>
-                        {{else if eq $notif.Reason "repost"}}
-                            <div class="notif">
-                                <img src="../../style/img/republication.webp" height="50">
-                                <p>@{{$notif.User_id2}} à republié votre post</p>
-                            </div>
-                        {{else if eq $notif.Reason "comment"}}
-                            <div class="notif">
-                                <img src="../../style/img/commentaire.png" height="50">
-                                <p>@{{$notif.User_id2}} a commenté votre post</p>
-                            </div>
-                        {{else if eq $notif.Reason "follow"}}
-                            <div class="notif">
-                                <img src="../../style/img/follow.png" height="50">
-                                <p>@{{$notif.User_id2}} vous a suivi</p>
-                            </div>
-                        {{ end }}
-                    {{ else }}
-                        {{ break }}
-                    {{ end }}
-                {{ end }}
+                <div class="notif">
+                    <img src="../../style/img/bienvenueLight.png" height="50" style="margin-right: 1vw;margin-top: 1vh;">
+                    <p>Bienvenue sur <br>ParlonsSanté !</p>
+                </div>
+                <!-- 4 max -->
             </div>
-            <div class="allNotif">
-                <a href="/notifications">
+            <div class="allNotif" style="margin-top: -2vh;">
+                <a href="/connexion">
                     <button>
                         <span>
                         Tout voir
@@ -130,37 +119,7 @@
                 </a>
             </div>
         </div>
-    </div>
-    <div class="overlayprofile" id="overlayprofile">
-        <div class="profileMenu">
-            <a href="/profile/@{{.User.Username}}">
-                <button>
-                    <span>
-                        <img src="../../style/img/profileLight.png" height="40">
-                        Profil
-                    </span>
-                </button>
-            </a>
-            <br>
-            <a href="/parametres">
-                <button>
-                    <span>
-                        <img src="../../style/img/engrenageDark.png" width="30" height="20">
-                        Paramètres
-                    </span>
-                </button>
-            </a>
-            <br>
-            <a href="/deconnexion">
-                <button>
-                    <span>
-                        <img src="../../style/img/deconnexion.png" width="30" height="20">
-                        Déconnexion
-                    </span>
-                </button>
-            </a>
-        </div>
-    </div>
+    </div>  
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <form method="post">
@@ -191,138 +150,130 @@
         </div>
         <div class="line1"></div>
     </div>
-
-    <div class="leftbar">
-        <div class="line2"></div>
-        <div class="buttonAccueil">
-            <a href="/accueil">
-            <button>
-                <span>
-                    <img src ="../../style/img/homeDark.png" width="24" height="24">
-                    Accueil
-                </span>
-            </button>
-            </a>
-        </div>
-        <div class="buttonPopulaire">
-            <a href="/populaire"> 
-            <button>
-                <span>
-                    <img src="../../style/img/popularDark.png" width="24" height="24">
-                    Populaire
-                </span>
-            </button>
-            </a>
-        </div>
-        <div class="buttonPosts">
-            <a href="/posts">
-            <button>
-                <span>
-                    <img src="../../style/img/postsDark.png" width="24" height="24">
-                    Posts
-                </span>
-            </button>
-            </a>
-        </div>
-        <div class="line4">
-            <div class="catégories">
-            </div>
-            <div class ="buttonVoirToutCategorie">
-                <a href="/categories">
-                <button>
+        <div class="leftbar">
+            <div class="line2"></div>
+            <div class="buttonAccueil">
+                <a href="/accueil">
+                <button style="background-color: rgba(40, 151, 75, 0.21);">
                     <span>
-                        Voir tout
+                        <img src ="../../style/img/homeDark.png" width="24" height="24">
+                        Accueil
                     </span>
                 </button>
                 </a>
             </div>
-        </div>
-        <div class="line5">
-            <div class="buttonReglage">
+            <div class="buttonPopulaire">
+                <a href="/populaire"> 
                 <button>
                     <span>
-                        <img src="../../style/img/engrenageDark.png" width="30" height="20">
-                        Réglages
-                    </span>
-                </button>
-            </div>
-        </div>
-    </div> 
-
-    <div class="rightbar">
-        <div class="line3">
-
-            <div class="users">
-
-            </div>
-            <div class ="buttonVoirTout">
-                <a href="/utilisateurs">
-                <button>
-                    <span>
-                        Voir tout
+                        <img src="../../style/img/popularDark.png" width="24" height="24">
+                        Populaire
                     </span>
                 </button>
                 </a>
             </div>
+            <div class="buttonPosts">
+                <a href="/posts">
+                <button>
+                    <span>
+                        <img src="../../style/img/postsDark.png" width="24" height="24">
+                        Posts
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="line4">
+                <div class="catégories">
+                {{ range .AllCategories }}
+                    <a href="/categorie?id={{.Category_id}}">
+                    <button>
+                        <span>
+                            {{.Name}}
+                        </span>
+                    </button>
+                    </a>
+                {{ end }}
+                </div>
+                <div class ="buttonVoirToutCategorie">
+                    <a href="/categories">
+                    <button>
+                        <span>
+                            Voir tout
+                        </span>
+                    </button>
+                    </a>
+                </div>
+            </div>
+            <div class="line5">
+                <div class="buttonReglage">
+                    <button onclick="reglageToggle()">
+                        <span>
+                            <img src="../../style/img/engrenageDark.png" width="30" height="20">
+                            Réglages
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div> 
+        <div class="rightbar">
+            <div class="line3">
+                <div class="users">
+                <h3>Utilisateurs recommandés :</h3>
+                {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                    <a href="/profile/@{{$user.Username}}">
+                    <button>
+                        <span>
+                            <img src="{{$user.Pfp}}" width="60" height="60">
+                            @{{.Username}}
+                        </span>
+                    </button>
+                    </a>
+                    <p>{{ index $.RecommendedUser.Reason $i }}</p>
+                {{ end }}
+                </div>
+                <div class ="buttonVoirTout">
+                    <a href="/utilisateurs">
+                    <button>
+                        <span>
+                            Voir tout
+                        </span>
+                    </button>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="createpost">
-        <span>Créer mon post</span>
-        <div class="line4"></div>
-        <form method="post" class="create" enctype="multipart/form-data">
-            <div class="selecttype">
-                <label>Type de post :</label>
-                <div class="switch-container">
-                    <input type="radio" id="text-post" name="post_type" value="text" checked onclick="togglePostType()">
-                    <label for="text-post">Texte</label>
-                    <input type="radio" id="image-post" name="post_type" value="image" onclick="togglePostType()">
-                    <label for="image-post" class="post_type">Image</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="categories">Choisir des catégories :</label>
-                <div class="checkbox-container">
-                    <div class="checkbox-group" id="categories">
-                        {{ range .AllCategories }}
-                        <input type="checkbox" id="{{.Name}}" name="categories[]" value="{{.Name}}">
-                        <label for="{{.Name}}">{{.Name}}</label>
-                        {{ end }}
-                    </div>
-                </div>
-            </div>
-            <div id="text-post-fields">
-                <div class="form-group">
-                    <label for="title">Titre :</label>
-                    <input type="text" id="title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="text">Texte :</label>
-                    <textarea id="text" name="text" required style="resize: none;"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="images">Ajouter des images :</label>
-                    <input type="file" id="images" name="images[]" multiple accept="image/jpeg, image/png, image/gif">
-                </div>
-            </div>
-            <div id="image-post-fields" style="display: none;">
-                <div class="form-group">
-                    <label for="image-title">Titre :</label>
-                    <input type="text" id="image-title" name="image_title">
-                </div>
-                <div class="form-group">
-                    <label for="images">Ajouter des images :</label>
-                    <input type="file" id="imageschoose" name="images[]" multiple accept="image/jpeg, image/png, image/gif" required>
-                </div>
-            </div>
-            <div class="error">
-                <p>{{.Error}}</p>
-            </div>
-            <button type="submit" class="submit-btn">Poster</button>
-        </form>
-    </div>
-</body>
-<script src="../../style/scripts/createpost.js"></script>
-<script src="../../style/scripts/accueil.js"></script>
-
+        <div class="barre">
+        </div>
+        <div class="reglageTxt">
+            <h1>Réglages</h1>
+        </div>
+        <div class="buttonVotreProfile">
+            <a href="/parametres?profile">
+                <button>
+                    <span>
+                        Votre profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>
+                    </span>
+                </button>
+            </a>
+        </div>
+        <div class="buttonPrenium">
+            <a href="/parametres?prenium">
+                <button>
+                    <span>
+                        Premium&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>
+                    </span>
+                </button>
+            </a>
+        </div>
+        <div class="buttonCentreAssistance">
+            <a href="/parametres?assist">
+                <button>
+                    <span>
+                        Centre d'assistance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>
+                    </span>
+                </button>
+            </a>
+        </div>
+    </body>
+    <script src="../../style/scripts/accueil.js"></script>
 </html>

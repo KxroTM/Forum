@@ -279,6 +279,7 @@ func GetAccount(db *sql.DB, email string) User {
 }
 
 func GetAccountById(db *sql.DB, user_id string) User {
+
 	query := "SELECT UUID, role, username, email, password, created_at, updated_at, profilePicture, bio, links, categoriesSub, followers, followersList, following, followingList FROM users WHERE UUID = ?"
 	var user User
 	err := db.QueryRow(query, user_id).Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList)

@@ -39,6 +39,7 @@ var ReglagePrenium = template.Must(template.ParseFiles("./src/templates/light/pr
 var ReglageAssist = template.Must(template.ParseFiles("./src/templates/light/assist.html"))
 var ReglageInfo = template.Must(template.ParseFiles("./src/templates/light/reglageInfoCompte.html"))
 var ReglageChangePassword = template.Must(template.ParseFiles("./src/templates/light/reglageChangerDeMotDePasse.html"))
+var ReglageLogged = template.Must(template.ParseFiles("./src/templates/light/reglageLogged.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -77,3 +78,4 @@ var DarkReglagePrenium = template.Must(template.ParseFiles("./src/templates/dark
 var DarkReglageAssist = template.Must(template.ParseFiles("./src/templates/dark/assist.html"))
 var DarkReglageInfo = template.Must(template.ParseFiles("./src/templates/dark/reglageInfoCompte.html"))
 var DarkReglageChangePassword = template.Must(template.ParseFiles("./src/templates/dark/reglageChangerDeMotDePasse.html"))
+var DarkReglageLogged = template.Must(template.ParseFiles("./src/templates/dark/reglageLogged.html"))

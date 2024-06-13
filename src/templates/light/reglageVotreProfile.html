@@ -102,14 +102,51 @@
                 <p>Notifications</p>
             </div>
             <div class="Notifications">
-                <div class="notif">
-                    <img src="../../style/img/bienvenueLight.png" height="50" style="margin-right: 1vw;margin-top: 1vh;">
-                    <p>Bienvenue sur <br>ParlonsSanté !</p>
-                </div>
-                <!-- 4 max -->
+                {{ range $count, $notif := .AllNotifications }}
+                    {{ if lt $count 4 }}
+                        {{if eq $notif.Reason "likePost"}}
+                            <div class="notif">
+                                <img src="../../style/img/aAimer.png" height="50">
+                                <p>@{{$notif.User_id2}} a aimé votre post</p>
+                            </div>
+                        {{else if eq $notif.Reason "likeComment"}}
+                            <div class="notif">
+                                <img src="../../style/img/aAimer.png" height="50">
+                                <p>@{{$notif.User_id2}} a aimé votre commentaire</p>
+                            </div>
+                        {{else if eq $notif.Reason "dislikePost"}}
+                            <div class="notif">
+                                <img src="../../style/img/dislike.png" height="50">
+                                <p>@{{$notif.User_id2}} n'a pas aimé votre post</p>
+                            </div>
+                        {{else if eq $notif.Reason "dislikeComment"}}
+                            <div class="notif">
+                                <img src="../../style/img/dislike.png" height="50">
+                                <p>@{{$notif.User_id2}} n'a pas aimé votre commentaire</p>
+                            </div>
+                        {{else if eq $notif.Reason "repost"}}
+                            <div class="notif">
+                                <img src="../../style/img/republication.webp" height="50">
+                                <p>@{{$notif.User_id2}} à republié votre post</p>
+                            </div>
+                        {{else if eq $notif.Reason "comment"}}
+                            <div class="notif">
+                                <img src="../../style/img/commentaire.png" height="50">
+                                <p>@{{$notif.User_id2}} a commenté votre post</p>
+                            </div>
+                        {{else if eq $notif.Reason "follow"}}
+                            <div class="notif">
+                                <img src="../../style/img/follow.png" height="50">
+                                <p>@{{$notif.User_id2}} vous a suivi</p>
+                            </div>
+                        {{ end }}
+                    {{ else }}
+                        {{ break }}
+                    {{ end }}
+                {{ end }}
             </div>
-            <div class="allNotif" style="margin-top: -2vh;">
-                <a href="/connexion">
+            <div class="allNotif">
+                <a href="/notifications">
                     <button>
                         <span>
                         Tout voir
@@ -118,43 +155,37 @@
                 </a>
             </div>
         </div>
-    </div>  
-        <div class="navbar">
-            <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
-            <form method="post">
-                <div class="searchBar">
-                    <img src="../../style/img/loupeDark.png" width="8%">
-                    <input type="text" placeholder="Rechercher..." name="recherche">
-                    <button type="submit">Rechercher</button>
-                </div>
-            </form>
-            <div class="buttonAddPost">
-                <a href="/connexion">
-                <button>
-                    <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path></svg> Créer un post
-                    </span>
-                </button>
-                </a>
+    </div> 
+    <div class="navbar">
+        <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
+        <form method="post">
+            <div class="searchBar">
+                <img src="../../style/img/loupeDark.png" width="8%">
+                <input type="text" placeholder="Rechercher..." name="recherche">
+                <button type="submit">Rechercher</button>
             </div>
-            <div class="buttonNotification">
-                <button onclick="toggleNotif()">
-                    <span> 
-                        <img src ="../../style/img/clocheDark.png" width="24" height="24" alt="Notification Icon">
-                    </span>
-                </button>
-            </div>
-            <div class ="buttonConnecter">
-                <a href="/connexion">
-                <button>
-                    <span>
-                        Se connecter
-                    </span>
-                </button>
-                </a>
-            </div>
-            <div class="line1"></div>
+        </form>
+        <div class="buttonAddPost">
+            <a href="/creer-un-post">
+            <button>
+                <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path></svg> Créer un post
+                </span>
+            </button>
+            </a>
         </div>
+        <div class="buttonNotification">
+            <button onclick="toggleNotif()">
+                <span> 
+                    <img src ="../../style/img/clocheDark.png" width="24" height="24" alt="Notification Icon">
+                </span>
+            </button>
+        </div>
+        <div class ="buttonConnecter">
+            <img src="{{.User.Pfp}}" width="100" height="100" onclick="toggleProfile()">
+        </div>
+        <div class="line1"></div>
+    </div>
         <div class="leftbar">
             <div class="line2"></div>
             <div class="buttonAccueil">

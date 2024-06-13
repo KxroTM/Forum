@@ -1369,6 +1369,8 @@ func ExpiredLinkPage(w http.ResponseWriter, r *http.Request) {
 func ReglagePage(w http.ResponseWriter, r *http.Request) {
 	updateUserSession(r)
 	AllData = GetAllDatas(r)
+	AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	settings := r.URL.RawQuery
 
@@ -1464,15 +1466,30 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if AllData.ColorMode == "light" {
-		err := Reglage.ExecuteTemplate(w, "reglage.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+	if UserSession.Email == "" {
+		if AllData.ColorMode == "light" {
+			err := Reglage.ExecuteTemplate(w, "reglage.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkReglage.ExecuteTemplate(w, "reglage.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	} else {
-		err := DarkReglage.ExecuteTemplate(w, "reglage.html", AllData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+		if AllData.ColorMode == "light" {
+			err := ReglageLogged.ExecuteTemplate(w, "reglageLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			err := DarkReglageLogged.ExecuteTemplate(w, "reglageLogged.html", AllData)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	}
 }

@@ -18,6 +18,7 @@ type Notification struct {
 	Date            string
 	Checked         bool
 	Reason          string
+	User_pfp        string
 }
 
 func CreateNotification(Db *sql.DB, Notification Notification) error {
@@ -54,7 +55,7 @@ func GetNotifications(Db *sql.DB, User_id string) []Notification {
 		if err != nil {
 			fmt.Println("Error getting notifications:", err)
 		}
-
+		Notification.User_pfp = GetAccountById(Db, Notification.User_id2).Pfp
 		Notification.User_id2 = GetAccountById(Db, Notification.User_id2).Username
 
 		Notifications = append(Notifications, Notification)
