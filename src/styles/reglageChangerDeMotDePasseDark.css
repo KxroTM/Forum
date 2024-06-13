@@ -1,0 +1,118 @@
+.buttonTitleMDP {
+    width: 20vw;
+    height: 8vh;
+    bottom: 57vh;
+    left: 25vw;
+    position: relative;
+}
+
+.buttonTitleMDP button:hover {
+    background-color: transparent;
+}
+
+.buttonTitleMDP h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(196, 194, 194);
+}
+
+.mdpActuel{
+    width: 30vw;
+    height: 8vh;
+    bottom: 45vh;
+    left: 40vw;
+    position: relative;
+}
+
+.input {
+    background-color: transparent;
+    height: 5vh;
+    width: 30vw;
+    padding: 10px;
+    border: 2px solid rgb(196, 194, 194);
+    border-radius: 5px;
+  }
+  
+  .input:focus {
+    background-color: transparent;
+    transition: .1s;
+    transition-property: box-shadow;
+  }
+
+.lineSeparer {
+    width: 60vw;
+    height: 1.5px;
+    background: rgba(6, 153, 191, 0.31);
+    position: fixed;
+    top: 50vh;
+    left: 25vw;
+    transform: translateY(-50%);
+}
+
+.mdpNouveau {
+    width: 30vw;
+    height: 8vh;
+    bottom: 35vh;
+    left: 40vw;
+    position: relative;
+}
+
+.buttonTitleMDP button:hover {
+    background-color: transparent;
+}
+
+.buttonTitleMDP h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(196, 194, 194);
+}
+
+.mdpNouveauConfirmer {
+    width: 30vw;
+    height: 8vh;
+    bottom: 30vh;
+    left: 40vw;
+    position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
+}
+
+.buttonEnregistrer button {
+    background-color: rgba(6, 153, 191, 0.31);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.buttonEnregistrer {
+    bottom : 20vh;
+    left: 70vw;
+    position: relative;
+}
+
+.buttonEnregistrer span {
+    color: white;
+}
+
+.txtMdp {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(196, 194, 194);
+    bottom: 68vh;
+    left: 40vw;
+    position: relative;
+    cursor: pointer;
+}
+
+input {
+    color: rgb(196, 194, 194);
+}
+
+a {
+    color: rgb(196, 194, 194);
+    text-decoration: none;
+}
