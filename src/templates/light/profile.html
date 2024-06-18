@@ -229,7 +229,11 @@
                 <a href="/profile/@{{$user.Username}}">
                 <button>
                     <span>
+                        {{ if $user.PfpChanged }}
+                        <img src="../{{$user.Pfp}}" width="60" height="60">
+                        {{ else }}
                         <img src="{{$user.Pfp}}" width="60" height="60">
+                        {{ end }}                        
                         @{{.Username}}
                     </span>
                 </button>
@@ -252,7 +256,11 @@
         <div class="bodycode">
             <!-- ici -->
             <div class="backFond">
+                {{ if .UserTarget.PfpChanged }}
+                <img src="../{{.UserTarget.Pfp}}" width="60" height="60">
+                {{ else }}
                 <img src="{{.UserTarget.Pfp}}" width="60" height="60">
+                {{ end }}                
                 <div class="Pseudo">
                     <h1>@{{.UserTarget.Username}}</h1>
                 </div>
@@ -331,7 +339,13 @@
                                 </button>
                             </div>
                         </div>
-                        <a href="/profile/@{{.Author}}"><img src="{{.User_pfp}}" width="90" height="90" style="border-radius: 60px;"></a>
+                        <a href="/profile/@{{.Author}}">
+                        {{ if .PfpChanged }}
+                        <img src="../{{.User_pfp}}" width="90" height="90" style="border-radius: 60px;">
+                        {{ else }}
+                        <img src="{{.User_pfp}}" width="90" height="90" style="border-radius: 60px;">
+                        {{ end }}
+                        </a>
                         <div class="header-info">
                             <span class="post-author"><a href="/profile/@{{.Author}}">@{{.Author}}</a></span><span class="post-date">{{.Date}}</span>
                         </div>

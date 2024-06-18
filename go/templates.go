@@ -40,6 +40,9 @@ var ReglageAssist = template.Must(template.ParseFiles("./src/templates/light/ass
 var ReglageInfo = template.Must(template.ParseFiles("./src/templates/light/reglageInfoCompte.html"))
 var ReglageChangePassword = template.Must(template.ParseFiles("./src/templates/light/reglageChangerDeMotDePasse.html"))
 var ReglageLogged = template.Must(template.ParseFiles("./src/templates/light/reglageLogged.html"))
+var ReglageChangeUsername = template.Must(template.ParseFiles("./src/templates/light/reglageChangerDeUsername.html"))
+var ReglageChangeEmail = template.Must(template.ParseFiles("./src/templates/light/reglageChangerDeEmail.html"))
+var ReglageChangePfp = template.Must(template.ParseFiles("./src/templates/light/reglageChangerDePfp.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -79,3 +82,6 @@ var DarkReglageAssist = template.Must(template.ParseFiles("./src/templates/dark/
 var DarkReglageInfo = template.Must(template.ParseFiles("./src/templates/dark/reglageInfoCompte.html"))
 var DarkReglageChangePassword = template.Must(template.ParseFiles("./src/templates/dark/reglageChangerDeMotDePasse.html"))
 var DarkReglageLogged = template.Must(template.ParseFiles("./src/templates/dark/reglageLogged.html"))
+var DarkReglageChangeUsername = template.Must(template.ParseFiles("./src/templates/dark/reglageChangerDeUsername.html"))
+var DarkReglageChangeEmail = template.Must(template.ParseFiles("./src/templates/dark/reglageChangerDeEmail.html"))
+var DarkReglageChangePfp = template.Must(template.ParseFiles("./src/templates/dark/reglageChangerDePfp.html"))

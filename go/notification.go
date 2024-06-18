@@ -19,6 +19,7 @@ type Notification struct {
 	Checked         bool
 	Reason          string
 	User_pfp        string
+	PfpChanged      bool
 }
 
 func CreateNotification(Db *sql.DB, Notification Notification) error {
@@ -55,6 +56,10 @@ func GetNotifications(Db *sql.DB, User_id string) []Notification {
 		if err != nil {
 			fmt.Println("Error getting notifications:", err)
 		}
+		if GetAccountById(Db, Notification.User_id2).PfpChanged {
+			Notification.PfpChanged = true
+		}
+
 		Notification.User_pfp = GetAccountById(Db, Notification.User_id2).Pfp
 		Notification.User_id2 = GetAccountById(Db, Notification.User_id2).Username
 
@@ -70,6 +75,9 @@ func GetNotification(Db *sql.DB, Notification_id string) Notification {
 		&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
 	if err != nil {
 		fmt.Println("Error getting notification:", err)
+	}
+	if GetAccountById(Db, Notification.User_id2).PfpChanged {
+		Notification.PfpChanged = true
 	}
 	return Notification
 }
@@ -87,6 +95,9 @@ func GetUnreadNotifications(Db *sql.DB, User_id string) []Notification {
 			&Notification.User_id, &Notification.User_id2, &Notification.Date, &Notification.Checked, &Notification.Reason)
 		if err != nil {
 			fmt.Println("Error getting notifications:", err)
+		}
+		if GetAccountById(Db, Notification.User_id2).PfpChanged {
+			Notification.PfpChanged = true
 		}
 		Notifications = append(Notifications, Notification)
 	}
@@ -144,6 +155,9 @@ func GetNotifBySearch(Db *sql.DB, User_id string, Search string) []Notification 
 	for _, notif := range notifs {
 		user2 := GetAccountById(Db, notif.User_id2)
 		if strings.Contains(strings.ToLower(user2.Username), strings.ToLower(Search)) || strings.Contains(strings.ToLower(notif.Reason), strings.ToLower(Search)) {
+			if GetAccountById(Db, notif.User_id2).PfpChanged {
+				notif.PfpChanged = true
+			}
 			notifications = append(notifications, notif)
 		}
 	}

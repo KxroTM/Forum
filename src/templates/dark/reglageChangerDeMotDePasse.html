@@ -358,29 +358,34 @@
                 </button>
             </a>
         </div>
-        <div class="mdpActuel">
-            <input placeholder="Mot de passe actuelle" class="input" name="text" type="text">
-        </div>
-        <div class="lineSeparer">
-        </div>
-        <div class ="mdpNouveau">
-            <input placeholder="Nouveau mot de passe" class="input" name="text" type="text">
-        </div>
-        <div class = "mdpNouveauConfirmer">
-            <input placeholder="Confirmer le nouveau mot de passe" class="input" name="text" type="text">
-        </div>
-        <div class="buttonEnregistrer">
-            <button>
-                <span>
-                    Enregistrer
-                </span>
-            </button>
-        </div>
-        <a href="/forgot-password">
-            <div class="txtMdp">
-                <h6>Mot de passe oublié ?</h6>
+        <form method="post">
+            <div class="mdpActuel">
+                <input placeholder="Mot de passe actuelle" class="input" name="password" type="text">
             </div>
-        </a>
+            <div class="lineSeparer">
+            </div>
+            <div class ="mdpNouveau">
+                <input placeholder="Nouveau mot de passe" class="input" name="newpassword" type="text">
+            </div>
+            <div class = "mdpNouveauConfirmer">
+                <input placeholder="Confirmer le nouveau mot de passe" class="input" name="checkpassword" type="text">
+            </div>
+            <div class="Erreur">
+                <p>{{.Error}}</p>
+            </div>            
+            <div class="buttonEnregistrer">
+                <button type="submit">
+                    <span>
+                        Enregistrer
+                    </span>
+                </button>
+            </div>
+            <a href="/forgot-password">
+                <div class="txtMdp">
+                    <h6>Mot de passe oublié ?</h6>
+                </div>
+            </a>
+        </form>
     </body>
     <script src="../../style/scripts/accueil.js"></script>
 </html>

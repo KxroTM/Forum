@@ -4,6 +4,7 @@
     bottom: 57vh;
     left: 25vw;
     position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
 }
 
 .buttonTitleMDP button:hover {
@@ -14,13 +15,13 @@
     font-family: 'Inter', sans-serif;
     font-size: 20px;
     font-weight: 600;
-    color: rgb(196, 194, 194);
+    color: #000;
 }
 
 .mdpActuel{
     width: 30vw;
     height: 8vh;
-    bottom: 45vh;
+    bottom: 35vh;
     left: 40vw;
     position: relative;
 }
@@ -30,8 +31,10 @@
     height: 5vh;
     width: 30vw;
     padding: 10px;
-    border: 2px solid rgb(196, 194, 194);
+    /* text-align: center; */
+    border: 2px solid black;
     border-radius: 5px;
+    /* box-shadow: 3px 3px 2px rgb(249, 255, 85); */
   }
   
   .input:focus {
@@ -43,7 +46,7 @@
 .lineSeparer {
     width: 60vw;
     height: 1.5px;
-    background: rgba(6, 153, 191, 0.31);
+    background: #28974B;
     position: fixed;
     top: 50vh;
     left: 25vw;
@@ -56,6 +59,7 @@
     bottom: 35vh;
     left: 40vw;
     position: relative;
+    /* box-shadow: #000 0px 0px 0px 0.1em; */
 }
 
 .buttonTitleMDP button:hover {
@@ -66,7 +70,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 20px;
     font-weight: 600;
-    color: rgb(196, 194, 194);
+    color: #000;
 }
 
 .mdpNouveauConfirmer {
@@ -79,7 +83,7 @@
 }
 
 .buttonEnregistrer button {
-    background-color: rgba(6, 153, 191, 0.31);
+    background-color: #28974B;
     color: white;
     border: none;
     border-radius: 20px;
@@ -101,26 +105,17 @@
     font-family: 'Inter', sans-serif;
     font-size: 20px;
     font-weight: 600;
-    color: rgb(196, 194, 194);
+    color: #000;
     bottom: 68vh;
     left: 40vw;
     position: relative;
     cursor: pointer;
 }
 
-input {
-    color: rgb(196, 194, 194);
-}
-
-a {
-    color: rgb(196, 194, 194);
-    text-decoration: none;
-}
-
 .Erreur  {
-    color: white;
+    color: black;
     position: fixed;
-    bottom: 15vh;
+    bottom: 35vh;
     left: 36vw;
     width: 40vw;
     height: 5vh;
@@ -129,3 +124,24 @@ a {
     align-items: center;
     font-family: "roboto", sans-serif;
 }
+        .form-group {
+            margin-bottom: 15px;
+            font-family: "roboto", sans-serif;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(40, 151, 75, 0.21);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }

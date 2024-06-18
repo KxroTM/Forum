@@ -20,7 +20,7 @@
 .mdpActuel{
     width: 30vw;
     height: 8vh;
-    bottom: 45vh;
+    bottom: 35vh;
     left: 40vw;
     position: relative;
 }
@@ -120,7 +120,7 @@ a {
 .Erreur  {
     color: white;
     position: fixed;
-    bottom: 15vh;
+    bottom: 35vh;
     left: 36vw;
     width: 40vw;
     height: 5vh;
@@ -129,3 +129,25 @@ a {
     align-items: center;
     font-family: "roboto", sans-serif;
 }
+
+        .form-group {
+            margin-bottom: 15px;
+            font-family: "roboto", sans-serif;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(6, 153, 191, 0.31);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }

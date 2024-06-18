@@ -10,25 +10,26 @@ import (
 )
 
 type Post struct {
-	Posts_id  string
-	User_id   string
-	User_pfp  string
-	Categorie string
-	Title     string
-	Text      string
-	Like      int
-	Liker     string
-	Dislike   int
-	Disliker  string
-	Retweet   int
-	Retweeter string
-	Date      string
-	Report    int
-	Author    string
-	Links     string
-	IsLike    bool
-	IsDislike bool
-	IsRetweet bool
+	Posts_id   string
+	User_id    string
+	User_pfp   string
+	Categorie  string
+	Title      string
+	Text       string
+	Like       int
+	Liker      string
+	Dislike    int
+	Disliker   string
+	Retweet    int
+	Retweeter  string
+	Date       string
+	Report     int
+	Author     string
+	Links      string
+	IsLike     bool
+	IsDislike  bool
+	IsRetweet  bool
+	PfpChanged bool
 }
 
 var PostSession Post
@@ -62,6 +63,10 @@ func GetAllPosts(db *sql.DB) []Post {
 			} else {
 				post.IsRetweet = false
 			}
+		}
+		user := GetAccountById(db, post.User_id)
+		if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+			post.PfpChanged = true
 		}
 		posts = append(posts, post)
 	}
@@ -156,6 +161,10 @@ func GetPost(db *sql.DB, post_id string) (Post, error) {
 			post.IsRetweet = false
 		}
 	}
+	user := GetAccountById(db, post.User_id)
+	if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+		post.PfpChanged = true
+	}
 	return post, nil
 }
 
@@ -200,6 +209,10 @@ func GetAllPostsByUser(db *sql.DB, user_id string) ([]Post, error) {
 			} else {
 				post.IsRetweet = false
 			}
+		}
+		user := GetAccountById(db, post.User_id)
+		if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+			post.PfpChanged = true
 		}
 		posts = append(posts, post)
 	}
@@ -255,6 +268,10 @@ func GetAllPostsByCategorie(db *sql.DB, categorie string) ([]Post, error) {
 				post.IsRetweet = false
 			}
 		}
+		user := GetAccountById(db, post.User_id)
+		if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+			post.PfpChanged = true
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -294,6 +311,10 @@ func GetAllPostsByLikeCount(db *sql.DB) ([]Post, error) {
 				post.IsRetweet = false
 			}
 		}
+		user := GetAccountById(db, post.User_id)
+		if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+			post.PfpChanged = true
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -327,6 +348,10 @@ func GetAllPostsByRetweet(db *sql.DB, username string) []Post {
 					post.IsRetweet = false
 				}
 			}
+			user := GetAccountById(db, post.User_id)
+			if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+				post.PfpChanged = true
+			}
 			posts = append(posts, post)
 		}
 	}
@@ -357,6 +382,10 @@ func GetAllPostsByLike(db *sql.DB, username string) []Post {
 				} else {
 					post.IsRetweet = false
 				}
+			}
+			user := GetAccountById(db, post.User_id)
+			if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+				post.PfpChanged = true
 			}
 			posts = append(posts, post)
 		}
@@ -516,6 +545,10 @@ func GetPostByReport(db *sql.DB) ([]Post, error) {
 				post.IsRetweet = false
 			}
 		}
+		user := GetAccountById(db, post.User_id)
+		if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+			post.PfpChanged = true
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -550,6 +583,10 @@ func GetPostByFollowing(db *sql.DB, user_id string) []Post {
 					post.IsRetweet = false
 				}
 			}
+			user := GetAccountById(db, post.User_id)
+			if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+				post.PfpChanged = true
+			}
 			posts = append(posts, post)
 		}
 	}
@@ -579,6 +616,10 @@ func GetPostBySearch(db *sql.DB, search string, from []Post) []Post {
 				} else {
 					post.IsRetweet = false
 				}
+			}
+			user := GetAccountById(db, post.User_id)
+			if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+				post.PfpChanged = true
 			}
 			posts = append(posts, post)
 		}

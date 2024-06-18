@@ -112,3 +112,16 @@
     position: relative;
     cursor: pointer;
 }
+
+.Erreur  {
+    color: black;
+    position: fixed;
+    bottom: 15vh;
+    left: 36vw;
+    width: 40vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "roboto", sans-serif;
+}

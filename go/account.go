@@ -43,6 +43,7 @@ type User struct {
 	IsMyAccount   bool
 	ImFollowed    bool
 	HeFollowed    bool
+	PfpChanged    bool
 }
 
 var UserSession User
@@ -233,6 +234,9 @@ func LoginUser(db *sql.DB, email, password string) (bool, error) {
 		return false, ErrBadPassword
 	}
 
+	if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+		user.PfpChanged = true
+	}
 	UserSession = user
 
 	return true, nil
@@ -275,6 +279,10 @@ func GetAccount(db *sql.DB, email string) User {
 		}
 		return User{}
 	}
+
+	if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+		user.PfpChanged = true
+	}
 	return user
 }
 
@@ -288,6 +296,9 @@ func GetAccountById(db *sql.DB, user_id string) User {
 			return User{}
 		}
 		return User{}
+	}
+	if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+		user.PfpChanged = true
 	}
 	return user
 }
@@ -314,7 +325,9 @@ func GetAccountByUsername(db *sql.DB, username string) User {
 	if strings.Contains(UserSession.FollowerList, user.Username) {
 		user.HeFollowed = true
 	}
-
+	if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+		user.PfpChanged = true
+	}
 	return user
 }
 
@@ -460,19 +473,8 @@ func UpdateDate(db *sql.DB, user_id string) {
 	db.Exec(`UPDATE users SET updated_at = ? WHERE UUID = ?`, time, user_id)
 }
 
-func UpdateProfilePicture(db *sql.DB, user_id string, pfp string) bool {
-	if UserSession.Role == "user" && isProfilePictureNotAGif(pfp) {
-		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		return true
-	} else if UserSession.Role != "user" {
-		db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
-		return true
-	}
-	return false
-}
-
 func isProfilePictureNotAGif(pfp string) bool {
-	return !strings.HasSuffix(strings.ToLower(pfp), ".gif") && !strings.HasSuffix(strings.ToLower(pfp), ".apng")
+	return !strings.HasSuffix(strings.ToLower(pfp), ".gif") && !strings.HasSuffix(strings.ToLower(pfp), ".apng") //return true if it's not a gif
 }
 
 func UpdateBio(db *sql.DB, user_id string, bio string) {
@@ -576,6 +578,9 @@ func GetAllUsers(db *sql.DB) []User {
 		if err := rows.Scan(&user.User_id, &user.Role, &user.Username, &user.Email, &user.Password, &user.CreationDate, &user.UpdateDate, &user.Pfp, &user.Bio, &user.Links, &user.CategorieSub, &user.Follower, &user.FollowerList, &user.Following, &user.FollowingList); err != nil {
 			return nil
 		}
+		if !strings.Contains(user.Pfp, "../../style/media/default_avatar/") {
+			user.PfpChanged = true
+		}
 		users = append(users, user)
 	}
 
@@ -616,4 +621,16 @@ func generateStrongPassword() string {
 	password := base64.URLEncoding.EncodeToString(randomBytes)
 	password = password[:length]
 	return password
+}
+
+func UpdateEmail(db *sql.DB, user_id, email string) {
+	db.Exec(`UPDATE users SET email = ? WHERE UUID = ?`, email, user_id)
+}
+
+func UpdatePfp(db *sql.DB, user_id, pfp string) {
+	db.Exec(`UPDATE users SET profilePicture = ? WHERE UUID = ?`, pfp, user_id)
+
+	// update egalement dans la table post
+
+	db.Exec(`UPDATE posts SET user_pfp = ? WHERE UUID = ?`, pfp, user_id)
 }

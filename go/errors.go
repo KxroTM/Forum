@@ -23,3 +23,5 @@ var ErrSpaceInUsername = errors.New("Le pseudo ne doit pas contenir d'espace ou 
 var ErrSpaceInPassword = errors.New("Le mot de passe ne doit pas contenir d'espace")
 var ErrBadTypeImg = errors.New("Type d'image invalide")
 var ErrBadSizeImg = errors.New("Taille de l'image invalide. La taille maximale est de 20Mo")
+var ErrEmailAlreadyUsed = errors.New("Email déjà utilisé")
+var ErrNotPremium = errors.New("Vous n'êtes pas premium, vous ne pouvez pas utilisé d'image GIF")

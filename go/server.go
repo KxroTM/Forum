@@ -1450,6 +1450,21 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
 			return
 		} else {
+			if r.Method == http.MethodPost {
+				currentPassword := r.FormValue("password")
+				newPassword := r.FormValue("newpassword")
+				checkPassword := r.FormValue("checkpassword")
+				if UserSession.Password == hashPasswordSHA256(currentPassword) {
+					if newPassword == checkPassword {
+						ChangePassword(Db, UserSession.User_id, newPassword)
+						http.Redirect(w, r, "/parametres?profile", http.StatusSeeOther)
+					} else {
+						AllData.Error = ErrInvalidPasswordCheck
+					}
+				} else {
+					AllData.Error = ErrBadPassword
+				}
+			}
 			if AllData.ColorMode == "light" {
 				err := ReglageChangePassword.ExecuteTemplate(w, "reglageChangerDeMotDePasse.html", AllData)
 				if err != nil {
@@ -1458,6 +1473,157 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 				return
 			} else {
 				err := DarkReglageChangePassword.ExecuteTemplate(w, "reglageChangerDeMotDePasse.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+		}
+	} else if settings == "profile/change-pfp" {
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+			return
+		} else {
+			if r.Method == http.MethodPost {
+
+				file, fileHeader, err := r.FormFile("pfp")
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				defer file.Close()
+
+				if !strings.HasPrefix(fileHeader.Header.Get("Content-Type"), "image/") {
+					AllData.Error = ErrBadTypeImg
+				}
+
+				fileBytes, err := io.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				fileName := filepath.Base(fileHeader.Filename)
+				destination := "./uploads/" + fileName
+
+				if _, err := os.Stat(destination); err == nil {
+					ext := filepath.Ext(fileName)
+					fileNameWithoutExt := fileName[:len(fileName)-len(ext)]
+					i := 1
+					for {
+						newFileName := fmt.Sprintf("%s_%d%s", fileNameWithoutExt, i, ext)
+						newDestination := filepath.Join("./uploads/", newFileName)
+						_, err := os.Stat(newDestination)
+						if os.IsNotExist(err) {
+							destination = newDestination
+							break
+						}
+						i++
+					}
+				}
+
+				err = os.WriteFile(destination, fileBytes, 0644)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				destination = strings.Replace(destination, "\\", "/", -1)
+
+				if UserSession.Role == "admin" {
+					UpdatePfp(Db, UserSession.User_id, destination)
+					http.Redirect(w, r, "/parametres?profile/account", http.StatusSeeOther)
+				} else if UserSession.Role != "premium" {
+					if !isProfilePictureNotAGif(destination) {
+						AllData.Error = ErrNotPremium
+					} else {
+						UpdatePfp(Db, UserSession.User_id, destination)
+						http.Redirect(w, r, "/parametres?profile/account", http.StatusSeeOther)
+					}
+				} else {
+					UpdatePfp(Db, UserSession.User_id, destination)
+					http.Redirect(w, r, "/parametres?profile/account", http.StatusSeeOther)
+				}
+
+			}
+			if AllData.ColorMode == "light" {
+				err := ReglageChangePfp.ExecuteTemplate(w, "reglageChangerDePfp.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglageChangePfp.ExecuteTemplate(w, "reglageChangerDePfp.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+		}
+	} else if settings == "profile/change-username" {
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+			return
+		} else {
+			if r.Method == http.MethodPost {
+				newUsername := r.FormValue("username")
+				if newUsername != "" {
+					if strings.Contains(newUsername, " ") || strings.Contains(newUsername, "-") {
+						AllData.Error = ErrSpaceInUsername
+					} else if !IsUsernameValid(newUsername) {
+						AllData.Error = ErrInvalidPseudo
+					} else if !isUsernameAvailable(Db, newUsername) {
+						AllData.Error = ErrPseudoAlreadyUsed
+					} else {
+						ChangeUsername(Db, UserSession.User_id, newUsername)
+						http.Redirect(w, r, "/parametres?profile/account", http.StatusSeeOther)
+					}
+				} else {
+					AllData.Error = ErrEmptyFieldPseudo
+				}
+			}
+			if AllData.ColorMode == "light" {
+				err := ReglageChangeUsername.ExecuteTemplate(w, "reglageChangerDeUsername.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglageChangeUsername.ExecuteTemplate(w, "reglageChangerDeUsername.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+		}
+	} else if settings == "profile/change-email" {
+		if UserSession.Email == "" {
+			http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+			return
+		} else {
+			if r.Method == http.MethodPost {
+				newEmail := r.FormValue("email")
+				if newEmail != "" {
+					if !IsEmailValid(newEmail) {
+						AllData.Error = ErrInvalidEmail
+					} else if !isEmailAvailable(Db, newEmail) {
+						AllData.Error = ErrEmailAlreadyUsed
+					} else {
+						UpdateEmail(Db, UserSession.User_id, newEmail)
+						http.Redirect(w, r, "/parametres?profile/account", http.StatusSeeOther)
+					}
+				} else {
+					AllData.Error = ErrEmptyFieldEmail
+				}
+			}
+			if AllData.ColorMode == "light" {
+				err := ReglageChangeEmail.ExecuteTemplate(w, "reglageChangerDeEmail.html", AllData)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			} else {
+				err := DarkReglageChangeEmail.ExecuteTemplate(w, "reglageChangerDeEmail.html", AllData)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
