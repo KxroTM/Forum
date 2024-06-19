@@ -45,7 +45,7 @@ var ReglageChangeEmail = template.Must(template.ParseFiles("./src/templates/ligh
 var ReglageChangePfp = template.Must(template.ParseFiles("./src/templates/light/reglageChangerDePfp.html"))
 var Users = template.Must(template.ParseFiles("./src/templates/light/users.html"))
 var CreateComment = template.Must(template.ParseFiles("./src/templates/light/createcomment.html"))
-var Categories = template.Must(template.ParseFiles("./src/templates/light/voirtout.html"))
+var Categories = template.Must(template.ParseFiles("./src/templates/light/voirTout.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -90,4 +90,4 @@ var DarkReglageChangeEmail = template.Must(template.ParseFiles("./src/templates/
 var DarkReglageChangePfp = template.Must(template.ParseFiles("./src/templates/dark/reglageChangerDePfp.html"))
 var DarkUsers = template.Must(template.ParseFiles("./src/templates/dark/users.html"))
 var DarkCreateComment = template.Must(template.ParseFiles("./src/templates/dark/createcomment.html"))
-var DarkCategories = template.Must(template.ParseFiles("./src/templates/dark/voirtout.html"))
+var DarkCategories = template.Must(template.ParseFiles("./src/templates/dark/voirTout.html"))

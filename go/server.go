@@ -1725,12 +1725,12 @@ func CagoriesPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 	if AllData.ColorMode == "light" {
-		err = Categories.ExecuteTemplate(w, "voirtout.html", AllData)
+		err = Categories.ExecuteTemplate(w, "voirTout.html", AllData)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		err := DarkCategories.ExecuteTemplate(w, "voirtout.html", AllData)
+		err := DarkCategories.ExecuteTemplate(w, "voirTout.html", AllData)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
