@@ -62,3 +62,30 @@ features-list {
     bottom: 0.5vh;
     left: 1vw;
 }
+
+body {
+    background-color:#FFF;
+} 
+
+button {
+    border: 0px solid ;
+    background-color: #FFF;
+    border-radius: 0.9em;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+    cursor: pointer;
+}
+   
+button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-weight: 600;
+}
+   
+button:hover {
+  background-color:rgba(40, 151, 75, 0.21);
+}
+
