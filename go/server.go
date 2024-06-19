@@ -423,6 +423,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	AllData.AllComments = GetCommentByPostId(Db, id)
 
 	if AllData.Post == (Post{}) {
 		if AllData.ColorMode == "light" {
