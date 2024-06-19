@@ -80,3 +80,23 @@ func DeleteCategory(db *sql.DB, id string) bool {
 	_, err := db.Exec("DELETE FROM categories WHERE category_id = ?", id)
 	return err == nil
 }
+
+func GetFirst5Categories(db *sql.DB) []Category {
+	rows, err := db.Query("SELECT * FROM categories LIMIT 5")
+	if err != nil {
+		return nil
+	}
+	defer rows.Close()
+
+	var categories []Category
+
+	for rows.Next() {
+		var category Category
+		rows.Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
+		categories = append(categories, category)
+	}
+	if err := rows.Err(); err != nil {
+		return nil
+	}
+	return categories
+}

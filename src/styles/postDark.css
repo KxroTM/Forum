@@ -475,3 +475,45 @@ a {
 .create-comment button{
   background-color: rgba(6, 153, 191, 0.31);
 }
+
+.commentairepost {
+  width: 40vw;
+  color: white;
+  font-family: "roboto", sans-serif;
+}
+
+.commentairepost .post-header {
+ position: relative;
+  top: 6vh;
+} 
+
+.commentairepost .post-header img{
+ position: relative;
+  top: -1vh;
+} 
+
+.commentairepost .post-content {
+  position: relative;
+  bottom: 5vh;
+}
+
+.commentairepost p {
+  width: 30vw;
+}
+
+.commentairepost .post-footer{
+  position: relative;
+  bottom: 5vh;
+  margin-bottom: -5vh;
+}
+
+.commentairepost .buttonDislike {
+  position: relative;
+  bottom: 1.8vh;
+  right: 15vw;
+}
+
+.commentairepost .nbDislike {
+  position: relative;
+  right:15vw;
+}

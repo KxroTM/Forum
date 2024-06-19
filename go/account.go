@@ -66,8 +66,9 @@ func GetAllDatas(r *http.Request) DataStruct {
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),
 		Categorie:     Category{},
-		AllCategories: GetAllCategories(Db),
+		AllCategories: GetFirst5Categories(Db),
 		ColorMode:     Color,
+		NbNotif:       GetNumberAllNotifsUncheck(Db, UserSession.User_id),
 	}
 }
 
