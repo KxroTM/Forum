@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="icon" href="../style/media/icon.png">
+        <link rel="stylesheet" type="text/css" href="../../style/voirToutDark.css"/>
+        <link rel="stylesheet" type="text/css" href="../../style/navbarDark.css"/>
+        <link rel="stylesheet" type="text/css" href="../../style/leftbarDark.css"/>
+        <link rel="stylesheet" type="text/css" href="../../style/rightbarDark.css"/>
+        <link rel="stylesheet" type="text/css" href="../../style/bodycodeDark.css"/>
+        <meta charset="UTF-8">
+        <title>Catégories</title>
+    </head>
+    <body>
+        <div class="navbar">
+            <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
+            <form method="post">
+                <div class="searchBar">
+                    <img src="../../style/img/loupeDark.png" width="8%">
+                    <input type="text" placeholder="Rechercher..." name="recherche">
+                    <button type="submit">Rechercher</button>
+                </div>
+            </form>
+            <div class="buttonAddPost">
+                <a href="/connexion">
+                <button>
+                    <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path></svg> Créer un post
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="buttonNotification">
+                <button onclick="toggleNotif()">
+                    <span> 
+                        <img src ="../../style/img/clocheDark.png" width="24" height="24" alt="Notification Icon">
+                    </span>
+                </button>
+            </div>
+            <div class ="buttonConnecter">
+                <a href="/connexion">
+                <button>
+                    <span>
+                        Se connecter
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="line1"></div>
+        </div>
+        <div class="leftbar">
+            <div class="line2"></div>
+            <div class="buttonAccueil">
+                <a href="/accueil">
+                <button style="background-color: rgba(40, 151, 75, 0.21);">
+                    <span>
+                        <img src ="../../style/img/homeDark.png" width="24" height="24">
+                        Accueil
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="buttonPopulaire">
+                <a href="/populaire"> 
+                <button>
+                    <span>
+                        <img src="../../style/img/popularDark.png" width="24" height="24">
+                        Populaire
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="buttonPosts">
+                <a href="/posts">
+                <button>
+                    <span>
+                        <img src="../../style/img/postsDark.png" width="24" height="24">
+                        Posts
+                    </span>
+                </button>
+                </a>
+            </div>
+            <div class="line4">
+                <div class="catégories">
+                {{ range .AllCategories }}
+                    <a href="/categorie?id={{.Category_id}}">
+                    <button>
+                        <span>
+                            {{.Name}}
+                        </span>
+                    </button>
+                    </a>
+                {{ end }}
+                </div>
+                <div class ="buttonVoirToutCategorie">
+                    <a href="/categories">
+                    <button>
+                        <span>
+                            Voir tout
+                        </span>
+                    </button>
+                    </a>
+                </div>
+            </div>
+            <div class="line5">
+                <div class="buttonReglage">
+                    <button onclick="reglageToggle()">
+                        <span>
+                            <img src="../../style/img/engrenageDark.png" width="30" height="20">
+                            Réglages
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="rightbar">
+            <div class="line3">
+                <div class="users">
+                <h3>Utilisateurs recommandés :</h3>
+                {{ range $i, $user := .RecommendedUser.RecommendedUsers }}
+                    <a href="/profile/@{{$user.Username}}">
+                    <button>
+                        <span>
+                            <img src="{{$user.Pfp}}" width="60" height="60">
+                            @{{.Username}}
+                        </span>
+                    </button>
+                    </a>
+                    <p>{{ index $.RecommendedUser.Reason $i }}</p>
+                {{ end }}
+                </div>
+                <div class ="buttonVoirTout">
+                    <a href="/utilisateurs">
+                    <button>
+                        <span>
+                            Voir tout
+                        </span>
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="bodycode">
+            <div class ="bodyBox">
+                <div class="catégorieBox"> 
+                </div>
+                <div class ="titleCategorie">
+                    <h5><strong>Titre Catégorie</strong></h5>
+                </div>
+                <ul class="features-list">
+                    <li>Nombre de post&nbsp;:&nbsp;</li>
+                    <li>Abbonés&nbsp;:&nbsp;</li>
+                    </ul>
+            </div>
+        </div>
+    </body>

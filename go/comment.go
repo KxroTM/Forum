@@ -2,6 +2,9 @@ package forum
 
 import (
 	"database/sql"
+	"time"
+
+	"github.com/gofrs/uuid"
 )
 
 type Comment struct {
@@ -64,4 +67,36 @@ func GetCommentByPostId(db *sql.DB, posts_id string) []Comment {
 		comments = append(comments, comment)
 	}
 	return comments
+}
+
+func CreateCommentaire(db *sql.DB, commentaire, post_id, user_id string) {
+	var Commentaire Comment
+	currentTime := time.Now()
+	date := currentTime.Format("02-01-2006 15:04")
+
+	uuid, err := uuid.NewV4()
+	if err != nil {
+		panic(err)
+	}
+
+	user := GetAccountById(db, user_id)
+
+	Commentaire = Comment{
+		Comment_id: uuid.String(),
+		Posts_id:   post_id,
+		User_id:    user_id,
+		Text:       commentaire,
+		Date:       date,
+		Like:       0,
+		Dislike:    0,
+		Report:     0,
+		Liker:      "",
+		Disliker:   "",
+		User_pfp:   user.Pfp,
+	}
+
+	_, err = db.Exec("INSERT INTO comments (comment_id, post_id, user_id, text, date, like, dislike, report, liker, disliker, user_pfp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Commentaire.Comment_id, Commentaire.Posts_id, Commentaire.User_id, Commentaire.Text, Commentaire.Date, Commentaire.Like, Commentaire.Dislike, Commentaire.Report, Commentaire.Liker, Commentaire.Disliker, Commentaire.User_pfp)
+	if err != nil {
+		panic(err)
+	}
 }
