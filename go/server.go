@@ -1702,6 +1702,19 @@ func CreateCommentPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 	AllData.RecommendedAllUsers = RealRecommendUsers(Db, UserSession.User_id)
+
+	AllData.Post, _ = GetPost(Db, r.URL.RawQuery)
+
+	if r.Method == http.MethodPost {
+		comment := r.FormValue("text")
+		if comment == "" {
+
+		} else {
+			// CreateCommentaire(Db, comment, AllData.Post.Posts_id, UserSession.User_id)
+			http.Redirect(w, r, "/post/id="+AllData.Post.Posts_id, http.StatusSeeOther)
+		}
+	}
+
 	if AllData.ColorMode == "light" {
 		err = CreateComment.ExecuteTemplate(w, "createcomment.html", AllData)
 		if err != nil {
