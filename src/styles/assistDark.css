@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap');
+.mail {
+    width: 25vw;
+    height: _vh;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
+    bottom: 50vh;
+    left: 42vw;
+    position: relative;
+}
+
+.mail h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem;
+    font-weight: bold;
+    
+}
+
+.txtInfo {
+    width: 40vw;
+    height: 10vh;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
+    bottom: 60vh;
+    left: 35vw;
+    position: relative;
+}
+
+.txtInfo h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem;
+}
+
+.barre {
+    margin-left: 2vw;
+    
+}
