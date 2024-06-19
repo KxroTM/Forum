@@ -1,0 +1,51 @@
+.bodycode {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 75vw;
+    height: 75vh;
+    top: 25vh;
+    left: 10vw;
+    margin-top: 2vh;
+  }
+
+  .golangPost{
+    min-height: 30vh;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Gill Sans", sans-serif;
+    margin-bottom: 50vh;
+    z-index: 0;
+  }
+
+.buttonOnglet {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 0vw;
+  height: 0vh;
+  margin-top: 2vh;
+  left: 61vw;
+}
+
+.buttonOnglet button {
+  background-color: rgba(40, 151, 75, 0.21);
+  color: white;
+  padding: 0.5em 1em;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+.userss button {
+  width: 30vw;
+}
+
+.userss {
+  width: 30vw;
+  margin-bottom: 3vh;
+}

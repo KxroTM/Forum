@@ -166,3 +166,52 @@ func containsUser(accounts []User, account User) bool {
 	}
 	return false
 }
+
+func RealRecommendUsers(db *sql.DB, user_id string) RecommendedUser {
+	user := GetAccountById(db, user_id)
+
+	var accounts RecommendedUser
+	var AllUsers = GetAllUsers(db)
+
+	if len(user.FollowingList) != 0 {
+		followings := strings.Split(user.FollowingList, ",")
+		for i := 0; i < len(followings)-1; i++ {
+			user2 := GetAccountByUsername(db, followings[i])
+			user3 := GetAccountByUsername(db, followings[i+1])
+			followings2 := strings.Split(user2.FollowingList, ",")
+			followings3 := strings.Split(user3.FollowingList, ",")
+			for j := 0; j < len(followings2); j++ {
+				for k := 0; k < len(followings3); k++ {
+					if followings2[j] == followings3[k] {
+						usertemp := GetAccountByUsername(db, followings2[j])
+						if !containsUser(accounts.RecommendedUsers, usertemp) && usertemp != user && !strings.Contains(user.FollowingList, usertemp.Username) {
+							accounts.RecommendedUsers = append(accounts.RecommendedUsers, usertemp)
+							accounts.Reason = append(accounts.Reason, "Amis en commun")
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if len(AllUsers) < 5 {
+		randomUsers := rand.Perm(len(AllUsers))[:len(AllUsers)]
+		for _, i := range randomUsers {
+			randomUser := AllUsers[i]
+			if !containsUser(accounts.RecommendedUsers, randomUser) && randomUser.User_id != user_id {
+				accounts.RecommendedUsers = append(accounts.RecommendedUsers, randomUser)
+				accounts.Reason = append(accounts.Reason, "Suggérer par le site")
+			}
+		}
+	} else {
+		randomUsers := rand.Perm(len(AllUsers))[:5]
+		for _, i := range randomUsers {
+			randomUser := AllUsers[i]
+			if !containsUser(accounts.RecommendedUsers, randomUser) && randomUser.User_id != user_id {
+				accounts.RecommendedUsers = append(accounts.RecommendedUsers, randomUser)
+				accounts.Reason = append(accounts.Reason, "Suggérer par le site")
+			}
+		}
+	}
+	return accounts
+}

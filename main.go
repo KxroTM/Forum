@@ -46,6 +46,7 @@ func main() {
 	http.HandleFunc("/no-mail-found", forum.NoMailFoundPage)
 	http.HandleFunc("/lien-expire", forum.ExpiredLinkPage)
 	http.HandleFunc("/parametres", forum.ReglagePage)
+	http.HandleFunc("/utilisateurs", forum.UsersPage)
 
 	err := openLink()
 	if err != nil {

@@ -15,20 +15,21 @@ var ResetPasswordMap = make(map[string]string)
 var URL string
 
 type DataStruct struct {
-	User             User
-	UserTarget       User
-	RecommendedUser  RecommendedUser
-	AllUsers         []User
-	Post             Post
-	AllPosts         []Post
-	Comment          Comment
-	AllComments      []Comment
-	Notification     Notification
-	AllNotifications []Notification
-	AllCategories    []Category
-	Categorie        Category
-	Error            error
-	ColorMode        string
+	User                User
+	UserTarget          User
+	RecommendedUser     RecommendedUser
+	RecommendedAllUsers RecommendedUser
+	AllUsers            []User
+	Post                Post
+	AllPosts            []Post
+	Comment             Comment
+	AllComments         []Comment
+	Notification        Notification
+	AllNotifications    []Notification
+	AllCategories       []Category
+	Categorie           Category
+	Error               error
+	ColorMode           string
 }
 
 type RecommendedUser struct {
@@ -1656,6 +1657,35 @@ func ReglagePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+		}
+	}
+}
+
+func UsersPage(w http.ResponseWriter, r *http.Request) {
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+	AllData.RecommendedAllUsers = RealRecommendUsers(Db, UserSession.User_id)
+
+	if AllData.ColorMode == "light" {
+		err = Users.ExecuteTemplate(w, "users.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkUsers.ExecuteTemplate(w, "users.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 }

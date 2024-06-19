@@ -597,13 +597,14 @@ func GetAllDatas(r *http.Request) DataStruct {
 	Color := data.User.ColorMode
 
 	return DataStruct{
-		User:            UserSession,
-		UserTarget:      User{},
-		AllUsers:        GetAllUsers(Db),
-		RecommendedUser: RecommendedUser{},
-		Post:            Post{},
-		AllPosts:        GetAllPosts(Db),
-		Comment:         Comment{},
+		User:                UserSession,
+		UserTarget:          User{},
+		AllUsers:            GetAllUsers(Db),
+		RecommendedUser:     RecommendedUser{},
+		RecommendedAllUsers: RecommendedUser{},
+		Post:                Post{},
+		AllPosts:            GetAllPosts(Db),
+		Comment:             Comment{},
 		// AllComments:      GetAllComments(),
 		Notification: Notification{},
 		// AllNotifications: GetAllNotifications(),
