@@ -328,6 +328,37 @@
         <div class="bodycode">
             <!-- ici -->
             <div class="backFond">
+
+
+
+                {{ if eq .UserTarget.Role "verified" }}
+                <div class="verified">
+                    <img src="../../style/img/verified.png" title="Vérifié">
+                </div>
+                {{ end }}
+
+
+
+                {{ if eq .User.Role "admin" }}
+                <div class="moderation">
+                    <select name="moderation" id="moderation" alt="{{.UserTarget.User_id}}">
+                        <option hidden selected>Choisissez un role</option>
+                        <option value="moderator">Modérateur</option>
+                        <option value="verified">Vérifié</option>
+                        <option value="user">Utilisateur</option>
+                    </select>
+                </div>
+                {{ end }}
+                {{ if eq .User.Role "moderator" }}
+                <div class="moderation">
+                    <select name="moderation" id="moderation" alt="{{.UserTarget.User_id}}">
+                        <option hidden selected>Choisissez un role</option>
+                        <option value="verified">Vérifié</option>
+                        <option value="user">Utilisateur</option>
+                    </select>
+                </div>
+                {{ end }}
+
                 {{ if .UserTarget.PfpChanged }}
                 <img src="../{{.UserTarget.Pfp}}" width="60" height="60">
                 {{ else }}

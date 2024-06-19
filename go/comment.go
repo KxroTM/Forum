@@ -235,3 +235,10 @@ func GetAllPostByComments(db *sql.DB, comments []Comment) []Post {
 	}
 	return posts
 }
+
+func DeleteComment(db *sql.DB, comment_id string) {
+	_, err := db.Exec("DELETE FROM comments WHERE comment_id = ?", comment_id)
+	if err != nil {
+		panic(err)
+	}
+}

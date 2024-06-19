@@ -510,10 +510,20 @@ a {
 .commentairepost .buttonDislike {
   position: relative;
   bottom: 1.8vh;
-  right: 15vw;
+  right: 13vw;
 }
 
 .commentairepost .nbDislike {
   position: relative;
-  right:15vw;
+  right:13vw;
+}
+
+.SupprPost {
+  position: relative;
+  left: 28vw;
+  bottom: 0.5vh;
+}
+
+.commentairepost .SupprComment {
+  position: relative;
 }

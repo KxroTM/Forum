@@ -12,6 +12,7 @@ type Category struct {
 	Description string
 	Users       int
 	Image       string
+	NbPosts     int
 }
 
 func GetAllCategories(db *sql.DB) []Category {
@@ -26,6 +27,7 @@ func GetAllCategories(db *sql.DB) []Category {
 	for rows.Next() {
 		var category Category
 		rows.Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
+		category.NbPosts = GetNumberPostsByCategory(db, category.Category_id)
 		categories = append(categories, category)
 	}
 	if err := rows.Err(); err != nil {
@@ -63,6 +65,9 @@ func GetCategoryById(db *sql.DB, id string) Category {
 	if err := rows.Err(); err != nil {
 		return Category{}
 	}
+
+	category.NbPosts = GetNumberPostsByCategory(db, id)
+
 	return category
 }
 
@@ -93,10 +98,23 @@ func GetFirst5Categories(db *sql.DB) []Category {
 	for rows.Next() {
 		var category Category
 		rows.Scan(&category.Category_id, &category.Name, &category.Description, &category.Users, &category.Image)
+		category.NbPosts = GetNumberPostsByCategory(db, category.Category_id)
+
 		categories = append(categories, category)
 	}
 	if err := rows.Err(); err != nil {
 		return nil
 	}
+
 	return categories
+}
+
+func GetNumberPostsByCategory(db *sql.DB, id string) int {
+	query := "SELECT COUNT(*) FROM posts WHERE category_id = ?"
+	var count int
+	err := db.QueryRow(query, id).Scan(&count)
+	if err != nil {
+		return 0
+	}
+	return count
 }

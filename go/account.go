@@ -636,3 +636,7 @@ func UpdatePfp(db *sql.DB, user_id, pfp string) {
 
 	db.Exec(`UPDATE posts SET user_pfp = ? WHERE UUID = ?`, pfp, user_id)
 }
+
+func UpdateRole(db *sql.DB, user_id, role string) {
+	db.Exec(`UPDATE users SET role = ? WHERE UUID = ?`, role, user_id)
+}

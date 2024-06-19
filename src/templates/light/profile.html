@@ -256,6 +256,17 @@
         <div class="bodycode">
             <!-- ici -->
             <div class="backFond">
+
+
+
+                {{ if eq .UserTarget.Role "verified" }}
+                <div class="verified">
+                    <img src="../../style/img/verified.png" title="Vérifié">
+                </div>
+                {{ end }}
+
+
+
                 {{ if .UserTarget.PfpChanged }}
                 <img src="../{{.UserTarget.Pfp}}" width="60" height="60">
                 {{ else }}

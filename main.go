@@ -52,6 +52,10 @@ func main() {
 	http.HandleFunc("/likeComment", forum.LikeCommentLogique)
 	http.HandleFunc("/dislikeComment", forum.DislikeCommentLogique)
 	http.HandleFunc("/creer-une-categorie", forum.CreateCategoriePage)
+	http.HandleFunc("/deletePost", forum.DeletePostLogique)
+	http.HandleFunc("/deleteComment", forum.DeleteCommentLogique)
+	http.HandleFunc("/updateRole", forum.UpdateRoleLogique)
+	http.HandleFunc("/report-posts", forum.ReportsPage)
 
 	err := openLink()
 	if err != nil {

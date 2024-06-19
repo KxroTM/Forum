@@ -635,3 +635,23 @@ a {
 .following h1{
   margin-right: 0.5vw;
 }
+
+
+.verified img{
+  position: absolute;
+  left: 12vw;
+  top: 39.5vh;
+  border: none;
+  width: 4vw;
+  height: 8vh;
+}
+
+
+.moderation {
+  position: absolute;
+  left: 55vw;
+  top: 36vh;
+  display: flex;
+  flex-direction: row;
+  font-family: 'Roboto', sans-serif;
+}

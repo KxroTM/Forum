@@ -47,6 +47,7 @@ var Users = template.Must(template.ParseFiles("./src/templates/light/users.html"
 var CreateComment = template.Must(template.ParseFiles("./src/templates/light/createcomment.html"))
 var Categories = template.Must(template.ParseFiles("./src/templates/light/voirTout.html"))
 var CreateCategorie = template.Must(template.ParseFiles("./src/templates/light/createcategorie.html"))
+var ReportPostAdmin = template.Must(template.ParseFiles("./src/templates/light/reportPost.html"))
 
 // DARK MODE
 var DarkError = template.Must(template.ParseFiles("./src/templates/dark/error.html"))
@@ -93,3 +94,4 @@ var DarkUsers = template.Must(template.ParseFiles("./src/templates/dark/users.ht
 var DarkCreateComment = template.Must(template.ParseFiles("./src/templates/dark/createcomment.html"))
 var DarkCategories = template.Must(template.ParseFiles("./src/templates/dark/voirTout.html"))
 var DarkCreateCategorie = template.Must(template.ParseFiles("./src/templates/dark/createcategorie.html"))
+var DarkReportPostAdmin = template.Must(template.ParseFiles("./src/templates/dark/reportPost.html"))

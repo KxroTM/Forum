@@ -1844,3 +1844,104 @@ func CreateCategoriePage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func DeletePostLogique(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.URL.RawQuery
+
+	if postID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	DeletePost(Db, postID)
+
+	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+}
+
+func DeleteCommentLogique(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	commentID := r.URL.RawQuery
+
+	if commentID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	DeleteComment(Db, commentID)
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func UpdateRoleLogique(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Role != "admin" || UserSession.Role == "moderator" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	userID := strings.Split(r.URL.RawQuery, "_")[1]
+	role := strings.Split(r.URL.RawQuery, "_")[0]
+
+	if userID == "" {
+		http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+		return
+	}
+
+	if role == "" {
+		http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	UpdateRole(Db, userID, role)
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func ReportsPage(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Role != "admin" || UserSession.Role == "moderator" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+
+	AllData = GetAllDatas(r)
+	AllData.AllPosts, _ = GetPostByReport(Db)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+	AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+
+	if AllData.ColorMode == "light" {
+		err = ReportPostAdmin.ExecuteTemplate(w, "reportPost.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkReportPostAdmin.ExecuteTemplate(w, "reportPost.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}

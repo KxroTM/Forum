@@ -418,6 +418,16 @@
                         </label>
                     </div>
                     <p class ="nbRepu">{{.Post.Retweet}}</p>
+
+                    {{if eq $.User.Role "admin"}}
+                    <div class="SupprPost ignore-click">
+                        <button onclick='deletePost({{.Post.Posts_id}})'>
+                            <span>
+                                Supprimer
+                            </span>
+                        </button>
+                    </div>
+                    {{end}}
                 </div>
             </div>
             <div class="line6"></div>
@@ -477,6 +487,16 @@
                         </label>
                     </div>
                     <p class ="nbDislike">{{.Dislike}}</p>
+
+                    {{if eq $.User.Role "admin"}}
+                    <div class="SupprComment ignore-click">
+                        <button onclick='deleteComment("{{.Comment_id}}")'>
+                            <span>
+                                Supprimer
+                            </span>
+                        </button>
+                    </div>
+                    {{end}}
                 </div>
             </div>
             {{end}}

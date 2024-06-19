@@ -103,10 +103,14 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = '/changeColorMode';
         }, 500);
     });
-
 });
 
-
+    const moderationSelect = document.getElementById('moderation');
+    if (moderationSelect){
+    moderationSelect.addEventListener('change', () => {
+        window.location.href = '/updateRole?' + moderationSelect.value + "_" + moderationSelect.getAttribute('alt');
+    });
+    }
 function likePost(id) {    
     window.location.href = '/likePost?'+id;
 }
@@ -125,4 +129,13 @@ function likeComment(id) {
 
 function dislikeComment(id) {
     window.location.href = '/dislikeComment?'+id;
+}
+
+function deleteComment(id) {
+    window.location.href = '/deleteComment?'+id;
+}
+
+function deletePost(id) {
+    console.log(id);
+    window.location.href = '/deletePost?'+id;
 }
