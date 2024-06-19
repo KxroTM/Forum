@@ -95,7 +95,7 @@ func CreateCommentaire(db *sql.DB, commentaire, post_id, user_id string) {
 		User_pfp:   user.Pfp,
 	}
 
-	_, err = db.Exec("INSERT INTO comments (comment_id, post_id, user_id, text, date, like, dislike, report, liker, disliker, user_pfp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Commentaire.Comment_id, Commentaire.Posts_id, Commentaire.User_id, Commentaire.Text, Commentaire.Date, Commentaire.Like, Commentaire.Dislike, Commentaire.Report, Commentaire.Liker, Commentaire.Disliker, Commentaire.User_pfp)
+	_, err = db.Exec("INSERT INTO comments (comment_id, post_id, UUID, text, date, like, dislike, report, liker, disliker, user_pfp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Commentaire.Comment_id, Commentaire.Posts_id, Commentaire.User_id, Commentaire.Text, Commentaire.Date, Commentaire.Like, Commentaire.Dislike, Commentaire.Report, Commentaire.Liker, Commentaire.Disliker, Commentaire.User_pfp)
 	if err != nil {
 		panic(err)
 	}

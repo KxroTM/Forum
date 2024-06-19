@@ -1707,12 +1707,9 @@ func CreateCommentPage(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
 		comment := r.FormValue("text")
-		if comment == "" {
+		CreateCommentaire(Db, comment, AllData.Post.Posts_id, UserSession.User_id)
+		http.Redirect(w, r, "/post/id="+AllData.Post.Posts_id, http.StatusSeeOther)
 
-		} else {
-			// CreateCommentaire(Db, comment, AllData.Post.Posts_id, UserSession.User_id)
-			http.Redirect(w, r, "/post/id="+AllData.Post.Posts_id, http.StatusSeeOther)
-		}
 	}
 
 	if AllData.ColorMode == "light" {

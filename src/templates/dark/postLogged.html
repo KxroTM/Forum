@@ -422,11 +422,11 @@
                     </button>
                 </a>
             </div>
-            <!-- {{ range .AllComments }} -->
-            <div class="post">
-            <p>test</p>
+            {{ range .AllComments }}
+            <div class="post ignore-click">
+            <p>{{.Text}}</p>
             </div>
-            <!-- {{end}} -->
+            {{end}}
         </div>
     </div>
 
