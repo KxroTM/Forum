@@ -1689,3 +1689,27 @@ func UsersPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func CreateCommentPage(w http.ResponseWriter, r *http.Request) {
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+	AllData.RecommendedAllUsers = RealRecommendUsers(Db, UserSession.User_id)
+	if AllData.ColorMode == "light" {
+		err = CreateComment.ExecuteTemplate(w, "createcomment.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkCreateComment.ExecuteTemplate(w, "createcomment.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
