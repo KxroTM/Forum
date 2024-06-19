@@ -25,6 +25,170 @@ button:hover {
 }
 
 
+.createpost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 75vw;
+    min-height: 40.5vh;
+    top: 14.5vh;
+    left: 9.6vw;
+}
+        .post-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+        }
+        .post-container h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .checkbox-container {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .checkbox-group input[type="checkbox"]:checked + label {
+            background-color: #28974B;
+            color: #fff;
+            border-color: #28974B;
+        }
+        .submit-btn {
+            display: block;
+            width: 10vw;
+            padding: 10px;
+            background-color: #28974B;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            left : 10vw;
+            margin-top: 3vh;
+        }
+        .submit-btn:hover {
+            background-color: #28974B;
+        }
+
+        .selecttype .switch-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        .selecttype .switch-container label {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .selecttype .switch-container label:hover {
+            background-color: #d3d3d3;
+        }
+        .selecttype input[type="radio"]:checked + label {
+            background-color: #28974B;
+            color: #fff;
+        }
+
+        .switch-container {
+            margin-bottom: 15px;
+            width: 15vw;
+        }
+        .selecttype label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .selecttype input,
+        .selecttypetextarea,
+        .selecttype select {
+            display: none;
+        }
+
+        .switch-container .post_type {
+          margin-left: 1vw;
+        }
+
+        .selecttype {
+          margin-top: 2vh;
+        }
+
+        .createpost .create {
+            width: 30vw;
+        }
+
+        .createpost span {
+          font-size: 38px;
+          font-weight: 600;
+          color: #000;
+          margin-bottom: 2vh;
+          font-family: "Gill Sans", sans-serif;
+        }
+
+        .createpost .line4 {
+          position: relative;
+          top: -1vh;
+          width: 25vw;
+        }
+
+        .createpost label {
+          font-family: "Gill Sans", sans-serif;
+        }
+
+
+.error {
+    color: red;
+    font-size: 14px;
+    /* margin-top: 5px; */
+}
+
+
+
 .bodycode {
     position: relative;
     display: flex;
@@ -446,8 +610,6 @@ a {
   align-items: center;
   font-family: "roboto", sans-serif;
 }
-    
-
 
 .commentaires {
   display: flex;
@@ -458,7 +620,6 @@ a {
   top: 60vh;
 }
 
-
 .create-comment {
   position: relative;
   bottom: 3vh;
@@ -466,46 +627,4 @@ a {
 
 .create-comment button{
   background-color: rgba(40, 151, 75, 0.21);
-}
-
-.commentairepost {
-  width: 40vw;
-  color: black;
-  font-family: "roboto", sans-serif;
-}
-
-.commentairepost .post-header {
- position: relative;
-  top: 6vh;
-} 
-
-.commentairepost .post-header img{
- position: relative;
-  top: -1vh;
-} 
-
-.commentairepost .post-content {
-  position: relative;
-  bottom: 5vh;
-}
-
-.commentairepost p {
-  width: 30vw;
-}
-
-.commentairepost .post-footer{
-  position: relative;
-  bottom: 5vh;
-  margin-bottom: -5vh;
-}
-
-.commentairepost .buttonDislike {
-  position: relative;
-  bottom: 1.8vh;
-  right: 15vw;
-}
-
-.commentairepost .nbDislike {
-  position: relative;
-  right:15vw;
 }

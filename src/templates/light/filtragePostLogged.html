@@ -187,6 +187,14 @@
             </a>
         </div>
     </div>
+    
+    {{if .NbNotif}}
+    <div class="notifNb">
+        <p>{{.NbNotif}}</p>
+    </div>
+    {{end}}
+
+
     <div class="navbar">
         <img src="../../style/img/Logo.png"  class="logo" width="15%"> 
         <form method="post">

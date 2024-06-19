@@ -118,3 +118,11 @@ function dislikePost(id) {
 function retweetPost(id) {
     window.location.href = '/retweetPost?'+id;
 }
+
+function likeComment(id) {    
+    window.location.href = '/likeComment?'+id;
+}
+
+function dislikeComment(id) {
+    window.location.href = '/dislikeComment?'+id;
+}

@@ -163,3 +163,13 @@ func GetNotifBySearch(Db *sql.DB, User_id string, Search string) []Notification 
 	}
 	return notifications
 }
+
+func GetNumberAllNotifsUncheck(Db *sql.DB, user_id string) int {
+	row := Db.QueryRow("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND checked = FALSE", user_id)
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		fmt.Println("Error getting count notifications:", err)
+	}
+	return count
+}

@@ -30,6 +30,7 @@ type DataStruct struct {
 	Categorie           Category
 	Error               error
 	ColorMode           string
+	NbNotif             int
 }
 
 type RecommendedUser struct {
@@ -333,7 +334,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	} else if query == "retweets" {
 		AllData.AllPosts = GetAllPostsByRetweet(Db, AllData.UserTarget.Username)
 	} else if query == "comments" {
-		// AllData.AllPosts = GetAllPostsByComment(Db, AllData.UserTarget.User_id)
+		AllData.AllPosts = GetAllPostByComments(Db, GetAllCommentByUser(Db, AllData.UserTarget.User_id))
 	}
 
 	if strings.Contains(AllData.UserTarget.FollowerList, UserSession.Username) {
@@ -424,6 +425,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	AllData.AllComments = GetCommentByPostId(Db, id)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 
 	if AllData.Post == (Post{}) {
 		if AllData.ColorMode == "light" {
@@ -1692,6 +1694,10 @@ func UsersPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateCommentPage(w http.ResponseWriter, r *http.Request) {
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
 	clientIP := r.RemoteAddr
 	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
 	if err != nil {
@@ -1702,17 +1708,15 @@ func CreateCommentPage(w http.ResponseWriter, r *http.Request) {
 	AllData = GetAllDatas(r)
 	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
 	AllData.RecommendedAllUsers = RealRecommendUsers(Db, UserSession.User_id)
+	AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
 
 	AllData.Post, _ = GetPost(Db, r.URL.RawQuery)
 
 	if r.Method == http.MethodPost {
 		comment := r.FormValue("text")
-		if comment == "" {
+		CreateCommentaire(Db, comment, AllData.Post.Posts_id, UserSession.User_id)
+		http.Redirect(w, r, "/post/id="+AllData.Post.Posts_id, http.StatusSeeOther)
 
-		} else {
-			// CreateCommentaire(Db, comment, AllData.Post.Posts_id, UserSession.User_id)
-			http.Redirect(w, r, "/post/id="+AllData.Post.Posts_id, http.StatusSeeOther)
-		}
 	}
 
 	if AllData.ColorMode == "light" {
@@ -1745,6 +1749,96 @@ func CagoriesPage(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		err := DarkCategories.ExecuteTemplate(w, "voirTout.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+func LikeCommentLogique(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	commentID := r.URL.RawQuery
+
+	if commentID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	commentSession := GetComment(Db, commentID)
+
+	if strings.Contains(commentSession.Liker, UserSession.Username) {
+		UnLikeComment(Db, commentID, UserSession.Username)
+	} else {
+		LikeComment(Db, commentID, UserSession.Username)
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func DislikeCommentLogique(w http.ResponseWriter, r *http.Request) {
+	updateUserSession(r)
+
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+
+	commentID := r.URL.RawQuery
+
+	if commentID == "" {
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
+		return
+	}
+
+	AllData = GetAllDatas(r)
+	commentSession := GetComment(Db, commentID)
+
+	if strings.Contains(commentSession.Disliker, UserSession.Username) {
+		UnDislikeComment(Db, commentID, UserSession.Username)
+	} else {
+		DislikeComment(Db, commentID, UserSession.Username)
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func CreateCategoriePage(w http.ResponseWriter, r *http.Request) {
+	if UserSession.Email == "" {
+		http.Redirect(w, r, "/connexion", http.StatusSeeOther)
+		return
+	}
+	clientIP := r.RemoteAddr
+	err := IPsLog(clientIP + "  ==>  " + r.URL.Path)
+	if err != nil {
+		log.Println(err)
+	}
+
+	updateUserSession(r)
+	AllData = GetAllDatas(r)
+	AllData.RecommendedUser = RecommendedUsers(Db, UserSession.User_id)
+	AllData.RecommendedAllUsers = RealRecommendUsers(Db, UserSession.User_id)
+	AllData.AllNotifications = GetNotifications(Db, UserSession.User_id)
+
+	if r.Method == http.MethodPost {
+		name := r.FormValue("text")
+		CreateCategory(Db, name, "", "")
+		http.Redirect(w, r, "/categories", http.StatusSeeOther)
+	}
+
+	if AllData.ColorMode == "light" {
+		err = CreateCategorie.ExecuteTemplate(w, "createcategorie.html", AllData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		err := DarkCreateCategorie.ExecuteTemplate(w, "createcategorie.html", AllData)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

@@ -48,6 +48,30 @@ type User struct {
 
 var UserSession User
 
+func GetAllDatas(r *http.Request) DataStruct {
+
+	data, _ := getSessionData(r)
+	Color := data.User.ColorMode
+
+	return DataStruct{
+		User:                UserSession,
+		UserTarget:          User{},
+		AllUsers:            GetAllUsers(Db),
+		RecommendedUser:     RecommendedUser{},
+		RecommendedAllUsers: RecommendedUser{},
+		Post:                Post{},
+		AllPosts:            GetAllPosts(Db),
+		Comment:             Comment{},
+		// AllComments:      GetAllComments(),
+		Notification: Notification{},
+		// AllNotifications: GetAllNotifications(),
+		Categorie:     Category{},
+		AllCategories: GetFirst5Categories(Db),
+		ColorMode:     Color,
+		NbNotif:       GetNumberAllNotifsUncheck(Db, UserSession.User_id),
+	}
+}
+
 var banWords = []string{
 	"idiot", "imbecile", "cretin", "con", "abruti", "connard", "enfoire", "salopard",
 	"sexe", "porno", "XXX", "nue", "seins", "cul", "bite", "vagin", "penis", "orgasme", "ejaculation",
@@ -589,29 +613,6 @@ func GetAllUsers(db *sql.DB) []User {
 	}
 
 	return users
-}
-
-func GetAllDatas(r *http.Request) DataStruct {
-
-	data, _ := getSessionData(r)
-	Color := data.User.ColorMode
-
-	return DataStruct{
-		User:                UserSession,
-		UserTarget:          User{},
-		AllUsers:            GetAllUsers(Db),
-		RecommendedUser:     RecommendedUser{},
-		RecommendedAllUsers: RecommendedUser{},
-		Post:                Post{},
-		AllPosts:            GetAllPosts(Db),
-		Comment:             Comment{},
-		// AllComments:      GetAllComments(),
-		Notification: Notification{},
-		// AllNotifications: GetAllNotifications(),
-		Categorie:     Category{},
-		AllCategories: GetAllCategories(Db),
-		ColorMode:     Color,
-	}
 }
 
 func generateStrongPassword() string {

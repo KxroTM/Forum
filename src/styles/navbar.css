@@ -241,3 +241,24 @@ position: fixed;
     padding: 10px 20px;
     cursor: pointer;
 }
+
+.notifNb {
+    position: fixed;
+    background-color: red;
+    border-radius: 90px;
+    width: 3vh;
+    height: 3vh;
+    top: 4.5vh;
+    left: 83vw;
+    color: rgb(0, 0, 0);
+    z-index: 10000;
+
+}
+
+.notifNb p {
+    position: fixed;
+    top: 2.5vh;
+    left: 83.45vw;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+}

@@ -47,8 +47,11 @@ func main() {
 	http.HandleFunc("/lien-expire", forum.ExpiredLinkPage)
 	http.HandleFunc("/parametres", forum.ReglagePage)
 	http.HandleFunc("/utilisateurs", forum.UsersPage)
-	http.HandleFunc("/create-comment", forum.CreateCommentPage)
+	http.HandleFunc("/creer-un-comment", forum.CreateCommentPage)
 	http.HandleFunc("/categories", forum.CagoriesPage)
+	http.HandleFunc("/likeComment", forum.LikeCommentLogique)
+	http.HandleFunc("/dislikeComment", forum.DislikeCommentLogique)
+	http.HandleFunc("/creer-une-categorie", forum.CreateCategoriePage)
 
 	err := openLink()
 	if err != nil {
