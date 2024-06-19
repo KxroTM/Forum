@@ -1,0 +1,459 @@
+body {
+  background-color:#1D1D1D;
+}
+
+button {
+  border: 0px solid ;
+  background-color: #1D1D1D;
+  border-radius: 0.9em;
+  padding: 0.8em 1.2em 0.8em 1em;
+  transition: all ease-in-out 0.2s;
+  font-size: 16px;
+  cursor: pointer;
+ }
+ 
+ button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(196, 194, 194);
+  font-weight: 600;
+ }
+ 
+ button:hover {
+  background-color:rgba(6, 153, 191, 0.31);
+ }
+
+ 
+ .bodycode {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 75vw;
+    height: 75vh;
+    top: 25vh;
+    left: 10vw;
+    margin-top: 2vh;
+  }
+
+  .golangPost{
+    min-height: 30vh;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Gill Sans", sans-serif;
+    margin-bottom: 50vh;
+    z-index: 0;
+  }
+
+.buttonOnglet {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 0vw;
+  height: 0vh;
+  margin-top: 2vh;
+  left: 61vw;
+}
+
+.buttonOnglet button {
+  background-color: rgba(6, 153, 191, 0.31);
+  color: white;
+  padding: 0.5em 1em;
+}
+
+a {
+  text-decoration: none;
+  color: rgb(196, 194, 194);
+}
+
+    .buttonLike {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .container1 input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+        
+      }
+      
+      .container1 {
+        position: relative;
+        cursor: pointer;
+        font-size: 20px;
+        user-select: none;
+        transition: 100ms;
+        width: 35px;
+        height: 35px;
+      }
+      
+      .checkmark {
+        left: 0;
+        height: 0em;
+        width: 0em;
+        transition: 100ms;
+        animation: dislike_effect 400ms ease;
+        
+      }
+
+      .checkmark path {
+        fill: none; 
+        stroke: #ffffff; 
+        stroke-width: 15px;
+    }
+    
+    
+      
+      .container1 input:checked ~ .checkmark path {
+        fill: #0698BF;
+        stroke-width: 0;
+        
+      }
+      
+      .container1 input:checked ~ .checkmark {
+        animation: like_effect 400ms ease;
+
+        
+      }
+      
+      .container1:hover {
+        transform: scale(1.1);
+      }
+      
+      @keyframes like_effect {
+        0% {
+          transform: scale(0);
+        }
+      
+        50% {
+          transform: scale(1.2);
+        }
+      
+        100% {
+          transform: scale(1);
+        }
+      }
+      
+      @keyframes dislike_effect {
+        0% {
+          transform: scale(0);
+        }
+      
+        50% {
+          transform: scale(1.2);
+        }
+      
+        100% {
+          transform: scale(1);
+          
+        }
+      }
+
+    .buttonDislike {
+        margin-left: 1.5vw;
+        position: relative;
+    }
+
+    .container2 input {
+        position: relative;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+      }
+      
+      .container2 {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .container2 svg {
+        position: relative;
+        top: 0;
+        left: 0;
+        height: 30px; /* Nouvelle hauteur */
+        width: 30px; /* Nouvelle largeur */
+        transition: all 0.3s;
+        fill: #666;
+    }
+    
+      
+      svg {
+        position: relative;
+        top: 0;
+        left: 0;
+        height: 50px;
+        width: 50px;
+        transition: all 0.3s;
+        fill: #666;
+      }
+      
+      svg:hover {
+        transform: scale(1.1) rotate(-10deg);
+      }
+      
+      .container2 input:checked ~ svg {
+        fill: rgb(185, 51, 51);
+      }
+
+ .container3 {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2vw;
+    margin-left: 1.5vw;
+}
+
+  
+  .repost-checkbox {
+      display: none;
+  }
+  
+  .repost-button {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      border: none;
+      background-color: transparent;
+      color: #646464;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.3s;
+  }
+  
+  .repost-button:hover {
+      color: #1da1f2;
+  }
+  
+  .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 24px;
+      height: 16px;
+      margin-right: 5px;
+      transition: transform 0.3s;
+  }
+  
+  .arrow {
+      position: absolute;
+      width: 0; 
+      height: 0; 
+      border-style: solid;
+  }
+  
+  .up {
+      border-width: 0 6px 6px 6px;
+      border-color: transparent transparent currentColor transparent;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg);
+  }
+  
+  .down {
+      border-width: 6px 6px 0 6px;
+      border-color: currentColor transparent transparent transparent;
+      bottom: 0;
+      right: 0;
+      transform: rotate(-90deg);
+  }
+  
+  .line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: currentColor;
+      top: 50%;
+      transform: translateY(-50%);
+  }
+  
+  .repost-checkbox:checked + .repost-button .icon {
+      color: #1da1f2;;
+      transform: rotate(360deg);
+  }
+  
+  .repost-checkbox:checked + .repost-button {
+      color: #1da1f2;;
+  }
+  
+
+
+.line6 {
+    width: 60%;
+    min-height: 1px;
+    background: rgba(6, 153, 191, 0.31);
+    position: relative;
+    transform: translateY(-50%);
+    margin-top: 5vh;
+    margin-bottom: 8vh;
+  }
+
+
+
+  .nbLikes {
+    margin-left: 0.8vw;
+  }
+
+  .nbDislike {
+    margin-left: 0.8vw;
+  }
+
+  .nbRepu {
+    margin-left: 0.5vw;
+  }
+
+.reportToggle {
+  opacity: 0;
+  position: relative;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  width: 7vw;
+  height: 8vh;
+  z-index: -10;
+  left: 42.6vw;
+  top: 4.8vh;
+  background-color: rgba(6, 153, 191, 0.31);
+  border-radius: 10px;
+}
+
+.reportToggle button {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.flechedroite {
+  position: relative;
+  left: 3vw;
+  bottom: 4.5vh;
+  width : 0;
+  height : 0;
+  border-bottom : 10px solid transparent;
+  border-top : 10px solid transparent;
+  border-left : 10px solid rgba(6, 153, 191, 0.31);
+  font-size: 0;
+  line-height: 0;
+  transform : rotate(-90deg);
+}
+
+
+.overlay{
+  background-color: #000000c6;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.post {
+    background-color: #1D1D1D;
+    border: 1px solid #1D1D1D;
+    border-radius: 8px;
+    width: 50vw;
+    box-shadow:rgba(6, 153, 191, 0.31) 0px 0px 5px;
+    margin: 20px;
+    cursor: pointer;
+}
+
+.post-header {
+    padding: 16px;
+    height:12vh ;
+}
+
+.post-header img{
+  margin-top: -12vh;
+  border: #ffffff7e 1px solid;
+}
+
+.post-date {
+  margin-left: 1vw;
+  color: rgb(196, 194, 194);
+}
+
+.header-info {
+  position: relative;
+  margin-top: -6vh;
+  margin-bottom: 3vh;
+  left: 6vw;
+}
+
+.post-title {
+    margin: 0;
+    font-size: 24px;
+    color: rgb(196, 194, 194);
+}
+
+.post-author {
+    font-size: 24px;
+    color: rgb(196, 194, 194);
+}
+
+.post-content {
+    padding: 16px;
+    position: relative;
+    left: 5vw;
+    width: 40vw;
+    color: rgb(196, 194, 194);
+}
+
+.post-content p {
+    text-overflow: ellipsis;
+    margin: 0 0 16px;
+    overflow: hidden;
+}
+
+.post-content img {
+  max-height: 20vh;
+  box-shadow: #ffffff 0px 0px 5px;
+}
+
+.post-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.post-footer {
+    padding: 16px;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+}
+
+.btn {
+    background-color: #0079d3;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background-color: #005fa3;
+} 
+
+.post-footer p {
+  color : rgb(196, 194, 194);
+  position: relative;
+  bottom: 1vh;
+}
+
+.categorieName {
+  color: rgb(255, 255, 255);
+  position: absolute;
+  top:-10vh;
+  align-items: center;
+  font-family: "roboto", sans-serif;
+}
+    

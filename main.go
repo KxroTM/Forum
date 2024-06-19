@@ -48,6 +48,7 @@ func main() {
 	http.HandleFunc("/parametres", forum.ReglagePage)
 	http.HandleFunc("/utilisateurs", forum.UsersPage)
 	http.HandleFunc("/create-comment", forum.CreateCommentPage)
+	http.HandleFunc("/categories", forum.CagoriesPage)
 
 	err := openLink()
 	if err != nil {
