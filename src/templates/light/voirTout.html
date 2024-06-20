@@ -250,25 +250,27 @@
             </div>
         </div>
         <div class="bodycode">
-            <div class ="bodyBox">
-                <div class="catégorieBox"> 
+            {{ range .AllCategories }}
+                <div class ="bodyBox">
+                    <div class="catégorieBox"> 
+                    </div>
+                    <div class ="titleCategorie">
+                        <h5><strong>{{.Name}}</strong></h5>
+                    </div>
+                    <ul class="features-list">
+                        <li>Nombre de post&nbsp;:&nbsp; {{.NbPosts}}</li>
+                        <li>Abonés&nbsp;:&nbsp; {{.Users}}</li>
+                    </ul>
+                    <a href="/categorie?id={{.Category_id}}">
+                        <button>
+                            <span>
+                                Voir la catégorie
+                            </span>
+                        </button>
+                    </a>
                 </div>
-                <div class ="titleCategorie">
-                    <h5><strong>Titre Catégorie</strong></h5>
-                </div>
-                <ul class="features-list">
-                    <li>Nombre de post&nbsp;:&nbsp;</li>
-                    <li>Abbonés&nbsp;:&nbsp;</li>
-                </ul>
-                <a href="/categorie?id={{.Category_id}}">
-                    <button>
-                        <span>
-                            Voir la catégorie
-                        </span>
-                    </button>
-                </a>
+            {{ end }}
             </div>
-        </div>
     </body>
     <script src="../../style/scripts/accueil.js"></script>
 </html>
